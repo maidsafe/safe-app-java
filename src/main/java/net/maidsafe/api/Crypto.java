@@ -127,4 +127,22 @@ public class Crypto {
         return future;
     }
 
+    public CompletableFuture<byte[]> generateNonce() {
+        final CompletableFuture<byte[]> future;
+        final CompletableFuture<Pointer> cbFuture;
+        future = new CompletableFuture<>();
+        cbFuture = new CompletableFuture<>();
+
+        lib.generate_nonce(Pointer.NULL, callbackHelper.getPointerCallback(cbFuture));
+
+        cbFuture.thenAccept(pointer -> {
+            future.complete(pointer.getByteArray(0, FfiConstant.NONCE));
+        }).exceptionally(e -> {
+           future.completeExceptionally(e);
+           return null;
+        });
+
+        return future;
+    }
+
 }

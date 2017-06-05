@@ -55,7 +55,7 @@ public class SecretEncryptKey {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        lib.enc_pub_key_free(appHandle, handle, Pointer.NULL,
+        lib.enc_secret_key_free(appHandle, handle, Pointer.NULL,
                 callbackHelper.getResultCallBack(null));
     }
 }

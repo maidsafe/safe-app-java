@@ -152,9 +152,9 @@ public class CallbackHelper implements Cloneable {
 		return cb;
 	}
 
-	public FfiCallback.CallbackForData getDataCallback(
+	public FfiCallback.DataCallback getDataCallback(
 			final CompletableFuture<byte[]> future) {
-		final FfiCallback.CallbackForData cb = new FfiCallback.CallbackForData() {
+		final FfiCallback.DataCallback cb = new FfiCallback.DataCallback() {
 
 			@Override
 			public void onResponse(Pointer userData, ByVal result,
@@ -171,9 +171,9 @@ public class CallbackHelper implements Cloneable {
 		return cb;
 	}
 
-	public FfiCallback.CallbackForData getStringArrayCallback(
+	public FfiCallback.DataCallback getStringArrayCallback(
 			final CompletableFuture<List<String>> future) {
-		final FfiCallback.CallbackForData cb = new FfiCallback.CallbackForData() {
+		final FfiCallback.DataCallback cb = new FfiCallback.DataCallback() {
 
 			@Override
 			public void onResponse(Pointer userData, ByVal result,

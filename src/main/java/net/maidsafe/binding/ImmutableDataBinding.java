@@ -1,6 +1,6 @@
 package net.maidsafe.binding;
 
-import net.maidsafe.binding.model.FfiCallback.CallbackForData;
+import net.maidsafe.binding.model.FfiCallback.DataCallback;
 import net.maidsafe.binding.model.FfiCallback.HandleCallback;
 import net.maidsafe.binding.model.FfiCallback.PointerCallback;
 import net.maidsafe.binding.model.FfiCallback.ResultCallback;
@@ -25,7 +25,7 @@ public interface ImmutableDataBinding extends Library {
 			HandleCallback cb);
 
 	void idata_read_from_self_encryptor(Pointer app, long reader, long from,
-			long to, Pointer user, CallbackForData cb);
+			long to, Pointer user, DataCallback cb);
 
 	void idata_self_encryptor_writer_free(Pointer app, long handle,
 			Pointer userData, ResultCallback cb);

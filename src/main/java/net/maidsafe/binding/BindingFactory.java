@@ -12,6 +12,7 @@ public class BindingFactory implements Cloneable {
 	private final CryptoBinding crypto;
 	private final CipherOptBinding cipherOpt;
 	private final ImmutableDataBinding immutableData;
+	private final MutableDataBinding mutableData;
 	private final AccessContainerBinding accessContainer;
 
 	private BindingFactory() {
@@ -25,6 +26,7 @@ public class BindingFactory implements Cloneable {
 		crypto = Native.loadLibrary(CryptoBinding.class);
 		cipherOpt = Native.loadLibrary(CipherOptBinding.class);
 		immutableData = Native.loadLibrary(ImmutableDataBinding.class);
+		mutableData = Native.loadLibrary(MutableDataBinding.class);
 		accessContainer = Native.loadLibrary(AccessContainerBinding.class);
 	}
 
@@ -53,6 +55,10 @@ public class BindingFactory implements Cloneable {
 
 	public AccessContainerBinding getAccessContainer() {
 		return accessContainer;
+	}
+
+	public MutableDataBinding getMutableData() {
+		return mutableData;
 	}
 
 	@Override

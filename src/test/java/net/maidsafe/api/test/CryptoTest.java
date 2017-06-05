@@ -85,6 +85,12 @@ public class CryptoTest extends TestCase {
 				.get();
 	}
 
+	public void testGenerateNonce() throws Exception {
+		SafeClient client = Utils.getTestAppWithAccess();
+		byte[] nonce = client.crypto().generateNonce().get();
+		assertEquals(FfiConstant.NONCE, nonce.length);
+	}
+
 	public void testBoxEncryption() throws Exception {
 		SafeClient clientOne = Utils.getTestAppWithAccess();
 

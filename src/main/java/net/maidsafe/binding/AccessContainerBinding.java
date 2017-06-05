@@ -1,7 +1,7 @@
 package net.maidsafe.binding;
 
 import net.maidsafe.binding.model.FfiCallback.BooleanCallback;
-import net.maidsafe.binding.model.FfiCallback.CallbackForData;
+import net.maidsafe.binding.model.FfiCallback.DataCallback;
 import net.maidsafe.binding.model.FfiCallback.HandleCallback;
 import net.maidsafe.binding.model.FfiCallback.ResultCallback;
 
@@ -14,7 +14,7 @@ public interface AccessContainerBinding extends Library {
 			ResultCallback cb);
 
 	void access_container_get_names(Pointer app, Pointer userData,
-			CallbackForData cb);
+			DataCallback cb);
 
 	void access_container_get_container_mdata_info(Pointer app, String name,
 			Pointer userData, HandleCallback cb);
