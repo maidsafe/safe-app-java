@@ -171,6 +171,25 @@ public class CallbackHelper implements Cloneable {
 		return cb;
 	}
 
+	public FfiCallback.DataWithVersionCallback getDataWithVersionCallback(
+			final CompletableFuture<byte[]> future) {
+		final FfiCallback.DataWithVersionCallback cb = new FfiCallback.DataWithVersionCallback() {
+
+			@Override
+			public void onResponse(Pointer userData, ByVal result,
+								   Pointer data, long dataLen, long version) {
+				removeFromPool(this);
+				if (result.isError()) {
+					future.completeExceptionally(new Exception(result));
+					return;
+				}
+				future.complete(data.getByteArray(0, (int) dataLen));
+			}
+		};
+		addToPool(cb);
+		return cb;
+	}
+
 	public FfiCallback.DataCallback getStringArrayCallback(
 			final CompletableFuture<List<String>> future) {
 		final FfiCallback.DataCallback cb = new FfiCallback.DataCallback() {

@@ -79,7 +79,7 @@ public interface MutableDataBinding extends Library {
 
     void mdata_permissions_set_free(Pointer appHandle, long permissionHandle, Pointer userData, FfiCallback.ResultCallback cb);
 
-    void mdata_permissions_new(Pointer appHandle, Pointer userData, FfiCallback.ResultCallback cb);
+    void mdata_permissions_new(Pointer appHandle, Pointer userData, FfiCallback.HandleCallback cb);
 
     void mdata_permissions_len(Pointer appHandle, long permissionsHandle, Pointer userData, FfiCallback.HandleCallback cb);
 
@@ -90,4 +90,29 @@ public interface MutableDataBinding extends Library {
     void mdata_permissions_insert(Pointer appHandle, long permissionHandle, long signKeyHandle, long permissionSetHandle, Pointer userData, FfiCallback.ResultCallback cb);
 
     void mdata_permissions_free(Pointer appHandle, long permissionsHandle, Pointer userData, FfiCallback.ResultCallback cb);
+
+    //MData Mod
+    void mdata_put(Pointer appHandle, long infoHandle, long permissionHandle, Pointer userData, FfiCallback.ResultCallback cb);
+
+    void mdata_get_version(Pointer appHandle, long infoHandle, Pointer userData, FfiCallback.HandleCallback cb);
+
+    void mdata_get_value(Pointer appHandle, long infoHandle, byte[] key, long keyLen, Pointer userData, FfiCallback.DataWithVersionCallback cb);
+
+    void mdata_list_entries(Pointer appHandle, long infoHandle, Pointer userData, FfiCallback.HandleCallback cb);
+
+    void mdata_list_keys(Pointer appHandle, long infoHandle, Pointer userData, FfiCallback.HandleCallback cb);
+
+    void mdata_list_values(Pointer appHandle, long infoHandle, Pointer userData, FfiCallback.HandleCallback cb);
+
+    void mdata_mutate_entries(Pointer appHandle, long infoHandle, long actionHandle, Pointer userData, FfiCallback.ResultCallback cb);
+
+    void mdata_list_permissions(Pointer appHandle, long infoHandle, Pointer userData, FfiCallback.HandleCallback cb);
+
+    void mdata_list_user_permissions(Pointer appHandle, long infoHandle, long signKeyHandle, Pointer userData, FfiCallback.HandleCallback cb);
+
+    void mdata_set_user_permissions(Pointer appHandle, long infoHandle, long signKeyHandle, long permissionSetHandle, long version, Pointer userData, FfiCallback.ResultCallback cb);
+
+    void mdata_del_user_permissions(Pointer appHandle, long infoHandle, long signKeyHandle, long version, Pointer userData, FfiCallback.ResultCallback cb);
+
+    void mdata_change_owner(Pointer appHandle, long infoHandle, long signKeyHandle, long version, Pointer userData, FfiCallback.ResultCallback cb);
 }

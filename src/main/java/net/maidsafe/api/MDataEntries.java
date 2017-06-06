@@ -1,36 +1,34 @@
 package net.maidsafe.api;
 
-
 import com.sun.jna.Pointer;
 import net.maidsafe.api.model.App;
 import net.maidsafe.api.model.MutableData;
-import net.maidsafe.api.model.XorName;
-import net.maidsafe.binding.BindingFactory;
 import net.maidsafe.binding.MutableDataBinding;
 import net.maidsafe.utils.CallbackHelper;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MDataInfo {
+
+public class MDataEntries {
     private final App app;
     private final MutableDataBinding mDataBinding;
     private final CallbackHelper callbackHelper;
     private final long mDataEntriesHandle;
 
-    public MDataInfo(final App app, long mDataEntriesHandle) {
+    public MDataEntries(App app, MutableDataBinding mDataBinding, CallbackHelper callbackHelper, long mDataEntriesHandle) {
         this.app = app;
+        this.mDataBinding = mDataBinding;
+        this.callbackHelper = callbackHelper;
         this.mDataEntriesHandle = mDataEntriesHandle;
-        this.mDataBinding = BindingFactory.getInstance().getMutableData();
-        this.callbackHelper = CallbackHelper.getInstance();
     }
 
-    public CompletableFuture<MutableData> getPublicType(byte[] name, long typeTag) {
+    public CompletableFuture<MutableData> newEntries(){
         final CompletableFuture<MutableData> future;
         final CompletableFuture<Long> cbFuture;
         future = new CompletableFuture<>();
         cbFuture = new CompletableFuture<>();
 
-        mDataBinding.mdata_info_new_public(app.getAppHandle(), name, typeTag, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
+        mDataBinding.mdata_entries_new(app.getAppHandle(), Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
 
         cbFuture.thenAccept(handle -> future.complete(new MutableData(app.getAppHandle(), handle, mDataEntriesHandle))).exceptionally(e -> {
             future.completeExceptionally(e);
@@ -40,13 +38,47 @@ public class MDataInfo {
         return future;
     }
 
-    public CompletableFuture<MutableData> getPrivateType(XorName name, long typeTag, byte[] secretKey, byte[] nonce) {
+    public CompletableFuture<Void> insertEntries(byte[] key, byte[] value){
+        final CompletableFuture<Void> future;
+        future = new CompletableFuture<>();
+
+        mDataBinding.mdata_entries_insert(app.getAppHandle(), mDataEntriesHandle, key, key.length, value, value.length, Pointer.NULL, callbackHelper.getResultCallBack(future));
+
+        return future;
+    }
+
+    public CompletableFuture<MutableData> getEntriesLength(){
         final CompletableFuture<MutableData> future;
         final CompletableFuture<Long> cbFuture;
         future = new CompletableFuture<>();
         cbFuture = new CompletableFuture<>();
 
-        mDataBinding.mdata_info_new_private(app.getAppHandle(), name.getRaw(), typeTag, secretKey, nonce, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
+        mDataBinding.mdata_entries_len(app.getAppHandle(), mDataEntriesHandle, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
+
+        cbFuture.thenAccept(handle -> future.complete(new MutableData(app.getAppHandle(), handle, mDataEntriesHandle))).exceptionally(e -> {
+            future.completeExceptionally(e);
+            return null;
+        });
+
+        return  future;
+    }
+
+    public CompletableFuture<byte[]> getEntries(byte[] key){
+        final CompletableFuture<byte[]> future;
+        future = new CompletableFuture<>();
+
+        mDataBinding.mdata_entries_get(app.getAppHandle(), mDataEntriesHandle, key, key.length, Pointer.NULL, callbackHelper.getDataWithVersionCallback(future));
+
+        return future;
+    }
+
+    public CompletableFuture<MutableData> getKeysLength(){
+        final CompletableFuture<MutableData> future;
+        final CompletableFuture<Long> cbFuture;
+        future = new CompletableFuture<>();
+        cbFuture = new CompletableFuture<>();
+
+        mDataBinding.mdata_keys_len(app.getAppHandle(), mDataEntriesHandle, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
 
         cbFuture.thenAccept(handle -> future.complete(new MutableData(app.getAppHandle(), handle, mDataEntriesHandle))).exceptionally(e -> {
             future.completeExceptionally(e);
@@ -56,23 +88,15 @@ public class MDataInfo {
         return future;
     }
 
-    public CompletableFuture<MutableData> getRandomPublicType(long typeTag) {
-        return getRandom(typeTag, false);
-    }
+    //TODO: Implement mdata_keys_for_each
 
-    public CompletableFuture<MutableData> getRandomPrivateType(long typeTag) {
-        return getRandom(typeTag, true);
-    }
-
-
-
-    public CompletableFuture<MutableData> deserialise(byte[] serialisedData) {
+    public CompletableFuture<MutableData> getValuesLength(){
         final CompletableFuture<MutableData> future;
         final CompletableFuture<Long> cbFuture;
         future = new CompletableFuture<>();
         cbFuture = new CompletableFuture<>();
 
-        mDataBinding.mdata_info_deserialise(app.getAppHandle(), serialisedData, serialisedData.length, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
+        mDataBinding.mdata_values_len(app.getAppHandle(), mDataEntriesHandle, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
 
         cbFuture.thenAccept(handle -> future.complete(new MutableData(app.getAppHandle(), handle, mDataEntriesHandle))).exceptionally(e -> {
             future.completeExceptionally(e);
@@ -82,24 +106,6 @@ public class MDataInfo {
         return future;
     }
 
-    private CompletableFuture<MutableData> getRandom(long typeTag, boolean isPrivate) {
-        final CompletableFuture<MutableData> future;
-        final CompletableFuture<Long> cbFuture;
-        future = new CompletableFuture<>();
-        cbFuture = new CompletableFuture<>();
-
-        if (isPrivate) {
-            mDataBinding.mdata_info_random_private(app.getAppHandle(), typeTag, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
-        } else {
-            mDataBinding.mdata_info_random_public(app.getAppHandle(), typeTag, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
-        }
-
-        cbFuture.thenAccept(handle -> future.complete(new MutableData(app.getAppHandle(), handle, mDataEntriesHandle))).exceptionally(e -> {
-            future.completeExceptionally(e);
-            return null;
-        });
-
-        return future;
-    }
+    //TODO: Implement mdata_values_for_each
 
 }

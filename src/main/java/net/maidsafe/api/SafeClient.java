@@ -1,6 +1,7 @@
 package net.maidsafe.api;
 
 import net.maidsafe.api.model.App;
+import net.maidsafe.api.model.MutableData;
 
 public class SafeClient {
 	private final App app;
