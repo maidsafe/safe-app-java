@@ -18,8 +18,11 @@ public class MDataMod {
     private final long mDataEntriesHandle;
     private final long mDataSignKeyHandle;
     private final long mDataActionHandle;
+    private final long permissionSetHandle;
 
-    public MDataMod(App app, MutableDataBinding mDataBinding, CallbackHelper callbackHelper, long mDataInfoHandle, long mDataEntriesHandle, long mDatapermissionsHandle, long mDataActionHandle, long mDataSignKeyHandle) {
+    public MDataMod(App app, MutableDataBinding mDataBinding, CallbackHelper callbackHelper, long mDataInfoHandle,
+                    long mDataEntriesHandle, long mDatapermissionsHandle, long mDataActionHandle,
+                    long mDataSignKeyHandle, long permissionSetHandle) {
         this.app = app;
         this.mDataBinding = mDataBinding;
         this.callbackHelper = callbackHelper;
@@ -28,6 +31,7 @@ public class MDataMod {
         this.mDataEntriesHandle = mDataEntriesHandle;
         this.mDataActionHandle = mDataActionHandle;
         this.mDataSignKeyHandle = mDataSignKeyHandle;
+        this.permissionSetHandle = permissionSetHandle;
     }
 
     public CompletableFuture<Void> put(){
