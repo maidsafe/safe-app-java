@@ -5,8 +5,6 @@ import com.sun.jna.Library;
 import com.sun.jna.Pointer;
 import net.maidsafe.binding.model.FfiCallback;
 
-import java.awt.*;
-
 public interface MutableDataBinding extends Library {
 
     // MData Info
@@ -18,9 +16,9 @@ public interface MutableDataBinding extends Library {
 
     void mdata_info_random_private(Pointer appHandle, long typeTag, Pointer userData, FfiCallback.HandleCallback cb);
 
-    void mdata_info_encrypt_entry_key(Pointer appHandle, long mDataInfoHandle, byte[] key, long keyLen, Pointer userData, FfiCallback.DataCallback cb);
+    void mdata_info_encrypt_entry_key(Pointer appHandle, long infoHandle, byte[] key, long keyLen, Pointer userData, FfiCallback.DataCallback cb);
 
-    void mdata_info_encrypt_entry_value(Pointer appHandle, long mDataInfoHandle, byte[] value, long valueLen, Pointer userData, FfiCallback.DataCallback cb);
+    void mdata_info_encrypt_entry_value(Pointer appHandle, long infoHandle, byte[] value, long valueLen, Pointer userData, FfiCallback.DataCallback cb);
 
     void mdata_info_decrypt(Pointer appHandle, long mDataInfoHandle, byte[] input, long inputLen, Pointer userData, FfiCallback.DataCallback cb);
 
@@ -68,7 +66,7 @@ public interface MutableDataBinding extends Library {
 
     void mdata_entry_actions_free(Pointer appHandle, long entryActionHandle, Pointer userData, FfiCallback.ResultCallback cb);
 
-    // MData Permissions
+    // MData MDataPermissions
     void mdata_permission_set_new(Pointer appHandle, Pointer userData, FfiCallback.HandleCallback cb);
 
     void mdata_permissions_set_allow(Pointer appHandle, long permissionHandle, int mDataAction, Pointer userData, FfiCallback.ResultCallback cb);
@@ -92,7 +90,7 @@ public interface MutableDataBinding extends Library {
     void mdata_permissions_free(Pointer appHandle, long permissionsHandle, Pointer userData, FfiCallback.ResultCallback cb);
 
     //MData Mod
-    void mdata_put(Pointer appHandle, long infoHandle, long permissionHandle, Pointer userData, FfiCallback.ResultCallback cb);
+    void mdata_put(Pointer appHandle, long infoHandle, long permissionHandle, long entriesHandle, Pointer userData, FfiCallback.ResultCallback cb);
 
     void mdata_get_version(Pointer appHandle, long infoHandle, Pointer userData, FfiCallback.HandleCallback cb);
 
@@ -113,6 +111,4 @@ public interface MutableDataBinding extends Library {
     void mdata_set_user_permissions(Pointer appHandle, long infoHandle, long signKeyHandle, long permissionSetHandle, long version, Pointer userData, FfiCallback.ResultCallback cb);
 
     void mdata_del_user_permissions(Pointer appHandle, long infoHandle, long signKeyHandle, long version, Pointer userData, FfiCallback.ResultCallback cb);
-
-    void mdata_change_owner(Pointer appHandle, long infoHandle, long signKeyHandle, long version, Pointer userData, FfiCallback.ResultCallback cb);
 }

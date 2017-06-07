@@ -342,20 +342,20 @@ unpacking, reading or copying.
 
   7. Additional Terms.
 
-  "Additional permissions" are terms that supplement the terms of this
+  "Additional MDataPermissions" are terms that supplement the terms of this
 License by making exceptions from one or more of its conditions.
-Additional permissions that are applicable to the entire Program shall
+Additional MDataPermissions that are applicable to the entire Program shall
 be treated as though they were included in this License, to the extent
-that they are valid under applicable law.  If additional permissions
+that they are valid under applicable law.  If additional MDataPermissions
 apply only to part of the Program, that part may be used separately
-under those permissions, but the entire Program remains governed by
-this License without regard to the additional permissions.
+under those MDataPermissions, but the entire Program remains governed by
+this License without regard to the additional MDataPermissions.
 
   When you convey a copy of a covered work, you may at your option
-remove any additional permissions from that copy, or from any part of
-it.  (Additional permissions may be written to require their own
+remove any additional MDataPermissions from that copy, or from any part of
+it.  (Additional MDataPermissions may be written to require their own
 removal in certain cases when you modify the work.)  You may place
-additional permissions on material, added by you to a covered work,
+additional MDataPermissions on material, added by you to a covered work,
 for which you have or can give appropriate copyright permission.
 
   Notwithstanding any other provision of this License, for material you
@@ -582,7 +582,7 @@ public statement of acceptance of a version permanently authorizes you
 to choose that version for the Program.
 
   Later license versions may give you additional or different
-permissions.  However, no additional obligations are imposed on any
+MDataPermissions.  However, no additional obligations are imposed on any
 author or copyright holder as a result of your choosing to follow a
 later version.
 

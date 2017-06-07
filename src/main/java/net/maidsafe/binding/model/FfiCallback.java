@@ -80,4 +80,8 @@ public class FfiCallback {
 		void onResponse(Pointer userData, long signKeyHandle, long permissionSetHandle);
 	}
 
+	public interface fileFetchCallback extends Callback {
+	    void onResponse(Pointer userData, FfiResult.ByVal result, Pointer data, long version);
+    }
+
 }
