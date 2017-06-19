@@ -47,7 +47,7 @@ public class AccessContainerTest extends TestCase {
 	// SafeClient client = Utils.getTestAppWithAccess(Arrays
 	// .asList(new ContainerPermission("_public", Arrays
 	// .asList(Permission.Read))));
-	// MutableData md = client.container().getAppContainer().get();
+	// MutableDataTest md = client.container().getAppContainer().get();
 	// assertEquals(false, md == null);
 	// }
 

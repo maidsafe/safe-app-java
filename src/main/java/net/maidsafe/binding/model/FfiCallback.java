@@ -2,6 +2,7 @@ package net.maidsafe.binding.model;
 
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
+import net.maidsafe.api.model.NfsFile;
 
 public class FfiCallback {
 
@@ -63,6 +64,11 @@ public class FfiCallback {
 						long dataLen, long version);
 	}
 
+    public interface DataWithTypeTagCallback extends Callback {
+        void onResponse(Pointer userData, FfiResult.ByVal result, Pointer data,
+                        long dataLen, long typeTag);
+    }
+
 	public interface ForEachCallback extends Callback {
 		void onResponse(Pointer userData, Pointer key, long keyLen, Pointer data,
 						long dataLen, long version);
@@ -80,8 +86,8 @@ public class FfiCallback {
 		void onResponse(Pointer userData, long signKeyHandle, long permissionSetHandle);
 	}
 
-	public interface fileFetchCallback extends Callback {
-	    void onResponse(Pointer userData, FfiResult.ByVal result, Pointer data, long version);
+	public interface FileFetchCallback extends Callback {
+	    void onResponse(Pointer userData, FfiResult.ByVal result, NfsFile file, long version);
     }
 
 }

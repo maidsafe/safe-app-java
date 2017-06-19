@@ -38,8 +38,8 @@ public class MDataEntries {
         return future;
     }
 
-    public CompletableFuture<byte[]> getEntries(byte[] key) {
-        final CompletableFuture<byte[]> future;
+    public CompletableFuture<ValueVersion> getEntry(byte[] key) {
+        final CompletableFuture<ValueVersion> future;
         future = new CompletableFuture<>();
 
         lib.mdata_entries_get(appHandle, handle, key, key.length, Pointer.NULL, callbackHelper.getDataWithVersionCallback(future));

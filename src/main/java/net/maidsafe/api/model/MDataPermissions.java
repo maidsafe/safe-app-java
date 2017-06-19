@@ -64,7 +64,7 @@ public class MDataPermissions {
         return future;
     }
 
-    public CompletableFuture<Void> forEachPermissionSet(ForEachCallback eachPermissionCallback) {
+    public CompletableFuture<Void> forEachPermissions(ForEachCallback eachPermissionCallback) {
         final CompletableFuture<Void> future;
         final CompletableFuture<Long> lenFuture;
 
@@ -85,7 +85,7 @@ public class MDataPermissions {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        lib.mdata_permissions_set_free(appHandle, handle, Pointer.NULL,
+        lib.mdata_permissions_free(appHandle, handle, Pointer.NULL,
                 callbackHelper.getResultCallBack(null));
     }
 

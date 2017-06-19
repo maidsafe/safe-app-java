@@ -6,6 +6,7 @@ import net.maidsafe.api.Exception;
 import net.maidsafe.api.model.*;
 import net.maidsafe.binding.model.AuthUriResponse;
 import net.maidsafe.binding.model.FfiCallback;
+import net.maidsafe.binding.model.FfiResult;
 import net.maidsafe.binding.model.FfiResult.ByVal;
 
 import java.util.Arrays;
@@ -174,7 +175,7 @@ public class CallbackHelper implements Cloneable {
     }
 
     public FfiCallback.DataWithVersionCallback getDataWithVersionCallback(
-            final CompletableFuture<byte[]> future) {
+            final CompletableFuture<ValueVersion> future) {
         final FfiCallback.DataWithVersionCallback cb = new FfiCallback.DataWithVersionCallback() {
 
             @Override
@@ -185,7 +186,26 @@ public class CallbackHelper implements Cloneable {
                     future.completeExceptionally(new Exception(result));
                     return;
                 }
-                future.complete(data.getByteArray(0, (int) dataLen));
+                future.complete(new ValueVersion(data.getByteArray(0, (int) dataLen), version));
+            }
+        };
+        addToPool(cb);
+        return cb;
+    }
+
+    public FfiCallback.DataWithTypeTagCallback getDataWithTypeTagCallback(
+            final CompletableFuture<NameAndTag> future) {
+        final FfiCallback.DataWithTypeTagCallback cb = new FfiCallback.DataWithTypeTagCallback() {
+
+            @Override
+            public void onResponse(Pointer userData, ByVal result,
+                                   Pointer data, long dataLen, long version) {
+                removeFromPool(this);
+                if (result.isError()) {
+                    future.completeExceptionally(new Exception(result));
+                    return;
+                }
+                future.complete(new NameAndTag(data.getByteArray(0, (int) dataLen), version));
             }
         };
         addToPool(cb);
@@ -286,6 +306,23 @@ public class CallbackHelper implements Cloneable {
         addToPool(forEachEntry);
 
         return forEachEntry;
+    }
+
+    public FfiCallback.FileFetchCallback getFileFetchCallback(
+            final CompletableFuture<NfsFile> future) {
+        final FfiCallback.FileFetchCallback cb = new FfiCallback.FileFetchCallback() {
+            @Override
+            public void onResponse(Pointer userData, ByVal result, NfsFile file, long version) {
+                removeFromPool(this);
+                if (result.isError()) {
+                    future.completeExceptionally(new Exception(result));
+                    return;
+                }
+                future.complete(file);
+            }
+        };
+        addToPool(cb);
+        return cb;
     }
 
 

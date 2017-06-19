@@ -21,6 +21,8 @@ public class MutableData {
         this.callbackHelper = CallbackHelper.getInstance();
     }
 
+    public long getMutableDataInfoHandle(){ return mDataInfoHandle; }
+
 
     public CompletableFuture<byte[]> encryptKey(byte[] key) {
         final CompletableFuture<byte[]> future;
@@ -40,11 +42,20 @@ public class MutableData {
         return future;
     }
 
-    public CompletableFuture<Pointer> getNameAndTag() {
-        final CompletableFuture<Pointer> future;
+    public CompletableFuture<byte[]> decrypt(byte[] input) {
+        final CompletableFuture<byte[]> future;
         future = new CompletableFuture<>();
 
-        mDataBinding.mdata_info_extract_name_and_type_tag(appHandle, mDataInfoHandle, Pointer.NULL, callbackHelper.getPointerCallback(future));
+        mDataBinding.mdata_info_decrypt(appHandle, mDataInfoHandle, input, input.length, Pointer.NULL, callbackHelper.getDataCallback(future));
+
+        return future;
+    }
+
+    public CompletableFuture<NameAndTag> getNameAndTag() {
+        final CompletableFuture<NameAndTag> future;
+        future = new CompletableFuture<>();
+
+        mDataBinding.mdata_info_extract_name_and_type_tag(appHandle, mDataInfoHandle, Pointer.NULL, callbackHelper.getDataWithTypeTagCallback(future));
 
         return future;
     }
@@ -58,8 +69,8 @@ public class MutableData {
         return future;
     }
 
-    public CompletableFuture<byte[]> get(byte[] key) {
-        final CompletableFuture<byte[]> future;
+    public CompletableFuture<ValueVersion> getValue(byte[] key) {
+        final CompletableFuture<ValueVersion> future;
         future = new CompletableFuture<>();
 
         mDataBinding.mdata_get_value(appHandle, mDataInfoHandle, key, key.length, Pointer.NULL, callbackHelper.getDataWithVersionCallback(future));
@@ -179,6 +190,31 @@ public class MutableData {
         future = new CompletableFuture<>();
 
         mDataBinding.mdata_mutate_entries(appHandle, mDataInfoHandle, mutations.getHandle(), Pointer.NULL, callbackHelper.getResultCallBack(future));
+
+        return future;
+    }
+
+    public CompletableFuture<byte[]> serialise() {
+        final CompletableFuture<byte[]> future;
+        future = new CompletableFuture<>();
+
+        mDataBinding.mdata_info_serialise(appHandle, mDataInfoHandle, Pointer.NULL, callbackHelper.getDataCallback(future));
+
+        return future;
+    }
+
+    public CompletableFuture<MutableData> deserialise(byte[] serialisedData) {
+        final CompletableFuture<MutableData> future;
+        final CompletableFuture<Long> cbFuture;
+        future = new CompletableFuture<>();
+        cbFuture = new CompletableFuture<>();
+
+        mDataBinding.mdata_info_deserialise(appHandle, serialisedData, serialisedData.length, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
+
+        cbFuture.thenAccept(handle -> future.complete(new MutableData(appHandle, handle))).exceptionally(e -> {
+            future.completeExceptionally(e);
+            return null;
+        });
 
         return future;
     }

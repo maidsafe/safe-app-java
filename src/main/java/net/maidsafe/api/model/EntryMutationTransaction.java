@@ -32,11 +32,11 @@ public class EntryMutationTransaction {
         return future;
     }
 
-    public CompletableFuture<Void> delete(byte[] key) {
+    public CompletableFuture<Void> remove(byte[] key, long version) {
         final CompletableFuture<Void> future;
         future = new CompletableFuture<>();
 
-        lib.mdata_entry_actions_delete(appHandle, handle, key, key.length, Pointer.NULL, callbackHelper.getResultCallBack(future));
+        lib.mdata_entry_actions_delete(appHandle, handle, key, key.length, version,Pointer.NULL,callbackHelper.getResultCallBack(future));
 
         return future;
     }

@@ -22,7 +22,7 @@ public interface MutableDataBinding extends Library {
 
     void mdata_info_decrypt(Pointer appHandle, long mDataInfoHandle, byte[] input, long inputLen, Pointer userData, FfiCallback.DataCallback cb);
 
-    void mdata_info_extract_name_and_type_tag(Pointer appHandle, long mDataInfoHandle, Pointer userData, FfiCallback.PointerCallback cb);
+    void mdata_info_extract_name_and_type_tag(Pointer appHandle, long mDataInfoHandle, Pointer userData, FfiCallback.DataWithTypeTagCallback cb);
 
     void mdata_info_serialise(Pointer appHandle, long mDataInfoHandle, Pointer userData, FfiCallback.DataCallback cb);
 
@@ -62,7 +62,7 @@ public interface MutableDataBinding extends Library {
 
     void mdata_entry_actions_update(Pointer appHandle, long entryActionHandle, byte[] key, long keyLen, byte[] value, long valueLen, long version, Pointer userData, FfiCallback.ResultCallback cb);
 
-    void mdata_entry_actions_delete(Pointer appHandle, long entryActionHandle, byte[] key, long keyLen, Pointer userData, FfiCallback.ResultCallback cb);
+    void mdata_entry_actions_delete(Pointer appHandle, long entryActionHandle, byte[] key, long keyLen, long version, Pointer userData, FfiCallback.ResultCallback cb);
 
     void mdata_entry_actions_free(Pointer appHandle, long entryActionHandle, Pointer userData, FfiCallback.ResultCallback cb);
 

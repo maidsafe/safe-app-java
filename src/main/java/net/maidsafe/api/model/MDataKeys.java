@@ -26,7 +26,7 @@ public class MDataKeys {
         void completed();
     }
 
-    public CompletableFuture<Long> getKeysLength() {
+    public CompletableFuture<Long> getLength() {
         final CompletableFuture<Long> future;
         future = new CompletableFuture<>();
 
