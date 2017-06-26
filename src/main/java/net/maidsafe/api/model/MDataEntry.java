@@ -15,11 +15,11 @@ public class MDataEntry {
         this.dataLen = dataLen;
     }
 
-    public Pointer getKey() {
-        return key;
+    public byte[] getKey() {
+        return key.getByteArray(0, (int)this.keyLen);
     }
 
-    public Pointer getData() {
-        return data;
+    public byte[] getData() {
+        return data.getByteArray(0, (int)this.dataLen);
     }
 }

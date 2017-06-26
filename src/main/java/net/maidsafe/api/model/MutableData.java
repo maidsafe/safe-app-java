@@ -1,6 +1,7 @@
 package net.maidsafe.api.model;
 
 import com.sun.jna.Pointer;
+import net.maidsafe.api.NFS;
 import net.maidsafe.binding.BindingFactory;
 import net.maidsafe.binding.MutableDataBinding;
 import net.maidsafe.utils.CallbackHelper;
@@ -111,7 +112,10 @@ public class MutableData {
 
         mDataBinding.mdata_list_keys(appHandle, mDataInfoHandle, Pointer.NULL, callbackHelper.getHandleCallBack(cbFuture));
 
-        cbFuture.thenAccept(handle -> future.complete(new MDataKeys(appHandle, handle))).exceptionally(e -> {
+        cbFuture.thenAccept(handle -> {
+            future.complete(new MDataKeys(appHandle, handle));
+            System.out.println(handle);
+        }).exceptionally(e -> {
             future.completeExceptionally(e);
             return null;
         });
@@ -218,6 +222,7 @@ public class MutableData {
 
         return future;
     }
+
 
 
     @Override

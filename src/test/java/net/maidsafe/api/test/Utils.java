@@ -81,7 +81,6 @@ public class Utils {
         MDataPermissions mDataPermissions = mDataInfo.getNewPermissions().get();
         mDataPermissions.insertPermissionSet(signKey, mDataPermissionSet);
         mData.put(mDataPermissions, mDataEntries);
-
         return mData;
     }
 
@@ -105,6 +104,7 @@ public class Utils {
         MDataPermissions mDataPermissions = mDataInfo.getNewPermissions().get();
         mDataPermissions.insertPermissionSet(signKey, mDataPermissionSet);
         mData.put(mDataPermissions, mDataEntries);
+
 
         return mData;
     }
