@@ -85,24 +85,30 @@ public class CryptoTest extends TestCase {
 				.get();
 	}
 
-	public void testBoxEncryption() throws Exception {
-		SafeClient clientOne = Utils.getTestAppWithAccess();
-
-		final String input = "message " + Math.random();
-		final byte[] rawInput = input.getBytes();
-
-		EncryptKeyPair senderKeys = clientOne.crypto().generateEncryptKeyPair()
-				.get();
-		EncryptKeyPair receiverKeys = clientOne.crypto()
-				.generateEncryptKeyPair().get();
-
-		byte[] cipherText = receiverKeys.getPublicKey()
-				.encrypt(rawInput, senderKeys.getSecretKey()).get();
-		byte[] plainText = receiverKeys.getSecretKey()
-				.decrypt(cipherText, senderKeys.getPublicKey()).get();
-
-		assert (Arrays.equals(plainText, rawInput));
+	public void testGenerateNonce() throws Exception {
+		SafeClient client = Utils.getTestAppWithAccess();
+		byte[] nonce = client.crypto().generateNonce().get();
+		assertEquals(FfiConstant.NONCE, nonce.length);
 	}
+
+//	public void testBoxEncryption() throws Exception {
+//		SafeClient clientOne = Utils.getTestAppWithAccess();
+//
+//		final String input = "message " + Math.random();
+//		final byte[] rawInput = input.getBytes();
+//
+//		EncryptKeyPair senderKeys = clientOne.crypto().generateEncryptKeyPair()
+//				.get();
+//		EncryptKeyPair receiverKeys = clientOne.crypto()
+//				.generateEncryptKeyPair().get();
+//
+//		byte[] cipherText = receiverKeys.getPublicKey()
+//				.encrypt(rawInput, senderKeys.getSecretKey()).get();
+//		byte[] plainText = receiverKeys.getSecretKey()
+//				.decrypt(cipherText, senderKeys.getPublicKey()).get();
+//
+//		assert (Arrays.equals(plainText, rawInput));
+//	}
 
 //	public void testBoxSealedEncryption() throws Exception {
 //		SafeClient clientOne = Utils.getTestAppWithAccess();

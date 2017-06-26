@@ -1,6 +1,7 @@
 package net.maidsafe.api;
 
 import net.maidsafe.api.model.App;
+import net.maidsafe.api.model.MutableData;
 
 public class SafeClient {
 	private final App app;
@@ -8,6 +9,7 @@ public class SafeClient {
 	private final CipherOption cipherOption;
 	private final ImmutableData immutableData;
 	private final Container accessContainer;
+	private final MDataInfo mDataInfo;
 
 	public SafeClient(App app) {
 		this.app = app;
@@ -15,6 +17,7 @@ public class SafeClient {
 		cipherOption = new CipherOption(app);
 		immutableData = new ImmutableData(app);
 		accessContainer = new Container(app);
+		mDataInfo = new MDataInfo(app);
 	}
 
 	public boolean isAnonymous() {
@@ -36,5 +39,9 @@ public class SafeClient {
 	public Container container() {
 		return accessContainer;
 	}
+
+	public MDataInfo mDataInfo() {
+	    return mDataInfo;
+    }
 
 }

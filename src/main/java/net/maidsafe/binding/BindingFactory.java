@@ -2,6 +2,7 @@ package net.maidsafe.binding;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
+import net.maidsafe.api.NFS;
 
 public class BindingFactory implements Cloneable {
 
@@ -12,7 +13,9 @@ public class BindingFactory implements Cloneable {
 	private final CryptoBinding crypto;
 	private final CipherOptBinding cipherOpt;
 	private final ImmutableDataBinding immutableData;
+	private final MutableDataBinding mutableData;
 	private final AccessContainerBinding accessContainer;
+	private final NfsBinding nfs;
 
 	private BindingFactory() {
 		final String OS = System.getProperty("os.name").toLowerCase();
@@ -25,7 +28,9 @@ public class BindingFactory implements Cloneable {
 		crypto = Native.loadLibrary(CryptoBinding.class);
 		cipherOpt = Native.loadLibrary(CipherOptBinding.class);
 		immutableData = Native.loadLibrary(ImmutableDataBinding.class);
+		mutableData = Native.loadLibrary(MutableDataBinding.class);
 		accessContainer = Native.loadLibrary(AccessContainerBinding.class);
+		nfs = Native.loadLibrary(NfsBinding.class);
 	}
 
 	public static synchronized BindingFactory getInstance() {
@@ -54,6 +59,12 @@ public class BindingFactory implements Cloneable {
 	public AccessContainerBinding getAccessContainer() {
 		return accessContainer;
 	}
+
+	public MutableDataBinding getMutableData() {
+		return mutableData;
+	}
+
+	public NfsBinding getNfs(){ return  nfs; }
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
