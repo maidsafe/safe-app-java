@@ -1,0 +1,90 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: "com.github.johnrengelman.shadow"
+
+group 'net.maidsafe'
+version '0.1.0'
+
+dependencies {
+    compile 'net.maidsafe:api:0.1.0'
+    testCompile 'junit:junit:4.11'
+}
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+def platforms = ['linux', 'win', 'osx']
+def variants = ['mock', 'non-mock']
+def architectures = ['x86', 'x64']
+
+/**
+ * Create native folder in resources.
+ * The native library will be moved to the resource/native based on the platform
+ **/
+private static void prepareNativeDir(buildDirPath, platform, arch, isMock) {
+    File dir = new File("${buildDirPath}/src/main/resources/native")
+    if (!dir.exists()) {
+        dir.mkdirs()
+    } else {
+        String[] children = dir.list()
+        for (int i = 0; i < children.length; i++) {
+            boolean success = new File(dir, children[i]).delete()
+            if (!success) {
+                return
+            }
+        }
+    }
+    def libName = [
+            "linux": "sample.so",
+            "win"  : "sample.dll",
+            "osx"  : "sample.dylib"
+    ]
+    def srcPath = "$buildDirPath/src/main/resources/libs/$platform/${isMock ? 'mock' : 'non-mock'}/$arch/${libName.get(platform)}"
+    def srcStream = new File(srcPath).newDataInputStream()
+    def dstStream = new File("${buildDirPath}/src/main/resources/native/${libName.get(platform)}").newDataOutputStream()
+    dstStream << srcStream
+    srcStream.close()
+    dstStream.close()
+}
+
+tasks.addRule('Pattern: pack-<ID>') { String taskName ->
+    group 'build'
+    if (taskName.startsWith('pack')) {
+        task(taskName, dependsOn: build, type: ShadowJar) {
+            println "Packaging for ${name}"
+            def args = name.split('-')
+            String platform = args[1]
+            String arch = args[2]
+            boolean isMock = args[3] == "mock"
+            prepareNativeDir(project.projectDir, platform, arch, isMock)
+            configurations = [project.configurations.compile]
+            from sourceSets.main.output
+            baseName = "${project.name}${isMock ? '-mock' : ''}"
+            classifier = "${platform}-${arch}"
+            version = project.version
+            exclude(["libs"])
+        }
+    }
+}
+
+task pack {
+    dependsOn << [platforms, architectures, variants].combinations().collect { "pack-${it[0]}-${it[1]}-${it[2]}" }
+    doLast {
+        File defaultJar = new File("${project.buildDir}/libs/safe-app-${project.version}.jar")
+        if (defaultJar.exists()) {
+            defaultJar.delete()
+        }
+    }
+}

@@ -1,0 +1,7 @@
+include ':app'
+
+includeBuild('../api'){
+    dependencySubstitution {
+        substitute module('net.maidsafe:api')
+    }
+}

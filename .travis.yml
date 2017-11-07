@@ -1,6 +1,0 @@
-matrix:
-  include:
-   - os: linux
-   - os: osx
-
-language: java

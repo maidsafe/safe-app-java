@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+group 'net.maidsafe'
+version '0.1.0'
+
+dependencies {
+	testCompile 'junit:junit:4.11'
+}
+
+repositories {
+	mavenCentral()
+}

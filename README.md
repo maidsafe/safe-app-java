@@ -1,29 +1,20 @@
-# safe_app_java
+## safe_app_java
 
-**Maintainer:** Krishna Kumar (krishna.kumar@maidsafe.net)
+**Maintainer:** Krishna Kumar (krishna.kuamr@maidsafe.net)
 
-safe_app java library.
-
-## Build instruction
+safe_app_java library for generating JAR and AAR packages.
 
 ### Prerequisites
 
 safe_app_java is compatible with **Java 8**.
 
-Maven must be [installed and configured](https://maven.apache.org/install.html).
+### Composite Build Setup
 
-### Building JAR
+Repository is set up based on [Composite Build Setup](https://blog.gradle.org/introducing-composite-builds) of Gradle.
 
-Execute, `mvn clean install` for generating the JAR. The JAR will be packaged with all its dependencies.
+[api](/api) is a shared project for AAR and JAR builds. Both [safe-app-java](safe-app-java) and [safe-app-android](safe-app-android) include api project in their build dependency.
 
-
-### For Development
-
-`mvn clean test` will always download the native libraries based on profile from the configured location in the POM file. 
-
-For running the test cases while development, can skip the download of libraries each time by passing the `wagon.skip` flag.
-`mvn clean test -Dwagon.skip`
-
+Refer the README of [safe-app-java](safe-app-java) and [safe-app-android](safe-app-android) for corresponding build instructions.
 
 # License
 
@@ -40,5 +31,3 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 work by you, as defined in the MaidSafe Contributor Agreement, version 1.1 ([CONTRIBUTOR]
 (CONTRIBUTOR)), shall be dual licensed as above, and you agree to be bound by the terms of the
 MaidSafe Contributor Agreement, version 1.1.
-
-
