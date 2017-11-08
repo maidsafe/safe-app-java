@@ -18,7 +18,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
         debug {
             debuggable true
         }
@@ -29,9 +28,6 @@ android {
     productFlavors {
         mock {
             dimension "app"
-            ndk {
-                abiFilter "armeabi-v7a"
-            }
         }
         'non-mock' {
             dimension "app"
