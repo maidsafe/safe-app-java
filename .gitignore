@@ -1,2 +1,4 @@
 .gradle
 .idea
+/safe-app/libs
+/safe-app/.tempDownloads

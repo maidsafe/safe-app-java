@@ -8,7 +8,7 @@ Java 8 should be installed and JAVA_HOME must be set.
 
 Execute the downloader script to download the native safe-app libraries.
 ```
-$safe-app> gradlew -b downloader.gradle
+$safe-app> gradlew download-libs
 ```
 
 Execute `pack` command to get the JAR files for all possible combinations

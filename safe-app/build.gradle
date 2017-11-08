@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import de.undercouch.gradle.tasks.download.Download;
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -22,19 +23,28 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+        classpath 'de.undercouch:gradle-download-task:3.2.0'
     }
 }
 
-def platforms = ['linux', 'win', 'osx']
-def variants = ['mock', 'non-mock']
-def architectures = ['x86', 'x64']
+
+def nativeLibsVersion = "0dacb37"
+def tempDownloadDir =  "${projectDir}/.tempDownloads"
+
+
+def getCombinations() {
+    def platforms = ['linux', 'win', 'osx']
+    def variants = ['mock', 'non-mock']
+    def architectures = ['x86', 'x64']
+    [platforms, architectures, variants].combinations().findAll { !(it[0] == 'osx' && it[1] == 'x86') }
+}
 
 /**
  * Create native folder in resources.
  * The native library will be moved to the resource/native based on the platform
  **/
-private static void prepareNativeDir(buildDirPath, platform, arch, isMock) {
-    File dir = new File("${buildDirPath}/src/main/resources/native")
+def prepareNativeDir(platform, arch, isMock) {
+    File dir = new File("${projectDir}/src/main/resources/native")
     if (!dir.exists()) {
         dir.mkdirs()
     } else {
@@ -47,13 +57,13 @@ private static void prepareNativeDir(buildDirPath, platform, arch, isMock) {
         }
     }
     def libName = [
-            "linux": "sample.so",
-            "win"  : "sample.dll",
-            "osx"  : "sample.dylib"
+            "linux": "libsafe_app.so",
+            "win"  : "safe_app.dll",
+            "osx"  : "libsafe_app.dylib"
     ]
-    def srcPath = "$buildDirPath/src/main/resources/libs/$platform/${isMock ? 'mock' : 'non-mock'}/$arch/${libName.get(platform)}"
+    def srcPath = "${projectDir}/libs/$platform/${isMock ? 'mock' : 'non-mock'}/$arch/${libName.get(platform)}"
     def srcStream = new File(srcPath).newDataInputStream()
-    def dstStream = new File("${buildDirPath}/src/main/resources/native/${libName.get(platform)}").newDataOutputStream()
+    def dstStream = new File("${projectDir}/src/main/resources/native/${libName.get(platform)}").newDataOutputStream()
     dstStream << srcStream
     srcStream.close()
     dstStream.close()
@@ -63,28 +73,66 @@ tasks.addRule('Pattern: pack-<ID>') { String taskName ->
     group 'build'
     if (taskName.startsWith('pack')) {
         task(taskName, dependsOn: build, type: ShadowJar) {
-            println "Packaging for ${name}"
             def args = name.split('-')
             String platform = args[1]
             String arch = args[2]
             boolean isMock = args[3] == "mock"
-            prepareNativeDir(project.projectDir, platform, arch, isMock)
+            prepareNativeDir(platform, arch, isMock)
             configurations = [project.configurations.compile]
             from sourceSets.main.output
             baseName = "${project.name}${isMock ? '-mock' : ''}"
             classifier = "${platform}-${arch}"
             version = project.version
-            exclude(["libs"])
+            doLast {
+                println "Completed packaging ${name}"
+            }
         }
     }
 }
 
-task pack {
-    dependsOn << [platforms, architectures, variants].combinations().collect { "pack-${it[0]}-${it[1]}-${it[2]}" }
+task ('pack') {
+    dependsOn << getCombinations().collect { "pack-${it[0]}-${it[1]}-${it[2]}" }
     doLast {
+        println "Deleting default Jar..."
         File defaultJar = new File("${project.buildDir}/libs/safe-app-${project.version}.jar")
         if (defaultJar.exists()) {
             defaultJar.delete()
         }
     }
+}
+
+task ("download", type: Download) {
+    File dir = new File(tempDownloadDir)
+    if (dir.exists()) {
+        assert dir.deleteDir()
+    }
+    println "Will take a while to download all the native library versions"
+    def endPoints = getCombinations().collect {
+        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
+    }
+    src(endPoints)
+    dest tempDownloadDir
+}
+
+
+tasks.addRule('Pattern: unzip-<ID>') { String taskName ->
+    if (taskName.startsWith('unzip')) {
+        task(taskName, type: Copy) {
+            group 'build'
+
+            def args = name.split('-')
+            String platform = args[1]
+            String arch = args[2]
+            boolean isMock = args[3] == "mock"
+            from zipTree("${tempDownloadDir}/safe_app-${isMock ? 'mock-' : ''}${nativeLibsVersion}-${platform}-${arch}.zip")
+            into "${projectDir}/libs/${platform}/${isMock ? 'mock' : 'non-mock'}/${arch}"
+        }
+    }
+}
+
+task ("download-libs") {
+    dependsOn << [
+        'download',
+        getCombinations().collect { "unzip-${it[0]}-${it[1]}-${it[2]}" }
+    ]
 }
