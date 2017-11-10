@@ -6,15 +6,55 @@ safe_app_java library for generating JAR and AAR packages.
 
 ### Prerequisites
 
-safe_app_java is compatible with **Java 8**.
+safe_app_java requires
 
-### Composite Build Setup
+ -  Gradle
+ -  Java 8
+ -  Android SDK (target SDK Version 26)
 
-Repository is set up based on [Composite Build Setup](https://blog.gradle.org/introducing-composite-builds) of Gradle.
+### Build Instructions
 
-[api](/api) is a shared project for AAR and JAR builds. Both [safe-app](safe-app) and [safe-app-android](safe-app-android) include api project in their build dependency.
+safe_app_java has sub projects for generating JAR and AAR files for exposing [safe-app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) API
 
-Refer the README of [safe-app](safe-app) and [safe-app-android](safe-app-android) for corresponding build instructions.
+#### safe-app
+
+[safe-app](safe-app) project builds platform specific JAR files for linux, osx and windows (mock and non-mock).
+
+#####  Build Commands
+
+Download the native safe-app libraries.
+```
+gradlew :safe-app:download-libs
+```
+Execute `pack` task to get the JAR files for all possible combinations
+```
+gradlew :safe-app:pack
+```
+Run pack-<platform>-<arch>-<mock/non-mock> command to build a specific target using,
+```
+gradlew :safe-app:pack-<platform>-<arch>-<mock/non-mock>
+```
+For example,
+```
+gradlew :safe-app:pack-win-x64-mock
+gradlew :safe-app:pack-win-x64-non-mock
+```
+
+The JAR files would be placed in `safe-app/build/libs` if the build is successful
+
+### safe-app-android
+
+[safe-app-android](safe-app-android) project builds platform specific AAR files (mock and non-mock).
+
+#####  Build Commands
+
+Make sure ANDROID_HOME environment variable is set.
+
+Execute task
+```
+gradlew :safe-app-android:build
+```
+
 
 # License
 

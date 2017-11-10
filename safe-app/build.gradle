@@ -9,8 +9,8 @@ group 'net.maidsafe'
 version '0.1.0'
 
 dependencies {
-    compile 'net.maidsafe:api:0.1.0'
-    testCompile 'junit:junit:4.11'
+    implementation project(':api')
+    testImplementation 'junit:junit:4.12'
 }
 
 repositories {

@@ -1,4 +1,13 @@
-.gradle
-.idea
-/safe-app/libs
-/safe-app/.tempDownloads
+local.properties
+.gradle/
+api/build
+build/
+safe-app/build
+safe-app/libs
+safe-app-android/build
+.DS_Store
+.idea/
+*.iml
+api/*.iml
+safe-app/*.iml
+safe-app-android/*.iml

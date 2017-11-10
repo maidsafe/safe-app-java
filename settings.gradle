@@ -1,0 +1,1 @@
+include ':safe-app-android', ':safe-app', ':api'
