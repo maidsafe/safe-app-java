@@ -24,12 +24,12 @@ script:
 -  chmod +x gradlew
 - ./gradlew assemble
 - cd api
-- gradle check
-- gradle test
+- ./gradlew check
+- ./gradlew test
 - cd ..
 - cd safe-app
-- gradle check
-- gradle test 
+- ./gradlew check
+- ./gradlew test 
 - cd ..
 - cd safe-app-android
 - chmod +x gradlew
