@@ -1,0 +1,10 @@
+build: false
+ 
+test_script:
+ - gradlew.bat :api:check
+ - gradlew.bat :safe-app:check
+ 
+
+cache:
+  - .gradle
+  - C:\Users\appveyor\.gradle
