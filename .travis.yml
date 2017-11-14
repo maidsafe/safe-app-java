@@ -1,5 +1,4 @@
 language: java
-
 matrix:
   include:
     - os: linux
@@ -16,11 +15,6 @@ matrix:
       before_install:
       - brew install gradle
       - chmod +x gradlew
-      
-      
-     
-        
-
 script:
 - chmod +x gradlew
 - ./gradlew :api:check
