@@ -1,0 +1,37 @@
+language: java
+
+matrix:
+  include:
+    - os: linux
+      language: android
+      jdk: oraclejdk8
+      android:
+        components:
+        - tools
+        - android-26
+        - platform-tools
+        - build-tools-26.0.2
+    - os: osx
+      osx_image: xcode9.1
+      before_install:
+      - brew install gradle
+      
+      
+     
+        
+
+script:
+- cd api
+- gradle check
+- gradle test
+- cd ..
+- cd safe-app
+- gradle check
+- gradle test 
+- cd ..
+- cd safe-app-android
+- chmod +x gradlew
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew test; fi
+      
+ 
+     
