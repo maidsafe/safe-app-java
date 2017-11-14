@@ -23,7 +23,6 @@ matrix:
 
 script:
 - chmod +x gradlew
-- ./gradlew assemble
 - ./gradlew :api:check
 - ./gradlew :safe-app:check
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew :safe-app-android:check; fi
