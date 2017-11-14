@@ -23,17 +23,10 @@ matrix:
 script:
 -  chmod +x gradlew
 - ./gradlew assemble
-- cd api
-- gradlew check
-- gradlew test
-- cd ..
-- cd safe-app
-- gradlew check
-- gradlew test 
-- cd ..
-- cd safe-app-android
-- chmod +x gradlew
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew test; fi
+- ./gradlew check
+- ./gradlew :api:check
+- ./gradlew :safe-app:check
+- ./gradlew :safe-app-android:check
       
  
      
