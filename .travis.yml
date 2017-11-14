@@ -15,7 +15,6 @@ matrix:
       osx_image: xcode9.1
       before_install:
       - brew install gradle
-      - chmod +x gradlew
       
       
      
@@ -26,7 +25,8 @@ script:
 - ./gradlew assemble
 - ./gradlew :api:check
 - ./gradlew :safe-app:check
-- ./gradlew :safe-app-android:check
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew :safe-app-android:check; fi
+
       
  
      
