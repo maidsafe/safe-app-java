@@ -16,7 +16,7 @@ matrix:
       - brew install gradle
       - chmod +x gradlew
 script:
-- chmod +x gradlew
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then chmod +x gradlew; fi
 - ./gradlew :api:check
 - ./gradlew :safe-app:check
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew :safe-app-android:check; fi
