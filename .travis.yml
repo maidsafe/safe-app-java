@@ -12,11 +12,8 @@ matrix:
         - build-tools-26.0.2
     - os: osx
       osx_image: xcode9.1
-      before_install:
-      - brew install gradle
-      - chmod +x gradlew
 script:
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then chmod +x gradlew; fi
+- chmod +x gradlew
 - ./gradlew :api:check
 - ./gradlew :safe-app:check
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew :safe-app-android:check; fi
