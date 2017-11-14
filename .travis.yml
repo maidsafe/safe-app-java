@@ -22,7 +22,7 @@ matrix:
 
 script:
 - cd api
-- gradle check
+- gradle.bat check
 - gradle test
 - cd ..
 - cd safe-app
