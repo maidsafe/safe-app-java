@@ -22,6 +22,7 @@ matrix:
         
 
 script:
+- chmod +x gradlew
 - ./gradlew assemble
 - ./gradlew :api:check
 - ./gradlew :safe-app:check
