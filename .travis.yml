@@ -21,6 +21,7 @@ matrix:
         
 
 script:
+-  chmod +x gradlew
 - ./gradlew assemble
 - cd api
 - gradle check
