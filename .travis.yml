@@ -21,8 +21,9 @@ matrix:
         
 
 script:
+- ./gradlew assemble
 - cd api
-- gradle.bat check
+- gradle check
 - gradle test
 - cd ..
 - cd safe-app
