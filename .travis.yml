@@ -12,6 +12,10 @@ matrix:
         - build-tools-26.0.2
     - os: osx
       osx_image: xcode9.1
+      before_install:
+      - chmod +x gradlew
+      
+   
 script:
 - chmod +x gradlew
 - ./gradlew :api:check
