@@ -13,15 +13,11 @@ matrix:
     - os: osx
       osx_image: xcode9.1
       before_install:
-      - export ANDROID_HOME=$HOME/.android
-      - mkdir -p $HOME/.android    
-      - mkdir "$ANDROID_HOME/licenses" || true
-      - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > 
-          "$ANDROID_HOME/licenses/android-sdk-license"
-      - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-      - chmod +x gradlew
+      - ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 \
+        "tools" "platform-tools" "build-tools;26.0.0-rc2" "platforms;android-O" \
+        "extras;google;google_play_services"
       
-   
+
 script:
 - chmod +x gradlew
 - ./gradlew :api:check
@@ -30,5 +26,12 @@ script:
 
 
 
- 
+ before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
      
