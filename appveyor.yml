@@ -11,7 +11,7 @@ init:
   - 7z x android-sdk_r24.4.1-windows.zip > nul
   - cd C:\projects\android-gradle-java-app-template
   
- install:
+install:
   - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t tools
   - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t platform-tools
   - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t build-tools-24.0.2
