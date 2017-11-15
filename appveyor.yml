@@ -4,6 +4,9 @@ image:
 environment:
   ANDROID_HOME: "C:\\android"
   JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
+  
+  
+clone_folder: "C:\\projects\\safe_app_java"
  
 init:
   - mkdir "%ANDROID_HOME%
