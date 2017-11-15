@@ -13,6 +13,9 @@ matrix:
     - os: osx
       osx_image: xcode9.1
       before_install:
+      - ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 \
+  "tools" "platform-tools" "build-tools;26.0.2-rc2" "platforms;android-O" \
+  "extras;google;google_play_services"
       - chmod +x gradlew
       
    
