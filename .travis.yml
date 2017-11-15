@@ -13,6 +13,7 @@ matrix:
     - os: osx
       osx_image: xcode9.1
       before_install:
+      - chmod +x gradlew
       - export ANDROID_HOME=$HOME/.android
       - mkdir -p $HOME/.android    
       - mkdir "$ANDROID_HOME/licenses"
