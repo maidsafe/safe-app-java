@@ -1,5 +1,7 @@
-build: false
-
+build : false
+environment:
+  ANDROID_HOME: "C:\\android-sdk-windows"
+  JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
 init:
   - cd \
   - appveyor DownloadFile http://dl.google.com/android/android-sdk_r24.4.1-windows.zip
