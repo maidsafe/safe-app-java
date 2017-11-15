@@ -1,0 +1,24 @@
+language: java
+matrix:
+  include:
+    - os: linux
+      language: android
+      jdk: oraclejdk8 
+      android:
+        components:
+        - tools
+        - android-26
+        - platform-tools
+        - build-tools-26.0.2
+    - os: osx
+      osx_image: xcode9.1
+      before_install:
+      - chmod +x gradlew
+      - export ANDROID_HOME=$HOME/.android
+      - mkdir -p $HOME/.android    
+      - mkdir -p $ANDROID_HOME/licenses
+      - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+      - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
+script:
+- chmod +x gradlew
+- ./gradlew check   
