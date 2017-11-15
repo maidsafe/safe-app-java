@@ -1,3 +1,4 @@
+build : false
 environment:
   ANDROID_HOME: "C:\\android-sdk-windows"
   JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
@@ -6,8 +7,8 @@ clone_folder: "C:\\projects\\android-gradle-java-app-template"
 
 init:
   - cd \
-  - appveyor DownloadFile http://dl.google.com/android/android-sdk_r24.4.1-windows.zip
-  - 7z x android-sdk_r24.4.1-windows.zip > nul
+  - appveyor DownloadFile http://www.devfiles.co/download/H1r8zwgf/sdk-tools-windows-3859397.zip
+  - 7z x sdk-tools-windows-3859397.zip > nul
   - cd C:\projects\android-gradle-java-app-template
 
 install:
