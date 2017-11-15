@@ -7,9 +7,17 @@ clone_folder: "C:\\projects\\android-gradle-java-app-template"
 
 init:
   - cd \
-  - appveyor DownloadFile https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip
-  - 7z x sdk-tools-windows-3859397.zip > nul
+  - appveyor DownloadFile http://dl.google.com/android/android-sdk_r24.4.1-windows.zip
+  - 7z x android-sdk_r24.4.1-windows.zip > nul
   - cd C:\projects\android-gradle-java-app-template
+  
+ install:
+  - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t tools
+  - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t platform-tools
+  - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t build-tools-24.0.2
+  - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t android-24
+  - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t extra-google-m2repository
+  - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t extra-android-m2repository
 
  
 test_script:
