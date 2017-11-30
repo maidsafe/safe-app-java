@@ -47,7 +47,7 @@ buildscript {
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:3.1.0-alpha02'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'de.undercouch:gradle-download-task:3.2.0'
@@ -66,10 +66,9 @@ dependencies {
 def nativeLibsVersion = "v0.4.0"
 def tempLibDir =  "${projectDir}/.libtempDownloads"
 
-task ("download", type: Download) {
+task ("downloadNativeLibs", type: Download) {
     File dir = new File(tempLibDir)
     if (!dir.exists()) {
-       // assert dir.deleteDir()
         dir.mkdir()
     }
     def endPoints = "https://s3.eu-west-2.amazonaws.com/safe-mobile/${nativeLibsVersion}.zip"
@@ -77,21 +76,15 @@ task ("download", type: Download) {
     dest tempLibDir
 }
 
-task ("unzip", type: Copy) {
-    dependsOn << ['download']
-
+task ("unzipNativeLibs", type: Copy) {
+    dependsOn << ['downloadNativeLibs']
     from zipTree("${tempLibDir}/${nativeLibsVersion}.zip")
     into tempLibDir
-
     doLast {
-
-        println "Copied packaging"
-
         copy{
             from tempLibDir+"/android/lib/mock/"
             into "${projectDir}/src/mock/jniLibs"
         }
-
         copy{
             from tempLibDir+"/android/lib/non-mock/"
             into "${projectDir}/src/non-mock/jniLibs"
@@ -99,13 +92,13 @@ task ("unzip", type: Copy) {
     }
 }
 
-task ("delete", type: Delete) {
-    dependsOn << ['unzip']
+task ("deleteDownloadedLib", type: Delete) {
+    dependsOn << ['unzipNativeLibs']
+    delete tempLibDir
 }
 
-
-task ("download-libs") {
-    dependsOn << ['delete']
+task ("download-Nativelibs") {
+    dependsOn << ['deleteDownloadedLib']
 
 }
 

@@ -20,8 +20,6 @@ buildscript {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
         classpath 'de.undercouch:gradle-download-task:3.2.0'
     }
-
-
 }
 def nativeLibsVersion = "0dacb37"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"
@@ -51,8 +49,6 @@ tasks.addRule('Pattern: delete-<ID>') { String taskName ->
         }
     }
 }
-
-
 tasks.addRule('Pattern: pack-<ID>') { String taskName ->
     if (taskName.startsWith('pack')) {
         task(taskName, type: ShadowJar) {
@@ -60,7 +56,6 @@ tasks.addRule('Pattern: pack-<ID>') { String taskName ->
             String platform = args[1]
             String arch = args[2]
             boolean isMock = args[3] == "mock"
-
             dependsOn << ["${name.replace('pack', 'NativeLibs')}","build"]
             from sourceSets.main.output
             from sourceSets.main.resources
@@ -86,7 +81,7 @@ task ('pack') {
         }
     }
 }
-task ("download", type: Download) {
+task ("downloadNativeLibs", type: Download) {
     File dir = new File(tempDownloadDir)
     if (dir.exists()) {
         assert dir.deleteDir()
@@ -109,9 +104,6 @@ tasks.addRule('Pattern: unzip-<ID>') { String taskName ->
         }
     }
 }
-task ("download-libs") {
-    dependsOn << [
-            'download',
-            getCombinations().collect { "unzip-${it[0]}-${it[1]}-${it[2]}" }
-    ]
+task ("download-Nativelibs") {
+    dependsOn << ['downloadNativeLibs',getCombinations().collect { "unzip-${it[0]}-${it[1]}-${it[2]}" }]
 }

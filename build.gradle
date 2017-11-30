@@ -10,6 +10,6 @@ task delete(type: Delete) {
     delete rootProject.buildDir
 }
 
-task Download(dependsOn: ['safe-app:download-libs', 'safe-app-android:download-libs']) {
+task Download(dependsOn: ['safe-app:download-Nativelibs', 'safe-app-android:download-Nativelibs']) {
     // configuration
 }
