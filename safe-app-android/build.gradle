@@ -1,5 +1,5 @@
+import de.undercouch.gradle.tasks.download.Download;
 apply plugin: 'com.android.library'
-
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -47,18 +47,66 @@ buildscript {
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.1.0-alpha02'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'de.undercouch:gradle-download-task:3.2.0'
     }
 }
 
 dependencies {
-    implementation project(':api')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation project(':api')
 
 }
+def nativeLibsVersion = "v0.4.0"
+def tempLibDir =  "${projectDir}/.libtempDownloads"
+
+task ("download", type: Download) {
+    File dir = new File(tempLibDir)
+    if (!dir.exists()) {
+       // assert dir.deleteDir()
+        dir.mkdir()
+    }
+    def endPoints = "https://s3.eu-west-2.amazonaws.com/safe-mobile/${nativeLibsVersion}.zip"
+    src(endPoints)
+    dest tempLibDir
+}
+
+task ("unzip", type: Copy) {
+    dependsOn << ['download']
+
+    from zipTree("${tempLibDir}/${nativeLibsVersion}.zip")
+    into tempLibDir
+
+    doLast {
+
+        println "Copied packaging"
+
+        copy{
+            from tempLibDir+"/android/lib/mock/"
+            into "${projectDir}/src/mock/jniLibs"
+        }
+
+        copy{
+            from tempLibDir+"/android/lib/non-mock/"
+            into "${projectDir}/src/non-mock/jniLibs"
+        }
+    }
+}
+
+task ("delete", type: Delete) {
+    dependsOn << ['unzip']
+}
+
+
+task ("download-libs") {
+    dependsOn << ['delete']
+
+}
+
+
