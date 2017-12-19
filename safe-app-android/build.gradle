@@ -1,9 +1,11 @@
-import de.undercouch.gradle.tasks.download.Download;
+import de.undercouch.gradle.tasks.download.Download
+
 apply plugin: 'com.android.library'
+
 android {
     compileSdkVersion 26
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 26
         versionCode 1
         versionName "0.1.0"
@@ -47,7 +49,7 @@ buildscript {
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'de.undercouch:gradle-download-task:3.2.0'
@@ -61,10 +63,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':api')
-
 }
+
 def nativeLibsVersion = "v0.4.0"
-def tempLibDir =  "${projectDir}/.libtempDownloads"
+def tempLibDir =  "${projectDir}/.temp_downloads"
 
 task ("downloadNativeLibs", type: Download) {
     File dir = new File(tempLibDir)
@@ -92,13 +94,7 @@ task ("unzipNativeLibs", type: Copy) {
     }
 }
 
-task ("deleteDownloadedLib", type: Delete) {
+task ("download-nativelibs", type: Delete) {
     dependsOn << ['unzipNativeLibs']
     delete tempLibDir
 }
-
-task ("download-Nativelibs") {
-    dependsOn << ['deleteDownloadedLib']
-}
-
-

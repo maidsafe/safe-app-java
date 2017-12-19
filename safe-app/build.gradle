@@ -1,8 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import de.undercouch.gradle.tasks.download.Download;
+import de.undercouch.gradle.tasks.download.Download
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'java-library'
 apply plugin: 'idea'
 apply plugin: "com.github.johnrengelman.shadow"
+
 group 'net.maidsafe'
 version '0.1.0'
 dependencies {
@@ -21,12 +24,27 @@ buildscript {
         classpath 'de.undercouch:gradle-download-task:3.2.0'
     }
 }
-def nativeLibsVersion = "0dacb37"
+
+task copyTestResources(type: Copy) {
+    def platform = "linux";
+    def x64Versions = ["x86_64", "amd64", "x64", "x86-64","ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
+    def arch = x64Versions.find { it == "x64" } == null ? "x86" : "x64"
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        platform = "win"
+    } else if (Os.isFamily(Os.FAMILY_MAC)) {
+        platform = "osx"
+    }
+    from "${projectDir}/libs/${platform}/mock/${arch}"
+    into "${buildDir}/classes/java/test/native"
+}
+processTestResources.dependsOn copyTestResources
+
+def nativeLibsVersion = "nikita-c789f8b"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"
 def getCombinations() {
     def platforms = ['linux', 'win', 'osx']
-    def variants = ['mock', 'non-mock']
-    def architectures = ['x86', 'x64']
+    def variants = ['mock'] // ['mock', 'non-mock']
+    def architectures = ['x64'] // ['x86', 'x64']
     [platforms, architectures, variants].combinations().findAll { !(it[0] == 'osx' && it[1] == 'x86') }
 }
 tasks.addRule('Pattern: NativeLibs-<ID>') { String taskName ->
@@ -46,6 +64,7 @@ tasks.addRule('Pattern: delete-<ID>') { String taskName ->
         task(taskName, type: Delete) {
             delete "${projectDir}/src/main/resources/native/"
             delete "${projectDir}/build/resources/main/native/"
+            delete "${projectDir}/build/classes/java/test/native"
         }
     }
 }
@@ -87,7 +106,8 @@ task ("downloadNativeLibs", type: Download) {
         assert dir.deleteDir()
     }
     def endPoints = getCombinations().collect {
-        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
+//        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
+        "https://github.com/krishnaIndia/safe_core/releases/download/nikita-c789f8b/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
     }
     src(endPoints)
     dest tempDownloadDir
@@ -104,6 +124,6 @@ tasks.addRule('Pattern: unzip-<ID>') { String taskName ->
         }
     }
 }
-task ("download-Nativelibs") {
-    dependsOn << ['downloadNativeLibs',getCombinations().collect { "unzip-${it[0]}-${it[1]}-${it[2]}" }]
+task ("download-nativelibs") {
+    dependsOn << ['downloadNativeLibs', getCombinations().collect { "unzip-${it[0]}-${it[1]}-${it[2]}" }]
 }

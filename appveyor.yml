@@ -20,4 +20,5 @@ install:
   - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | cmd /c 'C:\android\tools\bin\sdkmanager.bat 2>&1' --update
 build: off
 test_script:
+  - gradlew.bat download-nativelibs
   - gradlew.bat check

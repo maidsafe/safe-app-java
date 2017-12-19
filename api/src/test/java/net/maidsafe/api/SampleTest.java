@@ -6,7 +6,6 @@ import org.junit.Test;
 public class SampleTest {
     @Test
     public void addTest() {
-        SafeApi api = new SafeApi();
-        Assert.assertEquals(10, api.add(5,5));
+        Assert.assertEquals(10, 5 + 5);
     }
 }
