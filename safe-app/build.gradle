@@ -8,8 +8,11 @@ apply plugin: "com.github.johnrengelman.shadow"
 
 group 'net.maidsafe'
 version '0.1.0'
+
 dependencies {
+    implementation project(':lib')
     implementation project(':api')
+    implementation project(':mock')
     testImplementation 'junit:junit:4.12'
 }
 repositories {
@@ -26,7 +29,7 @@ buildscript {
 }
 
 task copyTestResources(type: Copy) {
-    def platform = "linux";
+    def platform = "linux"
     def x64Versions = ["x86_64", "amd64", "x64", "x86-64","ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
     def arch = x64Versions.find { it == "x64" } == null ? "x86" : "x64"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
@@ -41,8 +44,9 @@ processTestResources.dependsOn copyTestResources
 
 def nativeLibsVersion = "nikita-c789f8b"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"
-def getCombinations() {
-    def platforms = ['linux', 'win', 'osx']
+
+static def getCombinations() {
+    def platforms = ['win', 'osx', 'linux']
     def variants = ['mock'] // ['mock', 'non-mock']
     def architectures = ['x64'] // ['x86', 'x64']
     [platforms, architectures, variants].combinations().findAll { !(it[0] == 'osx' && it[1] == 'x86') }
@@ -75,11 +79,17 @@ tasks.addRule('Pattern: pack-<ID>') { String taskName ->
             String platform = args[1]
             String arch = args[2]
             boolean isMock = args[3] == "mock"
-            dependsOn << ["${name.replace('pack', 'NativeLibs')}","build"]
+            dependsOn << ["${name.replace('pack', 'NativeLibs')}", "build"]
             from sourceSets.main.output
             from sourceSets.main.resources
             from project(':api').sourceSets.main.output
             from project(':api').sourceSets.main.resources
+            from project(':lib').sourceSets.main.output
+            from project(':lib').sourceSets.main.resources
+            if (isMock) {
+                from project(':mock').sourceSets.main.output
+                from project(':mock').sourceSets.main.resources
+            }
             baseName = "${project.name}${isMock ? '-mock' : ''}"
             classifier = "${platform}-${arch}"
             version = project.version

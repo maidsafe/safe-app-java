@@ -1,9 +1,5 @@
 package net.maidsafe.api;
 
-public class Session extends SafeApi {
-
-    public Session() {
-        super();
-    }
+public class Session extends BaseSession {
 
 }

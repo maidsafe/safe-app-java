@@ -1,1 +1,1 @@
-include ':safe-app-android', ':safe-app', ':api'
+include ':safe-app-android', ':safe-app', ':api', ':mock', ':lib'

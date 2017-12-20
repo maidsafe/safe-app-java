@@ -1,7 +1,8 @@
 package net.maidsafe.api;
 
-import net.maidsafe.model.EncryptKeyPair;
-import net.maidsafe.model.SignKeyPair;
+import net.maidsafe.api.model.EncryptKeyPair;
+import net.maidsafe.api.model.NativeHandle;
+import net.maidsafe.api.model.SignKeyPair;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
@@ -70,9 +71,9 @@ public class Crypto {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle), getSecretEncKeyHandle(secEncHandle)));
+                EncryptKeyPair keyPair = new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle), getSecretEncKeyHandle(secEncHandle));
+                binder.onResult(keyPair);
             });
-            binder.onResult(null);
         }));
     }
 

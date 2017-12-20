@@ -1,5 +1,6 @@
 package net.maidsafe.api;
 
+import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;

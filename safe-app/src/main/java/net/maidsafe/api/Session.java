@@ -1,14 +1,11 @@
 package net.maidsafe.api;
 
-import net.maidsafe.api.utils.OSInfo;
+import net.maidsafe.utils.OSInfo;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.rmi.server.ExportException;
 
 public class Session extends BaseSession {
 

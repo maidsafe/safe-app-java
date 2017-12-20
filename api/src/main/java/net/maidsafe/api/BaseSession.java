@@ -1,15 +1,16 @@
 package net.maidsafe.api;
 
-import net.maidsafe.listener.OnDisconnected;
-import net.maidsafe.model.App;
-import net.maidsafe.model.AuthResponse;
-import net.maidsafe.model.ContainerResponse;
-import net.maidsafe.model.DecodeError;
-import net.maidsafe.model.DecodeResult;
-import net.maidsafe.model.Request;
-import net.maidsafe.model.RevokedResponse;
-import net.maidsafe.model.ShareMutableDataResponse;
-import net.maidsafe.model.UnregisteredClientResponse;
+import net.maidsafe.api.listener.OnDisconnected;
+import net.maidsafe.api.model.App;
+import net.maidsafe.api.model.AuthResponse;
+import net.maidsafe.api.model.ContainerResponse;
+import net.maidsafe.api.model.DecodeError;
+import net.maidsafe.api.model.DecodeResult;
+import net.maidsafe.api.model.NativeHandle;
+import net.maidsafe.api.model.Request;
+import net.maidsafe.api.model.RevokedResponse;
+import net.maidsafe.api.model.ShareMutableDataResponse;
+import net.maidsafe.api.model.UnregisteredClientResponse;
 import net.maidsafe.safe_app.AccountInfo;
 import net.maidsafe.safe_app.AuthGranted;
 import net.maidsafe.safe_app.AuthReq;
@@ -20,7 +21,7 @@ import net.maidsafe.safe_app.CallbackResultApp;
 import net.maidsafe.safe_app.CallbackResultInt;
 import net.maidsafe.safe_app.CallbackResultIntString;
 import net.maidsafe.safe_app.CallbackVoid;
-import net.maidsafe.safe_app.ContainerPermission;
+import net.maidsafe.safe_app.ContainerPermissions;
 import net.maidsafe.safe_app.ContainersReq;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.NativeBindings;
@@ -36,17 +37,15 @@ import java.util.concurrent.Future;
 public class BaseSession {
 
     public static OnDisconnected onDisconnected;
-
     public static CallbackVoid onDisconnectCb = () -> {
         if (onDisconnected != null) {
             onDisconnected.disconnected();
         }
     };
-    public static NativeHandle appHandle = new NativeHandle(0, res -> {
-    });
+    public static NativeHandle appHandle = new NativeHandle(0, res -> {});
 
     public static Future<AccountInfo> getAccountInfo() {
-        return Executor.getInstance().submit(new CallbackHelper<AccountInfo>(binder -> {
+        return Executor.getInstance().submit(new CallbackHelper(binder -> {
             NativeBindings.appAccountInfo(appHandle.toLong(), (result, accountInfo) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
@@ -93,8 +92,8 @@ public class BaseSession {
         }));
     }
 
-    public static Future<List<ContainerPermission>> getContainerPermissions() {
-        return Executor.getInstance().submit(new CallbackHelper<List<ContainerPermission>>(binder -> {
+    public static Future<List<ContainerPermissions>> getContainerPermissions() {
+        return Executor.getInstance().submit(new CallbackHelper<List<ContainerPermissions>>(binder -> {
             NativeBindings.accessContainerFetch(appHandle.toLong(), ((result, containerPerms) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
@@ -198,29 +197,17 @@ public class BaseSession {
 
     public static Future<DecodeResult> decodeResponse(String uri) {
         return Executor.getInstance().submit(new CallbackHelper<DecodeResult>((binder) -> {
-            CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) -> {
-                binder.onResult(new AuthResponse(reqId, authGranted));
-            };
+            CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) -> binder.onResult(new AuthResponse(reqId, authGranted));
 
-            CallbackIntByteArrayLen onUnregistered = (reqId, serialisedCfgPtr) -> {
-                binder.onResult(new UnregisteredClientResponse(reqId, serialisedCfgPtr));
-            };
+            CallbackIntByteArrayLen onUnregistered = (reqId, serialisedCfgPtr) -> binder.onResult(new UnregisteredClientResponse(reqId, serialisedCfgPtr));
 
-            CallbackInt onContainerCb = (reqId) -> {
-                binder.onResult(new ContainerResponse(reqId));
-            };
+            CallbackInt onContainerCb = reqId -> binder.onResult(new ContainerResponse(reqId));
 
-            CallbackInt onShareMdCb = (reqId) -> {
-                binder.onResult(new ShareMutableDataResponse(reqId));
-            };
+            CallbackInt onShareMdCb = (reqId) -> binder.onResult(new ShareMutableDataResponse(reqId));
 
-            CallbackVoid onRevoked = () -> {
-                binder.onResult(new RevokedResponse());
-            };
+            CallbackVoid onRevoked = () -> binder.onResult(new RevokedResponse());
 
-            CallbackResultInt onErrorCb = (result, reqId) -> {
-                binder.onResult(new DecodeError(reqId, result));
-            };
+            CallbackResultInt onErrorCb = (result, reqId) -> binder.onResult(new DecodeError(reqId, result));
 
             NativeBindings.decodeIpcMsg(uri, onAuthGranted, onUnregistered, onContainerCb, onShareMdCb, onRevoked, onErrorCb);
         }));
@@ -237,7 +224,6 @@ public class BaseSession {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                System.out.println("Obtained Long val: " + app);
                 BaseSession.appHandle = new NativeHandle(app, (handle) -> {
                     NativeBindings.appFree(handle);
                 });

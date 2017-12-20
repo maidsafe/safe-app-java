@@ -1,9 +1,9 @@
 package net.maidsafe.api.mdata;
 
 import net.maidsafe.api.BaseSession;
-import net.maidsafe.api.NativeHandle;
-import net.maidsafe.model.MDataEntry;
-import net.maidsafe.model.MDataValue;
+import net.maidsafe.api.model.NativeHandle;
+import net.maidsafe.api.model.MDataEntry;
+import net.maidsafe.api.model.MDataValue;
 import net.maidsafe.safe_app.CallbackByteArrayLenByteArrayLenLong;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;

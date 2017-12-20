@@ -1,5 +1,6 @@
 package net.maidsafe.api;
 
+import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
@@ -17,7 +18,7 @@ public class CipherOpt {
     }
 
     public static Future<NativeHandle> getPlainCipherOpt() {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
+        return Executor.getInstance().submit(new CallbackHelper(binder -> {
             NativeBindings.cipherOptNewPlaintext(BaseSession.appHandle.toLong(), (result, handle) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));

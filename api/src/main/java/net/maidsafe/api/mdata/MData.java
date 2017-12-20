@@ -1,8 +1,9 @@
 package net.maidsafe.api.mdata;
 
 import net.maidsafe.api.BaseSession;
-import net.maidsafe.api.NativeHandle;
-import net.maidsafe.model.MDataValue;
+import net.maidsafe.api.model.NativeHandle;
+import net.maidsafe.api.model.MDataValue;
+import net.maidsafe.utils.Convertor;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.MDataKey;
 import net.maidsafe.safe_app.MetadataResponse;
@@ -197,7 +198,7 @@ public class MData {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(Helper.convertFromFfiMDataValue(values));
+                binder.onResult(Convertor.toMDataValue(values));
             });
         }));
     }

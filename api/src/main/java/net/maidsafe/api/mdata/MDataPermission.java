@@ -1,7 +1,7 @@
 package net.maidsafe.api.mdata;
 
 import net.maidsafe.api.BaseSession;
-import net.maidsafe.api.NativeHandle;
+import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.PermissionSet;
 import net.maidsafe.safe_app.UserPermissionSet;

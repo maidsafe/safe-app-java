@@ -1,6 +1,6 @@
 package net.maidsafe.api;
 
-import net.maidsafe.model.*;
+import net.maidsafe.api.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,6 +14,7 @@ public class ClientTest {
         Assert.assertNotNull(request.getUri());
         Session.connect(new byte[0], () -> {}).get();
         EncryptKeyPair encryptKeyPair = Crypto.generateEncryptKeyPair().get();
+        Assert.assertNotNull(encryptKeyPair);
         byte[] cipherText = Crypto.encrypt(encryptKeyPair.getPublicEncryptKey(), encryptKeyPair.getSecretEncryptKey(), "Hello".getBytes()).get();
         Assert.assertEquals("Hello", new String(Crypto.decrypt(encryptKeyPair.getPublicEncryptKey(), encryptKeyPair.getSecretEncryptKey(), cipherText).get()));
     }
