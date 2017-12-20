@@ -25,249 +25,253 @@ import net.maidsafe.safe_app.ContainersReq;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.ShareMDataReq;
+import net.maidsafe.utils.CallbackHelper;
+import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class BaseSession {
 
-    public static CallbackVoid disconnectedCb;
+    public static OnDisconnected onDisconnected;
+
+    public static CallbackVoid onDisconnectCb = () -> {
+        if (onDisconnected != null) {
+            onDisconnected.disconnected();
+        }
+    };
     public static NativeHandle appHandle = new NativeHandle(0, res -> {
     });
 
-    public static CompletableFuture<AccountInfo> getAccountInfo() {
-        CompletableFuture<AccountInfo> future = new CompletableFuture<>();
-        NativeBindings.appAccountInfo(appHandle.toLong(), (result, accountInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(accountInfo);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<Void> resetObjectCache() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<Void> refreshAccessInfo() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<MDataInfo> getContainerMDataInfo(String containerName) {
-        CompletableFuture<MDataInfo> future = new CompletableFuture<>();
-        NativeBindings.accessContainerGetContainerMdataInfo(appHandle.toLong(), containerName, (result, mDataInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(mDataInfo);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<List<ContainerPermission>> getContainerPermissions() {
-        CompletableFuture<List<ContainerPermission>> future = new CompletableFuture<>();
-        NativeBindings.accessContainerFetch(appHandle.toLong(), ((result, containerPerms) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(Arrays.asList(containerPerms));
+    public static Future<AccountInfo> getAccountInfo() {
+        return Executor.getInstance().submit(new CallbackHelper<AccountInfo>(binder -> {
+            NativeBindings.appAccountInfo(appHandle.toLong(), (result, accountInfo) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(accountInfo);
+            });
         }));
-        return future;
     }
 
-    public static CompletableFuture<Void> initLogging(String outputFileName) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.appInitLogging(outputFileName, (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<Void> resetObjectCache() {
+        return Executor.getInstance().submit(new CallbackHelper<Void>((binder) -> {
+            NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public static CompletableFuture<String> getLogOutputPath(String logFileName) {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        NativeBindings.appOutputLogPath(logFileName, (result, path) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(path);
-        });
-        return future;
+    public static Future<Void> refreshAccessInfo() {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public static CompletableFuture<String> getAppContainerName(String appId) {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        NativeBindings.appContainerName(appId, (result, name) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(name);
-        });
-        return future;
+    public static Future<MDataInfo> getContainerMDataInfo(String containerName) {
+        return Executor.getInstance().submit(new CallbackHelper<MDataInfo>(binder -> {
+            NativeBindings.accessContainerGetContainerMdataInfo(appHandle.toLong(), containerName, (result, mDataInfo) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(mDataInfo);
+            });
+        }));
     }
 
-    public static CompletableFuture<Void> setAdditionalSearchPath(String path) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.appSetAdditionalSearchPath(path, (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<List<ContainerPermission>> getContainerPermissions() {
+        return Executor.getInstance().submit(new CallbackHelper<List<ContainerPermission>>(binder -> {
+            NativeBindings.accessContainerFetch(appHandle.toLong(), ((result, containerPerms) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(Arrays.asList(containerPerms));
+            }));
+        }));
     }
 
-    public static CompletableFuture<String> getAppStem() {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        NativeBindings.appExeFileStem((result, path) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(path);
-        });
-        return future;
+    public static Future<Void> initLogging(String outputFileName) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.appInitLogging(outputFileName, (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public static CompletableFuture<Request> getAuthRequest(AuthReq req) {
-        CompletableFuture<Request> future = new CompletableFuture<>();
-        NativeBindings.encodeAuthReq(req, handleRequestCallback(future));
-        return future;
+    public static Future<String> getLogOutputPath(String logFileName) {
+        return Executor.getInstance().submit(new CallbackHelper<String>(binder -> {
+            NativeBindings.appOutputLogPath(logFileName, (result, path) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(path);
+            });
+        }));
     }
 
-    public static CompletableFuture<Request> getContainerRequest(ContainersReq req) {
-        CompletableFuture<Request> future = new CompletableFuture<>();
-        NativeBindings.encodeContainersReq(req, handleRequestCallback(future));
-        return future;
+    public static Future<String> getAppContainerName(String appId) {
+        return Executor.getInstance().submit(new CallbackHelper<String>(binder -> {
+            NativeBindings.appContainerName(appId, (result, name) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(name);
+            });
+        }));
     }
 
-    public static CompletableFuture<Request> getShareMutableDataRequest(ShareMDataReq req) {
-        CompletableFuture<Request> future = new CompletableFuture<>();
-        NativeBindings.encodeShareMdataReq(req, handleRequestCallback(future));
-        return future;
+    public static Future<Void> setAdditionalSearchPath(String path) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.appSetAdditionalSearchPath(path, (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public static CompletableFuture<Request> getUnregisteredSessionRequest(App app) {
-        CompletableFuture<Request> future = new CompletableFuture<>();
-        byte[] id = app.getId().getBytes();
-        NativeBindings.encodeUnregisteredReq(id, handleRequestCallback(future));
-        return future;
+    public static Future<String> getAppStem() {
+        return Executor.getInstance().submit(new CallbackHelper<String>(binder -> {
+            NativeBindings.appExeFileStem((result, path) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(path);
+            });
+        }));
     }
 
-    public static CompletableFuture<DecodeResult> decodeResponse(String uri) {
-        CompletableFuture<DecodeResult> future = new CompletableFuture<>();
-
-        CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) -> {
-            future.complete(new AuthResponse(reqId, authGranted));
-        };
-
-        CallbackIntByteArrayLen onUnregistered = (reqId, serialisedCfgPtr) -> {
-            future.complete(new UnregisteredClientResponse(reqId, serialisedCfgPtr));
-        };
-
-        CallbackInt onContainerCb = (reqId) -> {
-            future.complete(new ContainerResponse(reqId));
-        };
-
-        CallbackInt onShareMdCb = (reqId) -> {
-            future.complete(new ShareMutableDataResponse(reqId));
-        };
-
-        CallbackVoid onRevoked = () -> {
-            future.complete(new RevokedResponse());
-        };
-
-        CallbackResultInt onErrorCb = (result, reqId) -> {
-            future.complete(new DecodeError(reqId, result));
-        };
-
-        NativeBindings.decodeIpcMsg(uri, onAuthGranted, onUnregistered, onContainerCb, onShareMdCb, onRevoked, onErrorCb);
-        return future;
+    public static Future<Request> getAuthRequest(AuthReq req) {
+        return Executor.getInstance().submit(new CallbackHelper<Request>(binder -> {
+            NativeBindings.encodeAuthReq(req, handleRequestCallback(binder));
+        }));
     }
 
-    public static CompletableFuture<Void> connect(UnregisteredClientResponse response, OnDisconnected onDisconnected) {
+    public static Future<Request> getContainerRequest(ContainersReq req) {
+        return Executor.getInstance().submit(new CallbackHelper<Request>(binder -> {
+            NativeBindings.encodeContainersReq(req, handleRequestCallback(binder));
+        }));
+    }
+
+    public static Future<Request> getShareMutableDataRequest(ShareMDataReq req) {
+        return Executor.getInstance().submit(new CallbackHelper<Request>(binder -> {
+            NativeBindings.encodeShareMdataReq(req, handleRequestCallback(binder));
+        }));
+    }
+
+    public static Future<Request> getUnregisteredSessionRequest(App app) {
+        return Executor.getInstance().submit(new CallbackHelper<Request>(binder -> {
+            byte[] id = app.getId().getBytes();
+            NativeBindings.encodeUnregisteredReq(id, (result, reqId, uri) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(new Request(uri, reqId));
+            });
+        }));
+    }
+
+    public static Future<DecodeResult> decodeResponse(String uri) {
+        return Executor.getInstance().submit(new CallbackHelper<DecodeResult>((binder) -> {
+            CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) -> {
+                binder.onResult(new AuthResponse(reqId, authGranted));
+            };
+
+            CallbackIntByteArrayLen onUnregistered = (reqId, serialisedCfgPtr) -> {
+                binder.onResult(new UnregisteredClientResponse(reqId, serialisedCfgPtr));
+            };
+
+            CallbackInt onContainerCb = (reqId) -> {
+                binder.onResult(new ContainerResponse(reqId));
+            };
+
+            CallbackInt onShareMdCb = (reqId) -> {
+                binder.onResult(new ShareMutableDataResponse(reqId));
+            };
+
+            CallbackVoid onRevoked = () -> {
+                binder.onResult(new RevokedResponse());
+            };
+
+            CallbackResultInt onErrorCb = (result, reqId) -> {
+                binder.onResult(new DecodeError(reqId, result));
+            };
+
+            NativeBindings.decodeIpcMsg(uri, onAuthGranted, onUnregistered, onContainerCb, onShareMdCb, onRevoked, onErrorCb);
+        }));
+    }
+
+    public static Future<Void> connect(UnregisteredClientResponse response, OnDisconnected onDisconnected) {
         return connect(response.getBootstrapConfig(), onDisconnected);
     }
 
-    public static CompletableFuture<Void> connect(byte[] bootStrapConfig, OnDisconnected onDisconnected) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        CallbackVoid onDisconnectCb = () -> {
-            if (onDisconnected != null) {
-                onDisconnected.disconnected();
-            }
-        };
-        CallbackResultApp callback = (result, app) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            BaseSession.appHandle = new NativeHandle(app, (handle) -> {
-                NativeBindings.appFree(handle);
-            });
-            BaseSession.disconnectedCb = onDisconnectCb;
-            future.complete(null);
-        };
-        NativeBindings.appUnregistered(bootStrapConfig, onDisconnectCb, callback);
-        return future;
+    public static Future<Void> connect(byte[] bootStrapConfig, OnDisconnected onDisconnected) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            CallbackResultApp callback = (result, app) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                System.out.println("Obtained Long val: " + app);
+                BaseSession.appHandle = new NativeHandle(app, (handle) -> {
+                    NativeBindings.appFree(handle);
+                });
+                BaseSession.onDisconnected = onDisconnected;
+                binder.onResult(null);
+            };
+            NativeBindings.appUnregistered(bootStrapConfig, onDisconnectCb, callback);
+        }));
     }
 
-    public static CompletableFuture<Void> connect(App app, AuthGranted authGranted, OnDisconnected onDisconnected) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        CallbackVoid onDisconnectCb = () -> {
-            if (onDisconnected != null) {
-                onDisconnected.disconnected();
-            }
-        };
-        CallbackResultApp callback = (result, appHandle) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            BaseSession.appHandle = new NativeHandle(appHandle, (handle) -> {
-                NativeBindings.appFree(handle);
-            });
-            BaseSession.disconnectedCb = onDisconnectCb;
-            future.complete(null);
-        };
-        NativeBindings.appRegistered(app.getId(), authGranted, onDisconnectCb, callback);
-        return future;
+    public static Future<Void> connect(App app, AuthGranted authGranted, OnDisconnected onDisconnected) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            BaseSession.onDisconnected = onDisconnected;
+            CallbackResultApp callback = (result, appHandle) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                BaseSession.appHandle = new NativeHandle(appHandle, (handle) -> {
+                    NativeBindings.appFree(handle);
+                });
+                binder.onResult(null);
+            };
+            NativeBindings.appRegistered(app.getId(), authGranted, onDisconnectCb, callback);
+        }));
     }
 
-    private static CallbackResultIntString handleRequestCallback(CompletableFuture<Request> future) {
+    private static CallbackResultIntString handleRequestCallback(CallbackHelper.Binder<Request> binder) {
         return (result, reqId, uri) -> {
             if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
+                binder.onException(Helper.ffiResultToException(result));
                 return;
             }
-            future.complete(new Request(uri, reqId));
+            binder.onResult(new Request(uri, reqId));
         };
     }
 

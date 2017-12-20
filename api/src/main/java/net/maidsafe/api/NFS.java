@@ -4,120 +4,122 @@ import net.maidsafe.model.NFSFileMetadata;
 import net.maidsafe.safe_app.File;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.NativeBindings;
+import net.maidsafe.utils.CallbackHelper;
+import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class NFS {
 
-    public static CompletableFuture<NFSFileMetadata> getFileMetadata(MDataInfo parentInfo, String fileName) {
-        CompletableFuture<NFSFileMetadata> future = new CompletableFuture<>();
-        NativeBindings.dirFetchFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (result, ffiFile, version) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(new NFSFileMetadata(ffiFile, version));
-        });
-        return future;
+    public static Future<NFSFileMetadata> getFileMetadata(MDataInfo parentInfo, String fileName) {
+        return Executor.getInstance().submit(new CallbackHelper<NFSFileMetadata>(binder -> {
+            NativeBindings.dirFetchFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (result, ffiFile, version) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(new NFSFileMetadata(ffiFile, version));
+            });
+        }));
     }
 
-    public static CompletableFuture<Void> insertFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.dirInsertFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (File) file, (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<Void> insertFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.dirInsertFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (File) file, (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public static CompletableFuture<Void> updateFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.dirUpdateFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (net.maidsafe.safe_app.File) file, file.getVersion(), (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<Void> updateFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.dirUpdateFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (net.maidsafe.safe_app.File) file, file.getVersion(), (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public static CompletableFuture<Void> deleteFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.dirDeleteFile(BaseSession.appHandle.toLong(), parentInfo, fileName, file.getVersion(), (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<Void> deleteFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.dirDeleteFile(BaseSession.appHandle.toLong(), parentInfo, fileName, file.getVersion(), (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public CompletableFuture<NativeHandle> fileOpen(MDataInfo parentInfo, File file, NFS.OpenMode openMode) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
-        NativeBindings.fileOpen(BaseSession.appHandle.toLong(), parentInfo, file, openMode.getValue(), (result, handle) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(new NativeHandle(handle, (fileContext) -> {
-                // TODO implement free function once made available in safe_app
-            }));
-        });
-        return future;
+    public Future<NativeHandle> fileOpen(MDataInfo parentInfo, File file, NFS.OpenMode openMode) {
+        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
+            NativeBindings.fileOpen(BaseSession.appHandle.toLong(), parentInfo, file, openMode.getValue(), (result, handle) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(new NativeHandle(handle, (fileContext) -> {
+                    // TODO implement free function once made available in safe_app
+                }));
+            });
+        }));
     }
 
-    public CompletableFuture<Long> getSize(NativeHandle fileContextHandle) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-        NativeBindings.fileSize(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, size) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(size);
-        });
-        return future;
+    public Future<Long> getSize(NativeHandle fileContextHandle) {
+        return Executor.getInstance().submit(new CallbackHelper<Long>(binder -> {
+            NativeBindings.fileSize(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, size) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(size);
+            });
+        }));
     }
 
-    public CompletableFuture<byte[]> fileRead(NativeHandle fileContextHandle, long position, long length) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
-        NativeBindings.fileRead(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), position, length, (result, data) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(data);
-        });
-        return future;
+    public Future<byte[]> fileRead(NativeHandle fileContextHandle, long position, long length) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.fileRead(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), position, length, (result, data) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(data);
+            });
+        }));
     }
 
-    public CompletableFuture<Void> fileWrite(NativeHandle fileContextHandle, byte[] data) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.fileWrite(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), data, (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public Future<Void> fileWrite(NativeHandle fileContextHandle, byte[] data) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.fileWrite(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), data, (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
     }
 
-    public CompletableFuture<File> fileClose(NativeHandle fileContextHandle) {
-        CompletableFuture<File> future = new CompletableFuture<>();
-        NativeBindings.fileClose(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, ffiFile) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(new NFSFileMetadata(ffiFile, 0));
-        });
-        return future;
+    public Future<File> fileClose(NativeHandle fileContextHandle) {
+        return Executor.getInstance().submit(new CallbackHelper<File>(binder -> {
+            NativeBindings.fileClose(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, ffiFile) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(new NFSFileMetadata(ffiFile, 0));
+            });
+        }));
     }
 
     public enum OpenMode {

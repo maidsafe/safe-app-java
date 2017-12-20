@@ -8,271 +8,273 @@ import net.maidsafe.safe_app.MDataKey;
 import net.maidsafe.safe_app.MetadataResponse;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.PermissionSet;
+import net.maidsafe.utils.CallbackHelper;
+import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class MData {
 
-    public static CompletableFuture<MDataInfo> getPrivateMData(byte[] name, long typeTag, byte[] secretKey, byte[] nonce) {
-        CompletableFuture<MDataInfo> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoNewPrivate(name, typeTag, secretKey, nonce, (result, mdInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(mdInfo);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<MDataInfo> getRandomPrivateMData(long typeTag) {
-        CompletableFuture<MDataInfo> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoRandomPrivate(typeTag, (result, mdInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(mdInfo);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<MDataInfo> getRandomPublicMData(long typeTag) {
-        CompletableFuture<MDataInfo> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoRandomPublic(typeTag, (result, mdInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(mdInfo);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<byte[]> encryptEntryKey(MDataInfo mDataInfo, byte[] key) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoEncryptEntryKey(mDataInfo, key, (result, encryptedKey) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(encryptedKey);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<byte[]> encryptEntryValue(MDataInfo mDataInfo, byte[] value) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoEncryptEntryValue(mDataInfo, value, (result, encryptedValue) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(encryptedValue);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<byte[]> decrypt(MDataInfo mDataInfo, byte[] value) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoDecrypt(mDataInfo, value, (result, decryptedValue) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(decryptedValue);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<byte[]> serialise(MDataInfo mDataInfo) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoSerialise(mDataInfo, (result, serialisedData) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(serialisedData);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<MDataInfo> deserialise(byte[] serialisedMData) {
-        CompletableFuture<MDataInfo> future = new CompletableFuture<>();
-        NativeBindings.mdataInfoDeserialise(serialisedMData, (result, mDataInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(mDataInfo);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<Void> put(MDataInfo mDataInfo, NativeHandle permissionHandle, NativeHandle entriesHandle) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.mdataPut(BaseSession.appHandle.toLong(), mDataInfo, permissionHandle.toLong(), entriesHandle.toLong(), (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<Long> getVersion(MDataInfo mDataInfo) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-        NativeBindings.mdataGetVersion(BaseSession.appHandle.toLong(), mDataInfo, (result, version) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(version);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<Long> getSerialisedSize(MDataInfo mDataInfo) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-        NativeBindings.mdataSerialisedSize(BaseSession.appHandle.toLong(), mDataInfo, (result, size) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(size);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<MDataValue> getValue(MDataInfo mDataInfo, byte[] key) {
-        CompletableFuture<MDataValue> future = new CompletableFuture<>();
-        NativeBindings.mdataGetValue(BaseSession.appHandle.toLong(), mDataInfo, key, (result, value, version) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(new MDataValue(value, version));
-        });
-        return future;
-    }
-
-    public static CompletableFuture<NativeHandle> getEntriesHandle(MDataInfo mDataInfo) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
-        NativeBindings.mdataListEntries(BaseSession.appHandle.toLong(), mDataInfo, (result, entriesH) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            NativeHandle entriesHandle = new NativeHandle(entriesH, (handle) -> {
-                NativeBindings.mdataEntriesFree(BaseSession.appHandle.toLong(), handle, (res) -> {
-                });
+    public static Future<MDataInfo> getPrivateMData(byte[] name, long typeTag, byte[] secretKey, byte[] nonce) {
+        return Executor.getInstance().submit(new CallbackHelper<MDataInfo>(binder -> {
+            NativeBindings.mdataInfoNewPrivate(name, typeTag, secretKey, nonce, (result, mdInfo) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(mdInfo);
             });
-            future.complete(entriesHandle);
-        });
-        return future;
+        }));
     }
 
-    public static CompletableFuture<List<MDataKey>> getKeys(MDataInfo mDataInfo) {
-        CompletableFuture<List<MDataKey>> future = new CompletableFuture<>();
-        NativeBindings.mdataListKeys(BaseSession.appHandle.toLong(), mDataInfo, (result, keys) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(Arrays.asList(keys));
-        });
-        return future;
-    }
-
-    public static CompletableFuture<List<MDataValue>> getValues(MDataInfo mDataInfo) {
-        CompletableFuture<List<MDataValue>> future = new CompletableFuture<>();
-        NativeBindings.mdataListValues(BaseSession.appHandle.toLong(), mDataInfo, (result, values) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(Helper.convertFromFfiMDataValue(values));
-        });
-        return future;
-    }
-
-    public static CompletableFuture<Void> mutateEntries(MDataInfo mDataInfo, NativeHandle actionHandle) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.mdataMutateEntries(BaseSession.appHandle.toLong(), mDataInfo, actionHandle.toLong(), (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
-    }
-
-    public static CompletableFuture<NativeHandle> getPermission(MDataInfo mDataInfo) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
-        NativeBindings.mdataListPermissions(BaseSession.appHandle.toLong(), mDataInfo, (result, permsHandle) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            NativeHandle permissionHandle = new NativeHandle(permsHandle, (handle) -> {
-                NativeBindings.mdataPermissionsFree(BaseSession.appHandle.toLong(), handle, res -> {
-                });
+    public static Future<MDataInfo> getRandomPrivateMData(long typeTag) {
+        return Executor.getInstance().submit(new CallbackHelper<MDataInfo>(binder -> {
+            NativeBindings.mdataInfoRandomPrivate(typeTag, (result, mdInfo) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(mdInfo);
             });
-            future.complete(permissionHandle);
-        });
-        return future;
+        }));
     }
 
-    public static CompletableFuture<PermissionSet> getPermissionForUser(NativeHandle publicSignKey, MDataInfo mDataInfo) {
-        CompletableFuture<PermissionSet> future = new CompletableFuture<>();
-        NativeBindings.mdataListUserPermissions(BaseSession.appHandle.toLong(), mDataInfo, publicSignKey.toLong(), (result, permissionSet) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(permissionSet);
-        });
-        return future;
+    public static Future<MDataInfo> getRandomPublicMData(long typeTag) {
+        return Executor.getInstance().submit(new CallbackHelper<MDataInfo>(binder -> {
+            NativeBindings.mdataInfoRandomPublic(typeTag, (result, mdInfo) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(mdInfo);
+            });
+        }));
     }
 
-    public static CompletableFuture<Void> setUserPermission(NativeHandle publicSignKey, MDataInfo mDataInfo, PermissionSet permissionSet, long version) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.mdataSetUserPermissions(BaseSession.appHandle.toLong(), mDataInfo, publicSignKey.toLong(), permissionSet, version, (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<byte[]> encryptEntryKey(MDataInfo mDataInfo, byte[] key) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.mdataInfoEncryptEntryKey(mDataInfo, key, (result, encryptedKey) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(encryptedKey);
+            });
+        }));
     }
 
-    public static CompletableFuture<Void> deleteUserPermission(NativeHandle publicSignKey, MDataInfo mDataInfo, long version) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        NativeBindings.mdataDelUserPermissions(BaseSession.appHandle.toLong(), mDataInfo, publicSignKey.toLong(), version, (result) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+    public static Future<byte[]> encryptEntryValue(MDataInfo mDataInfo, byte[] value) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.mdataInfoEncryptEntryValue(mDataInfo, value, (result, encryptedValue) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(encryptedValue);
+            });
+        }));
     }
 
-    public static CompletableFuture<byte[]> encodeMetadata(MetadataResponse metadataResponse) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
-        NativeBindings.mdataEncodeMetadata(metadataResponse, (result, encodedMetadata) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-                return;
-            }
-            future.complete(encodedMetadata);
-        });
-        return future;
+    public static Future<byte[]> decrypt(MDataInfo mDataInfo, byte[] value) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.mdataInfoDecrypt(mDataInfo, value, (result, decryptedValue) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(decryptedValue);
+            });
+        }));
+    }
+
+    public static Future<byte[]> serialise(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.mdataInfoSerialise(mDataInfo, (result, serialisedData) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(serialisedData);
+            });
+        }));
+    }
+
+    public static Future<MDataInfo> deserialise(byte[] serialisedMData) {
+        return Executor.getInstance().submit(new CallbackHelper<MDataInfo>(binder -> {
+            NativeBindings.mdataInfoDeserialise(serialisedMData, (result, mDataInfo) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(mDataInfo);
+            });
+        }));
+    }
+
+    public static Future<Void> put(MDataInfo mDataInfo, NativeHandle permissionHandle, NativeHandle entriesHandle) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.mdataPut(BaseSession.appHandle.toLong(), mDataInfo, permissionHandle.toLong(), entriesHandle.toLong(), (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
+    }
+
+    public static Future<Long> getVersion(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<Long>(binder -> {
+            NativeBindings.mdataGetVersion(BaseSession.appHandle.toLong(), mDataInfo, (result, version) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(version);
+            });
+        }));
+    }
+
+    public static Future<Long> getSerialisedSize(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<Long>(binder -> {
+            NativeBindings.mdataSerialisedSize(BaseSession.appHandle.toLong(), mDataInfo, (result, size) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(size);
+            });
+        }));
+    }
+
+    public static Future<MDataValue> getValue(MDataInfo mDataInfo, byte[] key) {
+        return Executor.getInstance().submit(new CallbackHelper<MDataValue>(binder -> {
+            NativeBindings.mdataGetValue(BaseSession.appHandle.toLong(), mDataInfo, key, (result, value, version) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(new MDataValue(value, version));
+            });
+        }));
+    }
+
+    public static Future<NativeHandle> getEntriesHandle(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
+            NativeBindings.mdataListEntries(BaseSession.appHandle.toLong(), mDataInfo, (result, entriesH) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                NativeHandle entriesHandle = new NativeHandle(entriesH, (handle) -> {
+                    NativeBindings.mdataEntriesFree(BaseSession.appHandle.toLong(), handle, (res) -> {
+                    });
+                });
+                binder.onResult(entriesHandle);
+            });
+        }));
+    }
+
+    public static Future<List<MDataKey>> getKeys(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<List<MDataKey>>(binder -> {
+            NativeBindings.mdataListKeys(BaseSession.appHandle.toLong(), mDataInfo, (result, keys) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(Arrays.asList(keys));
+            });
+        }));
+    }
+
+    public static Future<List<MDataValue>> getValues(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<List<MDataValue>>(binder -> {
+            NativeBindings.mdataListValues(BaseSession.appHandle.toLong(), mDataInfo, (result, values) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(Helper.convertFromFfiMDataValue(values));
+            });
+        }));
+    }
+
+    public static Future<Void> mutateEntries(MDataInfo mDataInfo, NativeHandle actionHandle) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.mdataMutateEntries(BaseSession.appHandle.toLong(), mDataInfo, actionHandle.toLong(), (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
+    }
+
+    public static Future<NativeHandle> getPermission(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
+            NativeBindings.mdataListPermissions(BaseSession.appHandle.toLong(), mDataInfo, (result, permsHandle) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                NativeHandle permissionHandle = new NativeHandle(permsHandle, (handle) -> {
+                    NativeBindings.mdataPermissionsFree(BaseSession.appHandle.toLong(), handle, res -> {
+                    });
+                });
+                binder.onResult(permissionHandle);
+            });
+        }));
+    }
+
+    public static Future<PermissionSet> getPermissionForUser(NativeHandle publicSignKey, MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<PermissionSet>(binder -> {
+            NativeBindings.mdataListUserPermissions(BaseSession.appHandle.toLong(), mDataInfo, publicSignKey.toLong(), (result, permissionSet) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(permissionSet);
+            });
+        }));
+    }
+
+    public static Future<Void> setUserPermission(NativeHandle publicSignKey, MDataInfo mDataInfo, PermissionSet permissionSet, long version) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.mdataSetUserPermissions(BaseSession.appHandle.toLong(), mDataInfo, publicSignKey.toLong(), permissionSet, version, (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
+    }
+
+    public static Future<Void> deleteUserPermission(NativeHandle publicSignKey, MDataInfo mDataInfo, long version) {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.mdataDelUserPermissions(BaseSession.appHandle.toLong(), mDataInfo, publicSignKey.toLong(), version, (result) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(null);
+            });
+        }));
+    }
+
+    public static Future<byte[]> encodeMetadata(MetadataResponse metadataResponse) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.mdataEncodeMetadata(metadataResponse, (result, encodedMetadata) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(encodedMetadata);
+            });
+        }));
     }
 }
