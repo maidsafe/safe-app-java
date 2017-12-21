@@ -11,22 +11,17 @@ public class CallbackHelper<T> implements Callable<T> {
     }
 
     @Override
-    public T call()  {
-        try {
-            ResultBinder binder = new ResultBinder();
-            Thread waitThread = new Thread(new Handler(binder, false));
-            Thread execThread = new Thread(new Handler(binder, true));
-            waitThread.start();
-            execThread.start();
-            waitThread.join();
-            if (binder.exception != null) {
-                throw binder.exception;
-            }
-            return binder.result;
-        }catch (Exception e) {
-            e.printStackTrace();
+    public T call() throws Exception {
+        ResultBinder binder = new ResultBinder();
+        Thread waitThread = new Thread(new Handler(binder, false));
+        Thread execThread = new Thread(new Handler(binder, true));
+        waitThread.start();
+        execThread.start();
+        waitThread.join();
+        if (binder.exception != null) {
+            throw binder.exception;
         }
-        return null;
+        return binder.result;
     }
 
     public interface IFuncExecutor<T> {

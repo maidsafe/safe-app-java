@@ -42,22 +42,22 @@ task copyTestResources(type: Copy) {
 }
 processTestResources.dependsOn copyTestResources
 
-def nativeLibsVersion = "nikita-c789f8b"
+def nativeLibsVersion = "nikita-d67a875"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"
 
 static def getCombinations() {
-    def platforms = ['win', 'osx', 'linux']
-    def variants = ['mock'] // ['mock', 'non-mock']
+    def platforms = ['osx', 'linux', 'win']
+    def variants = ['mock', 'non-mock']
     def architectures = ['x64'] // ['x86', 'x64']
     [platforms, architectures, variants].combinations().findAll { !(it[0] == 'osx' && it[1] == 'x86') }
 }
 tasks.addRule('Pattern: NativeLibs-<ID>') { String taskName ->
     if (taskName.startsWith('NativeLibs-')) {
         task(taskName, type: Copy) {
+            dependsOn << [ name.replace('NativeLibs', 'delete') ]
             def args = name.split('-')
             String platform = args[1]
             String arch = args[2]
-            dependsOn "${name.replace('NativeLibs', 'delete')}"
             from "${projectDir}/libs/${platform}/${args[3] == 'mock'? 'mock' : 'non-mock'}/${arch}/"
             into "${projectDir}/src/main/resources/native"
         }
@@ -65,7 +65,7 @@ tasks.addRule('Pattern: NativeLibs-<ID>') { String taskName ->
 }
 tasks.addRule('Pattern: delete-<ID>') { String taskName ->
     if (taskName.startsWith('delete-')) {
-        task(taskName, type: Delete) {
+        task(taskName, dependsOn: build, type: Delete) {
             delete "${projectDir}/src/main/resources/native/"
             delete "${projectDir}/build/resources/main/native/"
             delete "${projectDir}/build/classes/java/test/native"
@@ -75,11 +75,11 @@ tasks.addRule('Pattern: delete-<ID>') { String taskName ->
 tasks.addRule('Pattern: pack-<ID>') { String taskName ->
     if (taskName.startsWith('pack')) {
         task(taskName, type: ShadowJar) {
+            dependsOn << [ name.replace('pack', 'NativeLibs') ]
             def args = name.split('-')
             String platform = args[1]
             String arch = args[2]
             boolean isMock = args[3] == "mock"
-            dependsOn << ["${name.replace('pack', 'NativeLibs')}", "build"]
             from sourceSets.main.output
             from sourceSets.main.resources
             from project(':api').sourceSets.main.output
@@ -117,7 +117,7 @@ task ("downloadNativeLibs", type: Download) {
     }
     def endPoints = getCombinations().collect {
 //        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
-        "https://github.com/krishnaIndia/safe_core/releases/download/nikita-c789f8b/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
+        "https://github.com/krishnaIndia/safe_core/releases/download/${nativeLibsVersion}/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
     }
     src(endPoints)
     dest tempDownloadDir

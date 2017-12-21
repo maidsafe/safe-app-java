@@ -1,13 +1,16 @@
 package net.maidsafe.api;
 
 import net.maidsafe.api.model.*;
+import net.maidsafe.test.utils.SessionLoader;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ClientTest {
+
     @Test
     public void unregisteredAccessTest() throws Exception {
-        Session.load();
+        SessionLoader.load();
         App app = new App("net.maidsafe.java.test", "sample", "MaidSafe.net Ltd",  "0.1.0");
         Request request = Session.getUnregisteredSessionRequest(app).get();
         Assert.assertTrue(request.getReqId() != 0);

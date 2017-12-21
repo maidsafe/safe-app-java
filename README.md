@@ -8,13 +8,18 @@ safe_app_java library for generating JAR and AAR packages.
 
 safe_app_java requires
 
- -  Gradle
+ -  Gradle 4.3
  -  Java 8
  -  Android SDK (target SDK Version 26)
 
 ### Build Instructions
 
-safe_app_java has sub projects for generating JAR and AAR files for exposing [safe-app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) API
+safe_app_java has sub projects for generating JAR and AAR files for exposing [safe-app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) API.
+
+Download the native libraries for desktop and android by executing,
+```
+gradle download-nativelibs
+```
 
 #### safe-app
 
@@ -22,10 +27,6 @@ safe_app_java has sub projects for generating JAR and AAR files for exposing [sa
 
 #####  Build Commands
 
-Download the native safe-app libraries.
-```
-gradlew :safe-app:download-libs
-```
 Execute `pack` task to get the JAR files for all possible combinations
 ```
 gradlew :safe-app:pack
