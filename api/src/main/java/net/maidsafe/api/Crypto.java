@@ -236,13 +236,39 @@ public class Crypto {
 
     private static NativeHandle getPublicSignKeyHandle(long handle) {
         return new NativeHandle(handle, (signKey) -> {
-            NativeBindings.signPubKeyFree(BaseSession.appHandle.toLong(), signKey, (result) -> {});
+            NativeBindings.signPubKeyFree(BaseSession.appHandle.toLong(), signKey, (result) -> {
+            });
         });
+    }
+
+    public static Future<byte[]> generateNonce() {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.generateNonce((result, nonce) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(nonce);
+            });
+        }));
+    }
+
+    public static Future<byte[]> sha3Hash(byte[] data) {
+        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
+            NativeBindings.sha3Hash(data, (result, hashedData) -> {
+                if (result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                binder.onResult(hashedData);
+            });
+        }));
     }
 
     private static NativeHandle getSecretSignKeyHandle(long handle) {
         return new NativeHandle(handle, (signKey) -> {
-            NativeBindings.signSecKeyFree(BaseSession.appHandle.toLong(), signKey, (result) -> {});
+            NativeBindings.signSecKeyFree(BaseSession.appHandle.toLong(), signKey, (result) -> {
+            });
         });
     }
 
