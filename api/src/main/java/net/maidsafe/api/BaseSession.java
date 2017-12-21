@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
-public class BaseSession {
+class BaseSession {
 
     public static OnDisconnected onDisconnected;
     public static CallbackVoid onDisconnectCb = () -> {

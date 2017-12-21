@@ -1,4 +1,4 @@
-package net.maidsafe.api.mdata;
+package net.maidsafe.api;
 
 import net.maidsafe.api.BaseSession;
 import net.maidsafe.api.model.NativeHandle;
