@@ -5,17 +5,13 @@ import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.api.model.SignKeyPair;
 import net.maidsafe.test.utils.Helper;
 import net.maidsafe.test.utils.SessionLoader;
+import net.maidsafe.utils.Constants;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class CryptoTest {
-
-    private final long PUBLIC_SIGN_KEY_SIZE = 32;
-    private final long SECRET_SIGN_KEY_SIZE = 64;
-    private final long PUBLIC_ENC_KEY_SIZE = 32;
-    private final long SECRET_ENC_KEY_SIZE = 32;
 
     static {
         SessionLoader.load();
@@ -26,7 +22,7 @@ public class CryptoTest {
         Session.appHandle = TestHelper.createTestApp(Helper.APP_ID).get();
         NativeHandle appPublicSignKey = Crypto.getAppPublicSignKey().get();
         byte[] rawKey = Crypto.getRawPublicSignKey(appPublicSignKey).get();
-        Assert.assertEquals(PUBLIC_SIGN_KEY_SIZE, rawKey.length);
+        Assert.assertEquals(Constants.PUBLIC_SIGN_KEY_SIZE, rawKey.length);
         appPublicSignKey = Crypto.getPublicSignKey(rawKey).get();
         Assert.assertNotNull(appPublicSignKey);
     }
@@ -36,7 +32,7 @@ public class CryptoTest {
         Session.appHandle = TestHelper.createTestApp(Helper.APP_ID).get();
         NativeHandle secretSignKey = Crypto.generateSignKeyPair().get().getSecretSignKey();
         byte[] rawKey = Crypto.getRawSecretSignKey(secretSignKey).get();
-        Assert.assertEquals(SECRET_SIGN_KEY_SIZE, rawKey.length);
+        Assert.assertEquals(Constants.SECRET_SIGN_KEY_SIZE, rawKey.length);
         secretSignKey = Crypto.getSecretSignKey(rawKey).get();
         Assert.assertNotNull(secretSignKey);
     }
@@ -46,7 +42,7 @@ public class CryptoTest {
         Session.appHandle = TestHelper.createTestApp(Helper.APP_ID).get();
         NativeHandle secretEncKey = Crypto.generateEncryptKeyPair().get().getSecretEncryptKey();
         byte[] rawKey = Crypto.getRawSecretEncryptKey(secretEncKey).get();
-        Assert.assertEquals(SECRET_ENC_KEY_SIZE, rawKey.length);
+        Assert.assertEquals(Constants.SECRET_ENC_KEY_SIZE, rawKey.length);
         secretEncKey = Crypto.getSecretEncryptKey(rawKey).get();
         Assert.assertNotNull(secretEncKey);
     }
@@ -56,7 +52,7 @@ public class CryptoTest {
         Session.appHandle = TestHelper.createTestApp(Helper.APP_ID).get();
         NativeHandle appPublicEncKey = Crypto.getAppPublicEncryptKey().get();
         byte[] rawKey = Crypto.getRawPublicEncryptKey(appPublicEncKey).get();
-        Assert.assertEquals(PUBLIC_ENC_KEY_SIZE, rawKey.length);
+        Assert.assertEquals(Constants.PUBLIC_ENC_KEY_SIZE, rawKey.length);
         appPublicEncKey = Crypto.getPublicEncryptKey(rawKey).get();
         Assert.assertNotNull(appPublicEncKey);
     }

@@ -25,9 +25,9 @@ public class NFS {
         }));
     }
 
-    public static Future<Void> insertFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+    public static Future<Void> insertFile(MDataInfo parentInfo, String fileName, File file) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.dirInsertFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (File) file, (result) -> {
+            NativeBindings.dirInsertFile(BaseSession.appHandle.toLong(), parentInfo, fileName, file, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -37,9 +37,9 @@ public class NFS {
         }));
     }
 
-    public static Future<Void> updateFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+    public static Future<Void> updateFile(MDataInfo parentInfo, String fileName, File file, long version) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.dirUpdateFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (net.maidsafe.safe_app.File) file, file.getVersion(), (result) -> {
+            NativeBindings.dirUpdateFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (net.maidsafe.safe_app.File) file, version, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -49,9 +49,9 @@ public class NFS {
         }));
     }
 
-    public static Future<Void> deleteFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+    public static Future<Void> deleteFile(MDataInfo parentInfo, String fileName, File file, long version) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.dirDeleteFile(BaseSession.appHandle.toLong(), parentInfo, fileName, file.getVersion(), (result) -> {
+            NativeBindings.dirDeleteFile(BaseSession.appHandle.toLong(), parentInfo, fileName, version, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -61,7 +61,7 @@ public class NFS {
         }));
     }
 
-    public Future<NativeHandle> fileOpen(MDataInfo parentInfo, File file, NFS.OpenMode openMode) {
+    public static Future<NativeHandle> fileOpen(MDataInfo parentInfo, File file, NFS.OpenMode openMode) {
         return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
             NativeBindings.fileOpen(BaseSession.appHandle.toLong(), parentInfo, file, openMode.getValue(), (result, handle) -> {
                 if (result.getErrorCode() != 0) {
@@ -75,7 +75,7 @@ public class NFS {
         }));
     }
 
-    public Future<Long> getSize(NativeHandle fileContextHandle) {
+    public static Future<Long> getSize(NativeHandle fileContextHandle) {
         return Executor.getInstance().submit(new CallbackHelper<Long>(binder -> {
             NativeBindings.fileSize(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, size) -> {
                 if (result.getErrorCode() != 0) {
@@ -87,7 +87,7 @@ public class NFS {
         }));
     }
 
-    public Future<byte[]> fileRead(NativeHandle fileContextHandle, long position, long length) {
+    public static Future<byte[]> fileRead(NativeHandle fileContextHandle, long position, long length) {
         return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
             NativeBindings.fileRead(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), position, length, (result, data) -> {
                 if (result.getErrorCode() != 0) {
@@ -99,7 +99,7 @@ public class NFS {
         }));
     }
 
-    public Future<Void> fileWrite(NativeHandle fileContextHandle, byte[] data) {
+    public static Future<Void> fileWrite(NativeHandle fileContextHandle, byte[] data) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
             NativeBindings.fileWrite(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), data, (result) -> {
                 if (result.getErrorCode() != 0) {
@@ -111,7 +111,7 @@ public class NFS {
         }));
     }
 
-    public Future<File> fileClose(NativeHandle fileContextHandle) {
+    public static Future<File> fileClose(NativeHandle fileContextHandle) {
         return Executor.getInstance().submit(new CallbackHelper<File>(binder -> {
             NativeBindings.fileClose(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, ffiFile) -> {
                 if (result.getErrorCode() != 0) {

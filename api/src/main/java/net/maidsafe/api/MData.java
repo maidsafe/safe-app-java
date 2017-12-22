@@ -179,14 +179,14 @@ public class MData {
         }));
     }
 
-    public static Future<List<MDataKey>> getKeys(MDataInfo mDataInfo) {
-        return Executor.getInstance().submit(new CallbackHelper<List<MDataKey>>(binder -> {
+    public static Future<List<byte[]>> getKeys(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<List<byte[]>>(binder -> {
             NativeBindings.mdataListKeys(BaseSession.appHandle.toLong(), mDataInfo, (result, keys) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(Arrays.asList(keys));
+                binder.onResult(Convertor.toKeys(keys));
             });
         }));
     }
