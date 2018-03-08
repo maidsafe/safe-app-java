@@ -33,6 +33,10 @@ public class AccessContInfo {
 		nonce = val;
 	}
 
-	public AccessContInfo(byte[] id, long tag, byte[] nonce) { }
+	public AccessContInfo(byte[] id, long tag, byte[] nonce) {
+		this.id = id;
+		this.tag = tag;
+		this.nonce = nonce;
+}
 }
 

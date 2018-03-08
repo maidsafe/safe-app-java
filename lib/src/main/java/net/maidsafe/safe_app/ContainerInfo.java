@@ -33,6 +33,10 @@ public class ContainerInfo {
 		permissions = val;
 	}
 
-	public ContainerInfo(String name, MDataInfo mdataInfo, PermissionSet permissions) { }
+	public ContainerInfo(String name, MDataInfo mdataInfo, PermissionSet permissions) {
+		this.name = name;
+		this.mdataInfo = mdataInfo;
+		this.permissions = permissions;
+}
 }
 

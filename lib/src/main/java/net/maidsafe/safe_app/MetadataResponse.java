@@ -43,6 +43,11 @@ public class MetadataResponse {
 		typeTag = val;
 	}
 
-	public MetadataResponse(String name, String description, byte[] xorName, long typeTag) { }
+	public MetadataResponse(String name, String description, byte[] xorName, long typeTag) {
+		this.name = name;
+		this.description = description;
+		this.xorName = xorName;
+		this.typeTag = typeTag;
+}
 }
 

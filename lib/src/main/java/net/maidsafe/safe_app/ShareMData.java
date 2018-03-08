@@ -33,6 +33,10 @@ public class ShareMData {
 		perms = val;
 	}
 
-	public ShareMData(long typeTag, byte[] name, PermissionSet perms) { }
+	public ShareMData(long typeTag, byte[] name, PermissionSet perms) {
+		this.typeTag = typeTag;
+		this.name = name;
+		this.perms = perms;
+}
 }
 

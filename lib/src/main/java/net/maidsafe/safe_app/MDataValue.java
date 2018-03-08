@@ -33,6 +33,10 @@ public class MDataValue {
 		entryVersion = val;
 	}
 
-	public MDataValue(byte[] contentPtr, long contentLen, long entryVersion) { }
+	public MDataValue(byte[] contentPtr, long contentLen, long entryVersion) {
+		this.contentPtr = contentPtr;
+		this.contentLen = contentLen;
+		this.entryVersion = entryVersion;
+}
 }
 

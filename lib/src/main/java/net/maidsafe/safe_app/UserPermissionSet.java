@@ -23,6 +23,9 @@ public class UserPermissionSet {
 		permSet = val;
 	}
 
-	public UserPermissionSet(long userH, PermissionSet permSet) { }
+	public UserPermissionSet(long userH, PermissionSet permSet) {
+		this.userH = userH;
+		this.permSet = permSet;
+}
 }
 

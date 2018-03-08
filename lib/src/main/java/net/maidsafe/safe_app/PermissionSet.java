@@ -53,6 +53,12 @@ public class PermissionSet {
 		managePermissions = val;
 	}
 
-	public PermissionSet(boolean read, boolean insert, boolean update, boolean delete, boolean managePermissions) { }
+	public PermissionSet(boolean read, boolean insert, boolean update, boolean delete, boolean managePermissions) {
+		this.read = read;
+		this.insert = insert;
+		this.update = update;
+		this.delete = delete;
+		this.managePermissions = managePermissions;
+}
 }
 

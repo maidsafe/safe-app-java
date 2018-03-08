@@ -23,6 +23,9 @@ public class MDataKey {
 		valLen = val;
 	}
 
-	public MDataKey(byte[] valPtr, long valLen) { }
+	public MDataKey(byte[] valPtr, long valLen) {
+		this.valPtr = valPtr;
+		this.valLen = valLen;
+}
 }
 

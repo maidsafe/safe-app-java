@@ -43,6 +43,11 @@ public class ShareMDataReq {
 		mdataCap = val;
 	}
 
-	public ShareMDataReq(AppExchangeInfo app, ShareMData[] mdata, long mdataLen, long mdataCap) { }
+	public ShareMDataReq(AppExchangeInfo app, ShareMData[] mdata, long mdataLen, long mdataCap) {
+		this.app = app;
+		this.mdata = mdata;
+		this.mdataLen = mdataLen;
+		this.mdataCap = mdataCap;
+}
 }
 

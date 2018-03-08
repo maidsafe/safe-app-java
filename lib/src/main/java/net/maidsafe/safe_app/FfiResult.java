@@ -23,6 +23,9 @@ public class FfiResult {
 		description = val;
 	}
 
-	public FfiResult(int errorCode, String description) { }
+	public FfiResult(int errorCode, String description) {
+		this.errorCode = errorCode;
+		this.description = description;
+}
 }
 

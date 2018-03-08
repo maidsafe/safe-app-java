@@ -63,6 +63,13 @@ public class AuthGranted {
 		bootstrapConfigCap = val;
 	}
 
-	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte[] bootstrapConfigPtr, long bootstrapConfigLen, long bootstrapConfigCap) { }
+	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte[] bootstrapConfigPtr, long bootstrapConfigLen, long bootstrapConfigCap) {
+		this.appKeys = appKeys;
+		this.accessContainerInfo = accessContainerInfo;
+		this.accessContainerEntry = accessContainerEntry;
+		this.bootstrapConfigPtr = bootstrapConfigPtr;
+		this.bootstrapConfigLen = bootstrapConfigLen;
+		this.bootstrapConfigCap = bootstrapConfigCap;
+}
 }
 

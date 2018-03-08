@@ -43,6 +43,11 @@ public class AppExchangeInfo {
 		vendor = val;
 	}
 
-	public AppExchangeInfo(String id, String scope, String name, String vendor) { }
+	public AppExchangeInfo(String id, String scope, String name, String vendor) {
+		this.id = id;
+		this.scope = scope;
+		this.name = name;
+		this.vendor = vendor;
+}
 }
 

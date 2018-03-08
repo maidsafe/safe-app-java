@@ -23,6 +23,9 @@ public class AccountInfo {
 		mutationsAvailable = val;
 	}
 
-	public AccountInfo(long mutationsDone, long mutationsAvailable) { }
+	public AccountInfo(long mutationsDone, long mutationsAvailable) {
+		this.mutationsDone = mutationsDone;
+		this.mutationsAvailable = mutationsAvailable;
+}
 }
 

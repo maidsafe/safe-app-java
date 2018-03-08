@@ -83,6 +83,15 @@ public class MDataInfo {
 		newEncNonce = val;
 	}
 
-	public MDataInfo(byte[] name, long typeTag, boolean hasEncInfo, byte[] encKey, byte[] encNonce, boolean hasNewEncInfo, byte[] newEncKey, byte[] newEncNonce) { }
+	public MDataInfo(byte[] name, long typeTag, boolean hasEncInfo, byte[] encKey, byte[] encNonce, boolean hasNewEncInfo, byte[] newEncKey, byte[] newEncNonce) {
+		this.name = name;
+		this.typeTag = typeTag;
+		this.hasEncInfo = hasEncInfo;
+		this.encKey = encKey;
+		this.encNonce = encNonce;
+		this.hasNewEncInfo = hasNewEncInfo;
+		this.newEncKey = newEncKey;
+		this.newEncNonce = newEncNonce;
+}
 }
 

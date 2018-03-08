@@ -93,6 +93,16 @@ public class File {
 		dataMapName = val;
 	}
 
-	public File(long size, long createdSec, int createdNsec, long modifiedSec, int modifiedNsec, byte[] userMetadataPtr, long userMetadataLen, long userMetadataCap, byte[] dataMapName) { }
+	public File(long size, long createdSec, int createdNsec, long modifiedSec, int modifiedNsec, byte[] userMetadataPtr, long userMetadataLen, long userMetadataCap, byte[] dataMapName) {
+		this.size = size;
+		this.createdSec = createdSec;
+		this.createdNsec = createdNsec;
+		this.modifiedSec = modifiedSec;
+		this.modifiedNsec = modifiedNsec;
+		this.userMetadataPtr = userMetadataPtr;
+		this.userMetadataLen = userMetadataLen;
+		this.userMetadataCap = userMetadataCap;
+		this.dataMapName = dataMapName;
+}
 }
 

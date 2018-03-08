@@ -63,6 +63,13 @@ public class AppKeys {
 		encSk = val;
 	}
 
-	public AppKeys(byte[] ownerKey, byte[] encKey, byte[] signPk, byte[] signSk, byte[] encPk, byte[] encSk) { }
+	public AppKeys(byte[] ownerKey, byte[] encKey, byte[] signPk, byte[] signSk, byte[] encPk, byte[] encSk) {
+		this.ownerKey = ownerKey;
+		this.encKey = encKey;
+		this.signPk = signPk;
+		this.signSk = signSk;
+		this.encPk = encPk;
+		this.encSk = encSk;
+}
 }
 

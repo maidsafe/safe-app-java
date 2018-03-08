@@ -772,7 +772,6 @@ public class NativeBindings {
      */
     public static native void fileClose(long app, long fileH, CallbackResultFile oCb);
 
-
     /**
      * Creates a random app instance for testing.
      */
@@ -782,5 +781,6 @@ public class NativeBindings {
      * Create a random app instance for testing, with access to containers.
      */
     public static native void testCreateAppWithAccess(AuthReq authReq, CallbackResultApp oCb);
+
 
 }

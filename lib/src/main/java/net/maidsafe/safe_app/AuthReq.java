@@ -53,6 +53,12 @@ public class AuthReq {
 		containersCap = val;
 	}
 
-	public AuthReq(AppExchangeInfo app, boolean appContainer, ContainerPermissions[] containers, long containersLen, long containersCap) { }
+	public AuthReq(AppExchangeInfo app, boolean appContainer, ContainerPermissions[] containers, long containersLen, long containersCap) {
+		this.app = app;
+		this.appContainer = appContainer;
+		this.containers = containers;
+		this.containersLen = containersLen;
+		this.containersCap = containersCap;
+}
 }
 

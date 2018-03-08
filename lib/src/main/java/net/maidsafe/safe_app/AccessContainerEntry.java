@@ -33,6 +33,10 @@ public class AccessContainerEntry {
 		containersCap = val;
 	}
 
-	public AccessContainerEntry(ContainerInfo[] containersPtr, long containersLen, long containersCap) { }
+	public AccessContainerEntry(ContainerInfo[] containersPtr, long containersLen, long containersCap) {
+		this.containersPtr = containersPtr;
+		this.containersLen = containersLen;
+		this.containersCap = containersCap;
+}
 }
 

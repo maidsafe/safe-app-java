@@ -23,6 +23,9 @@ public class ContainerPermissions {
 		access = val;
 	}
 
-	public ContainerPermissions(String contName, PermissionSet access) { }
+	public ContainerPermissions(String contName, PermissionSet access) {
+		this.contName = contName;
+		this.access = access;
+}
 }
 

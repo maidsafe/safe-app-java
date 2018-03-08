@@ -43,6 +43,11 @@ public class AppAccess {
 		appId = val;
 	}
 
-	public AppAccess(byte[] signKey, PermissionSet permissions, String name, String appId) { }
+	public AppAccess(byte[] signKey, PermissionSet permissions, String name, String appId) {
+		this.signKey = signKey;
+		this.permissions = permissions;
+		this.name = name;
+		this.appId = appId;
+}
 }
 
