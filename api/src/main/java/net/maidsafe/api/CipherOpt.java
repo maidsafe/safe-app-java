@@ -6,20 +6,28 @@ import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
+import java.lang.annotation.Native;
 import java.util.concurrent.Future;
 
-public class CipherOpt {
+class CipherOpt {
 
-    private static NativeHandle getNativeHandle(long handle) {
+    private static AppHandle appHandle;
+
+    public CipherOpt(AppHandle appHandle) {
+        this.appHandle = appHandle;
+    }
+
+
+    private NativeHandle getNativeHandle(long handle) {
         return new NativeHandle(handle, (cipherOpt) -> {
-            NativeBindings.cipherOptFree(BaseSession.appHandle.toLong(), cipherOpt, (res) -> {
+            NativeBindings.cipherOptFree(appHandle.toLong(), cipherOpt, (res) -> {
             });
         });
     }
 
-    public static Future<NativeHandle> getPlainCipherOpt() {
+    public Future<NativeHandle> getPlainCipherOpt() {
         return Executor.getInstance().submit(new CallbackHelper(binder -> {
-            NativeBindings.cipherOptNewPlaintext(BaseSession.appHandle.toLong(), (result, handle) -> {
+            NativeBindings.cipherOptNewPlaintext(appHandle.toLong(), (result, handle) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -29,9 +37,9 @@ public class CipherOpt {
         }));
     }
 
-    public static Future<NativeHandle> getSymmetricCipherOpt() {
+    public Future<NativeHandle> getSymmetricCipherOpt() {
         return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.cipherOptNewSymmetric(BaseSession.appHandle.toLong(), (result, handle) -> {
+            NativeBindings.cipherOptNewSymmetric(appHandle.toLong(), (result, handle) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -41,9 +49,9 @@ public class CipherOpt {
         }));
     }
 
-    public static Future<NativeHandle> getAsymmetricCipherOpt(NativeHandle publicEncryptKey) {
+    public Future<NativeHandle> getAsymmetricCipherOpt(NativeHandle publicEncryptKey) {
         return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.cipherOptNewAsymmetric(BaseSession.appHandle.toLong(), publicEncryptKey.toLong(), (result, handle) -> {
+            NativeBindings.cipherOptNewAsymmetric(appHandle.toLong(), publicEncryptKey.toLong(), (result, handle) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;

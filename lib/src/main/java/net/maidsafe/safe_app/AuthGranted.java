@@ -33,14 +33,14 @@ public class AuthGranted {
 		accessContainerEntry = val;
 	}
 
-	private byte[] bootstrapConfigPtr;
+	private byte[] bootstrapConfig;
 
-	public byte[] getBootstrapConfigPtr() {
-		return bootstrapConfigPtr;
+	public byte[] getBootstrapConfig() {
+		return bootstrapConfig;
 	}
 
-	public void setBootstrapConfigPtr(final byte[] val) {
-		bootstrapConfigPtr = val;
+	public void setBootstrapConfig(final byte[] val) {
+		bootstrapConfig = val;
 	}
 
 	private long bootstrapConfigLen;
@@ -63,11 +63,11 @@ public class AuthGranted {
 		bootstrapConfigCap = val;
 	}
 
-	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte[] bootstrapConfigPtr, long bootstrapConfigLen, long bootstrapConfigCap) {
+	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte[] bootstrapConfig, long bootstrapConfigLen, long bootstrapConfigCap) {
 		this.appKeys = appKeys;
 		this.accessContainerInfo = accessContainerInfo;
 		this.accessContainerEntry = accessContainerEntry;
-		this.bootstrapConfigPtr = bootstrapConfigPtr;
+		this.bootstrapConfig = bootstrapConfig;
 		this.bootstrapConfigLen = bootstrapConfigLen;
 		this.bootstrapConfigCap = bootstrapConfigCap;
 }

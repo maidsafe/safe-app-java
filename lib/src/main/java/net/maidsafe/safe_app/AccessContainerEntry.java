@@ -3,14 +3,14 @@ package net.maidsafe.safe_app;
 /// Access container entry for a single app.
 public class AccessContainerEntry {
 	public AccessContainerEntry() { }
-	private ContainerInfo[] containersPtr;
+	private ContainerInfo[] containers;
 
-	public ContainerInfo[] getContainersPtr() {
-		return containersPtr;
+	public ContainerInfo[] getContainer() {
+		return containers;
 	}
 
-	public void setContainersPtr(final ContainerInfo[] val) {
-		containersPtr = val;
+	public void setContainer(final ContainerInfo[] val) {
+		containers = val;
 	}
 
 	private long containersLen;
@@ -33,8 +33,8 @@ public class AccessContainerEntry {
 		containersCap = val;
 	}
 
-	public AccessContainerEntry(ContainerInfo[] containersPtr, long containersLen, long containersCap) {
-		this.containersPtr = containersPtr;
+	public AccessContainerEntry(ContainerInfo[] containers, long containersLen, long containersCap) {
+		this.containers = containers;
 		this.containersLen = containersLen;
 		this.containersCap = containersCap;
 }
