@@ -1,14 +1,13 @@
 package net.maidsafe.api;
 
-import net.maidsafe.api.model.MDataValue;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.MDataEntry;
+import net.maidsafe.safe_app.MDataValue;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -67,7 +66,11 @@ class MDataEntries {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(new MDataValue(value, version));
+                MDataValue mDataValue = new MDataValue();
+                mDataValue.setContent(value);
+                mDataValue.setContentLen(value.length);
+                mDataValue.setEntryVersion(version);
+                binder.onResult(mDataValue);
             });
         }));
     }

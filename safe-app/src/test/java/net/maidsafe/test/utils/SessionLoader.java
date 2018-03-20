@@ -1,13 +1,13 @@
 package net.maidsafe.test.utils;
 
-import net.maidsafe.api.Session;
+import net.maidsafe.api.Client;
 
 public class SessionLoader implements Cloneable{
 
     private static SessionLoader instance;
 
     private SessionLoader() {
-        Session.load();
+        Client.load();
     }
 
     public static void load() {

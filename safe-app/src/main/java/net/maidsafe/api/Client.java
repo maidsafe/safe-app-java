@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class Session extends BaseSession {
+public class Client extends Session {
 
     public static void load() {
         try {
@@ -32,11 +32,15 @@ public class Session extends BaseSession {
             generatedDir.deleteOnExit();
             File file = new File(generatedDir, libName.concat(extension));
             file.deleteOnExit();
-            InputStream inputStream = Session.class.getResourceAsStream("/native/".concat(libName).concat(extension));
+            InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
             System.load(file.getAbsolutePath());
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
+    }
+
+    private Client(AppHandle appHandle, DisconnectListener disconnectListener) {
+        super(appHandle, disconnectListener);
     }
 }
