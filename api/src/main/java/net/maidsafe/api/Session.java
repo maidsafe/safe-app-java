@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
-class BaseSession {
+class Session {
 
     private AppHandle appHandle;
     private OnDisconnected onDisconnected;
@@ -20,13 +20,13 @@ class BaseSession {
     public CipherOpt cipherOpt;
     public Crypto crypto;
     public IData iData;
-    public  MData mData;
+    public MData mData;
     public MDataEntries mDataEntries;
     public MDataEntryAction mDataEntryAction;
     public MDataPermission mDataPermission;
     public NFS nfs;
 
-    private BaseSession(AppHandle appHandle, DisconnectListener disconnectListener) {
+    protected Session(AppHandle appHandle, DisconnectListener disconnectListener) {
         this.appHandle = appHandle;
         this.disconnectListener = disconnectListener;
         init();
@@ -228,12 +228,12 @@ class BaseSession {
         }));
     }
 
-    public static Future<BaseSession> connect(UnregisteredClientResponse response) {
+    public static Future<Session> connect(UnregisteredClientResponse response) {
         return connect(response.getBootstrapConfig());
     }
 
-    public static Future<BaseSession> connect(byte[] bootStrapConfig) {
-        return Executor.getInstance().submit(new CallbackHelper<BaseSession>(binder -> {
+    public static Future<Session> connect(byte[] bootStrapConfig) {
+        return Executor.getInstance().submit(new CallbackHelper<Session>(binder -> {
             DisconnectListener disconnectListener = new DisconnectListener();
             CallbackResultApp callback = (result, app) -> {
                 if (result.getErrorCode() != 0) {
@@ -242,14 +242,14 @@ class BaseSession {
                 }
 
                 AppHandle appHandle = new AppHandle(app);
-                binder.onResult(new BaseSession(appHandle, disconnectListener));
+                binder.onResult(new Session(appHandle, disconnectListener));
             };
             NativeBindings.appUnregistered(bootStrapConfig, disconnectListener.getCallback(), callback);
         }));
     }
 
-    public static Future<BaseSession> connect(App app, AuthGranted authGranted) {
-        return Executor.getInstance().submit(new CallbackHelper<BaseSession>(binder -> {
+    public static Future<Session> connect(App app, AuthGranted authGranted) {
+        return Executor.getInstance().submit(new CallbackHelper<Session>(binder -> {
             DisconnectListener disconnectListener = new DisconnectListener();
             CallbackResultApp callback = (result, handle) -> {
                 if (result.getErrorCode() != 0) {
@@ -257,7 +257,7 @@ class BaseSession {
                     return;
                 }
                 AppHandle appHandle = new AppHandle(handle);
-                binder.onResult(new BaseSession(appHandle, disconnectListener));
+                binder.onResult(new Session(appHandle, disconnectListener));
             };
             NativeBindings.appRegistered(app.getId(), authGranted, disconnectListener.getCallback(), callback);
         }));

@@ -9,8 +9,8 @@ public class MDataKey {
 		return val;
 	}
 
-	public void setVal(final byte[] val) {
-		val = val;
+	public void setVal(byte[] val) {
+		this.val = val;
 	}
 
 	private long valLen;
@@ -19,7 +19,7 @@ public class MDataKey {
 		return valLen;
 	}
 
-	public void setValLen(final long val) {
+	public void setValLen(long val) {
 		valLen = val;
 	}
 

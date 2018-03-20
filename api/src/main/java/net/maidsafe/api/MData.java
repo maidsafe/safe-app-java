@@ -1,13 +1,12 @@
 package net.maidsafe.api;
 
 import net.maidsafe.api.model.NativeHandle;
-import net.maidsafe.api.model.MDataValue;
 import net.maidsafe.safe_app.*;
-import net.maidsafe.utils.Convertor;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -157,7 +156,11 @@ class MData {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(new MDataValue(value, version));
+                MDataValue mDataValue = new MDataValue();
+                mDataValue.setContent(value);
+                mDataValue.setContentLen(value.length);
+                mDataValue.setEntryVersion(version);
+                binder.onResult(mDataValue);
             });
         }));
     }
@@ -175,14 +178,14 @@ class MData {
         }));
     }
 
-    public Future<List<byte[]>> getKeys(MDataInfo mDataInfo) {
-        return Executor.getInstance().submit(new CallbackHelper<List<byte[]>>(binder -> {
+    public Future<List<MDataKey>> getKeys(MDataInfo mDataInfo) {
+        return Executor.getInstance().submit(new CallbackHelper<List<MDataKey>>(binder -> {
             NativeBindings.mdataListKeys(appHandle.toLong(), mDataInfo, (result, keys) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(Convertor.toKeys(keys));
+                binder.onResult(Arrays.asList(keys));
             });
         }));
     }
@@ -194,7 +197,7 @@ class MData {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(Convertor.toMDataValue(values));
+                binder.onResult(Arrays.asList(values));
             });
         }));
     }
