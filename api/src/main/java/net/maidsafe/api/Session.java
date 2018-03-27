@@ -33,6 +33,7 @@ class Session {
     }
 
     private void init() {
+        if (this.disconnectListener != null)
         this.disconnectListener.setListener((val) -> {
             if (onDisconnected == null) {
                 return;
@@ -54,6 +55,10 @@ class Session {
     public boolean isConnected() {
         return !disconnected;
     }
+
+    public boolean isMock() { 
+	return NativeBindings.isMockBuild();
+   }
 
     public void setOnDisconnectListener(OnDisconnected onDisconnected) {
         this.onDisconnected = onDisconnected;
@@ -260,6 +265,20 @@ class Session {
                 binder.onResult(new Session(appHandle, disconnectListener));
             };
             NativeBindings.appRegistered(app.getId(), authGranted, disconnectListener.getCallback(), callback);
+        }));
+    }
+
+    public Future<Void> reconnect() {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            CallbackResult callback = result -> {
+                if(result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                disconnected = false;
+                binder.onResult(null);
+            };
+            NativeBindings.appReconnect(appHandle.toLong(), callback);
         }));
     }
 
