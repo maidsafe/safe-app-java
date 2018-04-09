@@ -2,7 +2,15 @@ package net.maidsafe.safe_app;
 
 /// FFI wrapper for `MDataInfo`.
 public class MDataInfo {
-	public MDataInfo() { }
+
+	public MDataInfo() {
+		this.name = new byte[] {};
+		this.encNonce = new byte[] {};
+		this.encKey = new byte[] {};
+		this.newEncKey = new byte [] {};
+		this.newEncNonce = new byte [] {};
+	}
+
 	private byte[] name;
 
 	public byte[] getName() {
