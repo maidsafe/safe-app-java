@@ -2,9 +2,22 @@ package net.maidsafe.safe_app;
 
 /// User metadata for mutable data
 public class MetadataResponse {
-	public MetadataResponse() { }
 	private String name;
+	private String description;
+	private byte[] xorName;
+	private long typeTag;
 
+	public MetadataResponse() {
+		this.name = new String();
+		this.description = new String();
+		this.xorName = new byte[] {};
+	}
+	public MetadataResponse(String name, String description, byte[] xorName, long typeTag) {
+		this.name = name;
+		this.description = description;
+		this.xorName = xorName;
+		this.typeTag = typeTag;
+	}
 	public String getName() {
 		return name;
 	}
@@ -12,8 +25,6 @@ public class MetadataResponse {
 	public void setName(final String val) {
 		name = val;
 	}
-
-	private String description;
 
 	public String getDescription() {
 		return description;
@@ -23,8 +34,6 @@ public class MetadataResponse {
 		description = val;
 	}
 
-	private byte[] xorName;
-
 	public byte[] getXorName() {
 		return xorName;
 	}
@@ -32,8 +41,6 @@ public class MetadataResponse {
 	public void setXorName(final byte[] val) {
 		xorName = val;
 	}
-
-	private long typeTag;
 
 	public long getTypeTag() {
 		return typeTag;
@@ -43,11 +50,5 @@ public class MetadataResponse {
 		typeTag = val;
 	}
 
-	public MetadataResponse(String name, String description, byte[] xorName, long typeTag) {
-		this.name = name;
-		this.description = description;
-		this.xorName = xorName;
-		this.typeTag = typeTag;
-}
 }
 

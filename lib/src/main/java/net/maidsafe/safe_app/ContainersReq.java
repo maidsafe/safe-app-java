@@ -2,9 +2,21 @@ package net.maidsafe.safe_app;
 
 /// Containers request
 public class ContainersReq {
-	public ContainersReq() { }
 	private AppExchangeInfo app;
+	private ContainerPermissions containers;
+	private long containersLen;
+	private long containersCap;
 
+	public ContainersReq() {
+		this.app = new AppExchangeInfo();
+		this.containers = new ContainerPermissions();
+	}
+	public ContainersReq(AppExchangeInfo app, ContainerPermissions containers, long containersLen, long containersCap) {
+		this.app = app;
+		this.containers = containers;
+		this.containersLen = containersLen;
+		this.containersCap = containersCap;
+	}
 	public AppExchangeInfo getApp() {
 		return app;
 	}
@@ -13,17 +25,13 @@ public class ContainersReq {
 		app = val;
 	}
 
-	private ContainerPermissions[] containers;
-
-	public ContainerPermissions[] getContainer() {
+	public ContainerPermissions getContainer() {
 		return containers;
 	}
 
-	public void setContainer(final ContainerPermissions[] val) {
+	public void setContainer(final ContainerPermissions val) {
 		containers = val;
 	}
-
-	private long containersLen;
 
 	public long getContainersLen() {
 		return containersLen;
@@ -33,8 +41,6 @@ public class ContainersReq {
 		containersLen = val;
 	}
 
-	private long containersCap;
-
 	public long getContainersCap() {
 		return containersCap;
 	}
@@ -43,11 +49,5 @@ public class ContainersReq {
 		containersCap = val;
 	}
 
-	public ContainersReq(AppExchangeInfo app, ContainerPermissions[] containers, long containersLen, long containersCap) {
-		this.app = app;
-		this.containers = containers;
-		this.containersLen = containersLen;
-		this.containersCap = containersCap;
-}
 }
 

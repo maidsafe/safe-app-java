@@ -2,9 +2,19 @@ package net.maidsafe.safe_app;
 
 /// Access container info.
 public class AccessContInfo {
-	public AccessContInfo() { }
 	private byte[] id;
+	private long tag;
+	private byte[] nonce;
 
+	public AccessContInfo() {
+		this.id = new byte[] {};
+		this.nonce = new byte[] {};
+	}
+	public AccessContInfo(byte[] id, long tag, byte[] nonce) {
+		this.id = id;
+		this.tag = tag;
+		this.nonce = nonce;
+	}
 	public byte[] getId() {
 		return id;
 	}
@@ -12,8 +22,6 @@ public class AccessContInfo {
 	public void setId(final byte[] val) {
 		id = val;
 	}
-
-	private long tag;
 
 	public long getTag() {
 		return tag;
@@ -23,8 +31,6 @@ public class AccessContInfo {
 		tag = val;
 	}
 
-	private byte[] nonce;
-
 	public byte[] getNonce() {
 		return nonce;
 	}
@@ -33,10 +39,5 @@ public class AccessContInfo {
 		nonce = val;
 	}
 
-	public AccessContInfo(byte[] id, long tag, byte[] nonce) {
-		this.id = id;
-		this.tag = tag;
-		this.nonce = nonce;
-}
 }
 

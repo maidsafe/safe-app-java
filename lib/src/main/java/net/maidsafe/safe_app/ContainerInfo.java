@@ -2,9 +2,20 @@ package net.maidsafe.safe_app;
 
 /// Information about a container (name, `MDataInfo` and permissions)
 public class ContainerInfo {
-	public ContainerInfo() { }
 	private String name;
+	private MDataInfo mdataInfo;
+	private PermissionSet permissions;
 
+	public ContainerInfo() {
+		this.name = new String();
+		this.mdataInfo = new MDataInfo();
+		this.permissions = new PermissionSet();
+	}
+	public ContainerInfo(String name, MDataInfo mdataInfo, PermissionSet permissions) {
+		this.name = name;
+		this.mdataInfo = mdataInfo;
+		this.permissions = permissions;
+	}
 	public String getName() {
 		return name;
 	}
@@ -12,8 +23,6 @@ public class ContainerInfo {
 	public void setName(final String val) {
 		name = val;
 	}
-
-	private MDataInfo mdataInfo;
 
 	public MDataInfo getMdataInfo() {
 		return mdataInfo;
@@ -23,8 +32,6 @@ public class ContainerInfo {
 		mdataInfo = val;
 	}
 
-	private PermissionSet permissions;
-
 	public PermissionSet getPermission() {
 		return permissions;
 	}
@@ -33,10 +40,5 @@ public class ContainerInfo {
 		permissions = val;
 	}
 
-	public ContainerInfo(String name, MDataInfo mdataInfo, PermissionSet permissions) {
-		this.name = name;
-		this.mdataInfo = mdataInfo;
-		this.permissions = permissions;
-}
 }
 

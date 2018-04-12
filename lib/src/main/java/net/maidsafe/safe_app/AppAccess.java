@@ -2,9 +2,23 @@ package net.maidsafe.safe_app;
 
 /// Information about an application that has access to an MD through `sign_key`
 public class AppAccess {
-	public AppAccess() { }
 	private byte[] signKey;
+	private PermissionSet permissions;
+	private String name;
+	private String appId;
 
+	public AppAccess() {
+		this.signKey = new byte[] {};
+		this.permissions = new PermissionSet();
+		this.name = new String();
+		this.appId = new String();
+	}
+	public AppAccess(byte[] signKey, PermissionSet permissions, String name, String appId) {
+		this.signKey = signKey;
+		this.permissions = permissions;
+		this.name = name;
+		this.appId = appId;
+	}
 	public byte[] getSignKey() {
 		return signKey;
 	}
@@ -12,8 +26,6 @@ public class AppAccess {
 	public void setSignKey(final byte[] val) {
 		signKey = val;
 	}
-
-	private PermissionSet permissions;
 
 	public PermissionSet getPermission() {
 		return permissions;
@@ -23,8 +35,6 @@ public class AppAccess {
 		permissions = val;
 	}
 
-	private String name;
-
 	public String getName() {
 		return name;
 	}
@@ -32,8 +42,6 @@ public class AppAccess {
 	public void setName(final String val) {
 		name = val;
 	}
-
-	private String appId;
 
 	public String getAppId() {
 		return appId;
@@ -43,11 +51,5 @@ public class AppAccess {
 		appId = val;
 	}
 
-	public AppAccess(byte[] signKey, PermissionSet permissions, String name, String appId) {
-		this.signKey = signKey;
-		this.permissions = permissions;
-		this.name = name;
-		this.appId = appId;
-}
 }
 

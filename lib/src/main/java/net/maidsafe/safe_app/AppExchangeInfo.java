@@ -2,9 +2,23 @@ package net.maidsafe.safe_app;
 
 /// Represents an application ID in the process of asking permissions
 public class AppExchangeInfo {
-	public AppExchangeInfo() { }
 	private String id;
+	private String scope;
+	private String name;
+	private String vendor;
 
+	public AppExchangeInfo() {
+		this.id = new String();
+		this.scope = new String();
+		this.name = new String();
+		this.vendor = new String();
+	}
+	public AppExchangeInfo(String id, String scope, String name, String vendor) {
+		this.id = id;
+		this.scope = scope;
+		this.name = name;
+		this.vendor = vendor;
+	}
 	public String getId() {
 		return id;
 	}
@@ -12,8 +26,6 @@ public class AppExchangeInfo {
 	public void setId(final String val) {
 		id = val;
 	}
-
-	private String scope;
 
 	public String getScope() {
 		return scope;
@@ -23,8 +35,6 @@ public class AppExchangeInfo {
 		scope = val;
 	}
 
-	private String name;
-
 	public String getName() {
 		return name;
 	}
@@ -32,8 +42,6 @@ public class AppExchangeInfo {
 	public void setName(final String val) {
 		name = val;
 	}
-
-	private String vendor;
 
 	public String getVendor() {
 		return vendor;
@@ -43,11 +51,5 @@ public class AppExchangeInfo {
 		vendor = val;
 	}
 
-	public AppExchangeInfo(String id, String scope, String name, String vendor) {
-		this.id = id;
-		this.scope = scope;
-		this.name = name;
-		this.vendor = vendor;
-}
 }
 

@@ -2,9 +2,26 @@ package net.maidsafe.safe_app;
 
 /// Represents the authentication response.
 public class AuthGranted {
-	public AuthGranted() { }
 	private AppKeys appKeys;
+	private AccessContInfo accessContainerInfo;
+	private AccessContainerEntry accessContainerEntry;
+	private byte bootstrapConfig;
+	private long bootstrapConfigLen;
+	private long bootstrapConfigCap;
 
+	public AuthGranted() {
+		this.appKeys = new AppKeys();
+		this.accessContainerInfo = new AccessContInfo();
+		this.accessContainerEntry = new AccessContainerEntry();
+	}
+	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte bootstrapConfig, long bootstrapConfigLen, long bootstrapConfigCap) {
+		this.appKeys = appKeys;
+		this.accessContainerInfo = accessContainerInfo;
+		this.accessContainerEntry = accessContainerEntry;
+		this.bootstrapConfig = bootstrapConfig;
+		this.bootstrapConfigLen = bootstrapConfigLen;
+		this.bootstrapConfigCap = bootstrapConfigCap;
+	}
 	public AppKeys getAppKey() {
 		return appKeys;
 	}
@@ -12,8 +29,6 @@ public class AuthGranted {
 	public void setAppKey(final AppKeys val) {
 		appKeys = val;
 	}
-
-	private AccessContInfo accessContainerInfo;
 
 	public AccessContInfo getAccessContainerInfo() {
 		return accessContainerInfo;
@@ -23,8 +38,6 @@ public class AuthGranted {
 		accessContainerInfo = val;
 	}
 
-	private AccessContainerEntry accessContainerEntry;
-
 	public AccessContainerEntry getAccessContainerEntry() {
 		return accessContainerEntry;
 	}
@@ -33,17 +46,13 @@ public class AuthGranted {
 		accessContainerEntry = val;
 	}
 
-	private byte[] bootstrapConfig;
-
-	public byte[] getBootstrapConfig() {
+	public byte getBootstrapConfig() {
 		return bootstrapConfig;
 	}
 
-	public void setBootstrapConfig(final byte[] val) {
+	public void setBootstrapConfig(final byte val) {
 		bootstrapConfig = val;
 	}
-
-	private long bootstrapConfigLen;
 
 	public long getBootstrapConfigLen() {
 		return bootstrapConfigLen;
@@ -53,8 +62,6 @@ public class AuthGranted {
 		bootstrapConfigLen = val;
 	}
 
-	private long bootstrapConfigCap;
-
 	public long getBootstrapConfigCap() {
 		return bootstrapConfigCap;
 	}
@@ -63,13 +70,5 @@ public class AuthGranted {
 		bootstrapConfigCap = val;
 	}
 
-	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte[] bootstrapConfig, long bootstrapConfigLen, long bootstrapConfigCap) {
-		this.appKeys = appKeys;
-		this.accessContainerInfo = accessContainerInfo;
-		this.accessContainerEntry = accessContainerEntry;
-		this.bootstrapConfig = bootstrapConfig;
-		this.bootstrapConfigLen = bootstrapConfigLen;
-		this.bootstrapConfigCap = bootstrapConfigCap;
-}
 }
 

@@ -2,9 +2,18 @@ package net.maidsafe.safe_app;
 
 /// Represents the FFI-safe mutable data value.
 public class MDataValue {
-	public MDataValue() { }
 	private byte[] content;
+	private long contentLen;
+	private long entryVersion;
 
+	public MDataValue() {
+
+	}
+	public MDataValue(byte[] content, long contentLen, long entryVersion) {
+		this.content = content;
+		this.contentLen = contentLen;
+		this.entryVersion = entryVersion;
+	}
 	public byte[] getContent() {
 		return content;
 	}
@@ -12,8 +21,6 @@ public class MDataValue {
 	public void setContent(final byte[] val) {
 		content = val;
 	}
-
-	private long contentLen;
 
 	public long getContentLen() {
 		return contentLen;
@@ -23,8 +30,6 @@ public class MDataValue {
 		contentLen = val;
 	}
 
-	private long entryVersion;
-
 	public long getEntryVersion() {
 		return entryVersion;
 	}
@@ -33,10 +38,5 @@ public class MDataValue {
 		entryVersion = val;
 	}
 
-	public MDataValue(byte[] content, long contentLen, long entryVersion) {
-		this.content = content;
-		this.contentLen = contentLen;
-		this.entryVersion = entryVersion;
-}
 }
 

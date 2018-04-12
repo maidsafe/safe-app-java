@@ -2,9 +2,22 @@ package net.maidsafe.safe_app;
 
 /// Represents a requested set of changes to the permissions of a mutable data.
 public class PermissionSet {
-	public PermissionSet() { }
 	private boolean read;
+	private boolean insert;
+	private boolean update;
+	private boolean delete;
+	private boolean managePermissions;
 
+	public PermissionSet() {
+
+	}
+	public PermissionSet(boolean read, boolean insert, boolean update, boolean delete, boolean managePermissions) {
+		this.read = read;
+		this.insert = insert;
+		this.update = update;
+		this.delete = delete;
+		this.managePermissions = managePermissions;
+	}
 	public boolean getRead() {
 		return read;
 	}
@@ -12,8 +25,6 @@ public class PermissionSet {
 	public void setRead(final boolean val) {
 		read = val;
 	}
-
-	private boolean insert;
 
 	public boolean getInsert() {
 		return insert;
@@ -23,8 +34,6 @@ public class PermissionSet {
 		insert = val;
 	}
 
-	private boolean update;
-
 	public boolean getUpdate() {
 		return update;
 	}
@@ -32,8 +41,6 @@ public class PermissionSet {
 	public void setUpdate(final boolean val) {
 		update = val;
 	}
-
-	private boolean delete;
 
 	public boolean getDelete() {
 		return delete;
@@ -43,8 +50,6 @@ public class PermissionSet {
 		delete = val;
 	}
 
-	private boolean managePermissions;
-
 	public boolean getManagePermission() {
 		return managePermissions;
 	}
@@ -53,12 +58,5 @@ public class PermissionSet {
 		managePermissions = val;
 	}
 
-	public PermissionSet(boolean read, boolean insert, boolean update, boolean delete, boolean managePermissions) {
-		this.read = read;
-		this.insert = insert;
-		this.update = update;
-		this.delete = delete;
-		this.managePermissions = managePermissions;
-}
 }
 

@@ -1,7 +1,7 @@
 package net.maidsafe.safe_app;
 
 
-public class NativeBindings {
+                         public class NativeBindings {
 
                          	/**
 	 * Returns true if this crate was compiled against mock-routing.
@@ -461,7 +461,7 @@ public class NativeBindings {
 	 *
 	 * Callback parameters: user data, error code, mdata info handle
 	 */
-	public static native void mdataInfoDeserialise(byte[] ptr, CallbackResultMDataInfo oCb);
+	public static native void mdataInfoDeserialise(byte[] encodedPtr, CallbackResultMDataInfo oCb);
 	
 	/**
 	 * Create new mutable data and put it on the network.
@@ -781,6 +781,11 @@ public class NativeBindings {
 	 * Create a random app instance for testing, with access to containers.
 	 */
 	public static native void testCreateAppWithAccess(AuthReq authReq, CallbackResultApp oCb);
+	
+	/**
+	 * Simulate a network disconnect when testing.
+	 */
+	public static native void testSimulateNetworkDisconnect(long app, CallbackResult oCb);
 	
 
 

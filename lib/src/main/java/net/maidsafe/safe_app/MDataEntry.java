@@ -2,9 +2,17 @@ package net.maidsafe.safe_app;
 
 /// Represents an FFI-safe mutable data (key, value) entry.
 public class MDataEntry {
-	public MDataEntry() { }
 	private MDataKey key;
+	private MDataValue value;
 
+	public MDataEntry() {
+		this.key = new MDataKey();
+		this.value = new MDataValue();
+	}
+	public MDataEntry(MDataKey key, MDataValue value) {
+		this.key = key;
+		this.value = value;
+	}
 	public MDataKey getKey() {
 		return key;
 	}
@@ -12,8 +20,6 @@ public class MDataEntry {
 	public void setKey(final MDataKey val) {
 		key = val;
 	}
-
-	private MDataValue value;
 
 	public MDataValue getValue() {
 		return value;
@@ -23,9 +29,5 @@ public class MDataEntry {
 		value = val;
 	}
 
-	public MDataEntry(MDataKey key, MDataValue value) {
-		this.key = key;
-		this.value = value;
-}
 }
 

@@ -2,30 +2,31 @@ package net.maidsafe.safe_app;
 
 /// Represents an FFI-safe mutable data key.
 public class MDataKey {
-	public MDataKey() { }
-	private byte[] val;
+	private byte val;
+	private long valLen;
 
-	public byte[] getVal() {
+	public MDataKey() {
+
+	}
+	public MDataKey(byte val, long valLen) {
+		this.val = val;
+		this.valLen = valLen;
+	}
+	public byte getVal() {
 		return val;
 	}
 
-	public void setVal(byte[] val) {
+	public void setVal(final byte val) {
 		this.val = val;
 	}
-
-	private long valLen;
 
 	public long getValLen() {
 		return valLen;
 	}
 
-	public void setValLen(long val) {
+	public void setValLen(final long val) {
 		valLen = val;
 	}
 
-	public MDataKey(byte[] val, long valLen) {
-		this.val = val;
-		this.valLen = valLen;
-}
 }
 

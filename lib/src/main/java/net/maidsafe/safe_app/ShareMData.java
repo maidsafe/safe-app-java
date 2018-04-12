@@ -2,9 +2,19 @@ package net.maidsafe.safe_app;
 
 /// For use in `ShareMDataReq`. Represents a specific `MutableData` that is being shared.
 public class ShareMData {
-	public ShareMData() { }
 	private long typeTag;
+	private byte[] name;
+	private PermissionSet perms;
 
+	public ShareMData() {
+		this.name = new byte[] {};
+		this.perms = new PermissionSet();
+	}
+	public ShareMData(long typeTag, byte[] name, PermissionSet perms) {
+		this.typeTag = typeTag;
+		this.name = name;
+		this.perms = perms;
+	}
 	public long getTypeTag() {
 		return typeTag;
 	}
@@ -12,8 +22,6 @@ public class ShareMData {
 	public void setTypeTag(final long val) {
 		typeTag = val;
 	}
-
-	private byte[] name;
 
 	public byte[] getName() {
 		return name;
@@ -23,8 +31,6 @@ public class ShareMData {
 		name = val;
 	}
 
-	private PermissionSet perms;
-
 	public PermissionSet getPerm() {
 		return perms;
 	}
@@ -33,10 +39,5 @@ public class ShareMData {
 		perms = val;
 	}
 
-	public ShareMData(long typeTag, byte[] name, PermissionSet perms) {
-		this.typeTag = typeTag;
-		this.name = name;
-		this.perms = perms;
-}
 }
 
