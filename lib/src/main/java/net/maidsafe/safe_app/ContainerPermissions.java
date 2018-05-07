@@ -18,7 +18,7 @@ public class ContainerPermissions {
 	}
 
 	public void setContName(final String val) {
-		contName = val;
+		this.contName = val;
 	}
 
 	public PermissionSet getAccess() {
@@ -26,7 +26,7 @@ public class ContainerPermissions {
 	}
 
 	public void setAccess(final PermissionSet val) {
-		access = val;
+		this.access = val;
 	}
 
 }

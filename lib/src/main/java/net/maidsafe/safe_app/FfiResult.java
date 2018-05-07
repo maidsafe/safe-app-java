@@ -17,7 +17,7 @@ public class FfiResult {
 	}
 
 	public void setErrorCode(final int val) {
-		errorCode = val;
+		this.errorCode = val;
 	}
 
 	public String getDescription() {
@@ -25,7 +25,7 @@ public class FfiResult {
 	}
 
 	public void setDescription(final String val) {
-		description = val;
+		this.description = val;
 	}
 
 }

@@ -20,7 +20,7 @@ public class AccessContInfo {
 	}
 
 	public void setId(final byte[] val) {
-		id = val;
+		this.id = val;
 	}
 
 	public long getTag() {
@@ -28,7 +28,7 @@ public class AccessContInfo {
 	}
 
 	public void setTag(final long val) {
-		tag = val;
+		this.tag = val;
 	}
 
 	public byte[] getNonce() {
@@ -36,7 +36,7 @@ public class AccessContInfo {
 	}
 
 	public void setNonce(final byte[] val) {
-		nonce = val;
+		this.nonce = val;
 	}
 
 }

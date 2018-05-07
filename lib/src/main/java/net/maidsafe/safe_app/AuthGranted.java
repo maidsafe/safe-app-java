@@ -5,7 +5,7 @@ public class AuthGranted {
 	private AppKeys appKeys;
 	private AccessContInfo accessContainerInfo;
 	private AccessContainerEntry accessContainerEntry;
-	private byte bootstrapConfig;
+	private byte[] bootstrapConfig;
 	private long bootstrapConfigLen;
 	private long bootstrapConfigCap;
 
@@ -13,8 +13,9 @@ public class AuthGranted {
 		this.appKeys = new AppKeys();
 		this.accessContainerInfo = new AccessContInfo();
 		this.accessContainerEntry = new AccessContainerEntry();
+		this.bootstrapConfig = new byte[] {};
 	}
-	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte bootstrapConfig, long bootstrapConfigLen, long bootstrapConfigCap) {
+	public AuthGranted(AppKeys appKeys, AccessContInfo accessContainerInfo, AccessContainerEntry accessContainerEntry, byte[] bootstrapConfig, long bootstrapConfigLen, long bootstrapConfigCap) {
 		this.appKeys = appKeys;
 		this.accessContainerInfo = accessContainerInfo;
 		this.accessContainerEntry = accessContainerEntry;
@@ -27,7 +28,7 @@ public class AuthGranted {
 	}
 
 	public void setAppKey(final AppKeys val) {
-		appKeys = val;
+		this.appKeys = val;
 	}
 
 	public AccessContInfo getAccessContainerInfo() {
@@ -35,7 +36,7 @@ public class AuthGranted {
 	}
 
 	public void setAccessContainerInfo(final AccessContInfo val) {
-		accessContainerInfo = val;
+		this.accessContainerInfo = val;
 	}
 
 	public AccessContainerEntry getAccessContainerEntry() {
@@ -43,15 +44,15 @@ public class AuthGranted {
 	}
 
 	public void setAccessContainerEntry(final AccessContainerEntry val) {
-		accessContainerEntry = val;
+		this.accessContainerEntry = val;
 	}
 
-	public byte getBootstrapConfig() {
+	public byte[] getBootstrapConfig() {
 		return bootstrapConfig;
 	}
 
-	public void setBootstrapConfig(final byte val) {
-		bootstrapConfig = val;
+	public void setBootstrapConfig(final byte[] val) {
+		this.bootstrapConfig = val;
 	}
 
 	public long getBootstrapConfigLen() {
@@ -59,7 +60,7 @@ public class AuthGranted {
 	}
 
 	public void setBootstrapConfigLen(final long val) {
-		bootstrapConfigLen = val;
+		this.bootstrapConfigLen = val;
 	}
 
 	public long getBootstrapConfigCap() {
@@ -67,7 +68,7 @@ public class AuthGranted {
 	}
 
 	public void setBootstrapConfigCap(final long val) {
-		bootstrapConfigCap = val;
+		this.bootstrapConfigCap = val;
 	}
 
 }

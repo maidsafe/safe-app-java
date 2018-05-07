@@ -18,7 +18,7 @@ public class MDataEntry {
 	}
 
 	public void setKey(final MDataKey val) {
-		key = val;
+		this.key = val;
 	}
 
 	public MDataValue getValue() {
@@ -26,7 +26,7 @@ public class MDataEntry {
 	}
 
 	public void setValue(final MDataValue val) {
-		value = val;
+		this.value = val;
 	}
 
 }

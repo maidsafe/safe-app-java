@@ -7,15 +7,16 @@ public class File {
 	private int createdNsec;
 	private long modifiedSec;
 	private int modifiedNsec;
-	private byte userMetadataPtr;
+	private byte[] userMetadataPtr;
 	private long userMetadataLen;
 	private long userMetadataCap;
 	private byte[] dataMapName;
 
 	public File() {
+		this.userMetadataPtr = new byte[] {};
 		this.dataMapName = new byte[] {};
 	}
-	public File(long size, long createdSec, int createdNsec, long modifiedSec, int modifiedNsec, byte userMetadataPtr, long userMetadataLen, long userMetadataCap, byte[] dataMapName) {
+	public File(long size, long createdSec, int createdNsec, long modifiedSec, int modifiedNsec, byte[] userMetadataPtr, long userMetadataLen, long userMetadataCap, byte[] dataMapName) {
 		this.size = size;
 		this.createdSec = createdSec;
 		this.createdNsec = createdNsec;
@@ -31,7 +32,7 @@ public class File {
 	}
 
 	public void setSize(final long val) {
-		size = val;
+		this.size = val;
 	}
 
 	public long getCreatedSec() {
@@ -39,7 +40,7 @@ public class File {
 	}
 
 	public void setCreatedSec(final long val) {
-		createdSec = val;
+		this.createdSec = val;
 	}
 
 	public int getCreatedNsec() {
@@ -47,7 +48,7 @@ public class File {
 	}
 
 	public void setCreatedNsec(final int val) {
-		createdNsec = val;
+		this.createdNsec = val;
 	}
 
 	public long getModifiedSec() {
@@ -55,7 +56,7 @@ public class File {
 	}
 
 	public void setModifiedSec(final long val) {
-		modifiedSec = val;
+		this.modifiedSec = val;
 	}
 
 	public int getModifiedNsec() {
@@ -63,15 +64,15 @@ public class File {
 	}
 
 	public void setModifiedNsec(final int val) {
-		modifiedNsec = val;
+		this.modifiedNsec = val;
 	}
 
-	public byte getUserMetadataPtr() {
+	public byte[] getUserMetadataPtr() {
 		return userMetadataPtr;
 	}
 
-	public void setUserMetadataPtr(final byte val) {
-		userMetadataPtr = val;
+	public void setUserMetadataPtr(final byte[] val) {
+		this.userMetadataPtr = val;
 	}
 
 	public long getUserMetadataLen() {
@@ -79,7 +80,7 @@ public class File {
 	}
 
 	public void setUserMetadataLen(final long val) {
-		userMetadataLen = val;
+		this.userMetadataLen = val;
 	}
 
 	public long getUserMetadataCap() {
@@ -87,7 +88,7 @@ public class File {
 	}
 
 	public void setUserMetadataCap(final long val) {
-		userMetadataCap = val;
+		this.userMetadataCap = val;
 	}
 
 	public byte[] getDataMapName() {
@@ -95,7 +96,7 @@ public class File {
 	}
 
 	public void setDataMapName(final byte[] val) {
-		dataMapName = val;
+		this.dataMapName = val;
 	}
 
 }

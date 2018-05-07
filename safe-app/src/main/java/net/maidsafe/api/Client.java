@@ -11,7 +11,8 @@ public class Client extends Session {
 
     public static void load() {
         try {
-            String libName = "libsafe_app";
+            String baseLibName = "libsafe_app";
+            String libName = "libsafe_app_jni";
             String extension = ".so";
             switch (OSInfo.getOs()) {
                 case WINDOWS:
@@ -24,15 +25,21 @@ public class Client extends Session {
                 default:
                     break;
             }
-            String tempDir = System.getProperty("java.io.tmpdir");
+            String tempDir = System.getProperty("java.library.path");
             File generatedDir = new File(tempDir, "safe_app_java" + System.nanoTime());
             if (!generatedDir.mkdir()) {
                 throw new IOException("Failed to create temp directory " + generatedDir.getName());
             }
+
             generatedDir.deleteOnExit();
-            File file = new File(generatedDir, libName.concat(extension));
+            File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
-            InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
+            InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
+            Files.copy(inputStream, file.toPath());
+
+            file = new File(generatedDir, libName.concat(extension));
+            file.deleteOnExit();
+            inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
             System.load(file.getAbsolutePath());
         } catch (Exception ex) {

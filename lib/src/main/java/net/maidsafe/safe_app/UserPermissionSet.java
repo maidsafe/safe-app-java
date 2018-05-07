@@ -17,7 +17,7 @@ public class UserPermissionSet {
 	}
 
 	public void setUserH(final long val) {
-		userH = val;
+		this.userH = val;
 	}
 
 	public PermissionSet getPermSet() {
@@ -25,7 +25,7 @@ public class UserPermissionSet {
 	}
 
 	public void setPermSet(final PermissionSet val) {
-		permSet = val;
+		this.permSet = val;
 	}
 
 }

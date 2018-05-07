@@ -7,7 +7,7 @@ public class MDataValue {
 	private long entryVersion;
 
 	public MDataValue() {
-
+		this.content = new byte[] {};
 	}
 	public MDataValue(byte[] content, long contentLen, long entryVersion) {
 		this.content = content;
@@ -19,7 +19,7 @@ public class MDataValue {
 	}
 
 	public void setContent(final byte[] val) {
-		content = val;
+		this.content = val;
 	}
 
 	public long getContentLen() {
@@ -27,7 +27,7 @@ public class MDataValue {
 	}
 
 	public void setContentLen(final long val) {
-		contentLen = val;
+		this.contentLen = val;
 	}
 
 	public long getEntryVersion() {
@@ -35,7 +35,7 @@ public class MDataValue {
 	}
 
 	public void setEntryVersion(final long val) {
-		entryVersion = val;
+		this.entryVersion = val;
 	}
 
 }

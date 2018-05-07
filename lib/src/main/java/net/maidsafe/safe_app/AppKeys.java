@@ -30,7 +30,7 @@ public class AppKeys {
 	}
 
 	public void setOwnerKey(final byte[] val) {
-		ownerKey = val;
+		this.ownerKey = val;
 	}
 
 	public byte[] getEncKey() {
@@ -38,7 +38,7 @@ public class AppKeys {
 	}
 
 	public void setEncKey(final byte[] val) {
-		encKey = val;
+		this.encKey = val;
 	}
 
 	public byte[] getSignPk() {
@@ -46,7 +46,7 @@ public class AppKeys {
 	}
 
 	public void setSignPk(final byte[] val) {
-		signPk = val;
+		this.signPk = val;
 	}
 
 	public byte[] getSignSk() {
@@ -54,7 +54,7 @@ public class AppKeys {
 	}
 
 	public void setSignSk(final byte[] val) {
-		signSk = val;
+		this.signSk = val;
 	}
 
 	public byte[] getEncPk() {
@@ -62,7 +62,7 @@ public class AppKeys {
 	}
 
 	public void setEncPk(final byte[] val) {
-		encPk = val;
+		this.encPk = val;
 	}
 
 	public byte[] getEncSk() {
@@ -70,7 +70,7 @@ public class AppKeys {
 	}
 
 	public void setEncSk(final byte[] val) {
-		encSk = val;
+		this.encSk = val;
 	}
 
 }

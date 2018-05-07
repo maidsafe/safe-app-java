@@ -17,7 +17,7 @@ public class AccountInfo {
 	}
 
 	public void setMutationsDone(final long val) {
-		mutationsDone = val;
+		this.mutationsDone = val;
 	}
 
 	public long getMutationsAvailable() {
@@ -25,7 +25,7 @@ public class AccountInfo {
 	}
 
 	public void setMutationsAvailable(final long val) {
-		mutationsAvailable = val;
+		this.mutationsAvailable = val;
 	}
 
 }

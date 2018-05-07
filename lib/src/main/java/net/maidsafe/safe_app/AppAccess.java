@@ -24,7 +24,7 @@ public class AppAccess {
 	}
 
 	public void setSignKey(final byte[] val) {
-		signKey = val;
+		this.signKey = val;
 	}
 
 	public PermissionSet getPermission() {
@@ -32,7 +32,7 @@ public class AppAccess {
 	}
 
 	public void setPermission(final PermissionSet val) {
-		permissions = val;
+		this.permissions = val;
 	}
 
 	public String getName() {
@@ -40,7 +40,7 @@ public class AppAccess {
 	}
 
 	public void setName(final String val) {
-		name = val;
+		this.name = val;
 	}
 
 	public String getAppId() {
@@ -48,7 +48,7 @@ public class AppAccess {
 	}
 
 	public void setAppId(final String val) {
-		appId = val;
+		this.appId = val;
 	}
 
 }

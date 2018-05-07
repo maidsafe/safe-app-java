@@ -23,7 +23,7 @@ public class PermissionSet {
 	}
 
 	public void setRead(final boolean val) {
-		read = val;
+		this.read = val;
 	}
 
 	public boolean getInsert() {
@@ -31,7 +31,7 @@ public class PermissionSet {
 	}
 
 	public void setInsert(final boolean val) {
-		insert = val;
+		this.insert = val;
 	}
 
 	public boolean getUpdate() {
@@ -39,7 +39,7 @@ public class PermissionSet {
 	}
 
 	public void setUpdate(final boolean val) {
-		update = val;
+		this.update = val;
 	}
 
 	public boolean getDelete() {
@@ -47,7 +47,7 @@ public class PermissionSet {
 	}
 
 	public void setDelete(final boolean val) {
-		delete = val;
+		this.delete = val;
 	}
 
 	public boolean getManagePermission() {
@@ -55,7 +55,7 @@ public class PermissionSet {
 	}
 
 	public void setManagePermission(final boolean val) {
-		managePermissions = val;
+		this.managePermissions = val;
 	}
 
 }

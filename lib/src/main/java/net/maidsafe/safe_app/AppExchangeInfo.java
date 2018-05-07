@@ -24,7 +24,7 @@ public class AppExchangeInfo {
 	}
 
 	public void setId(final String val) {
-		id = val;
+		this.id = val;
 	}
 
 	public String getScope() {
@@ -32,7 +32,7 @@ public class AppExchangeInfo {
 	}
 
 	public void setScope(final String val) {
-		scope = val;
+		this.scope = val;
 	}
 
 	public String getName() {
@@ -40,7 +40,7 @@ public class AppExchangeInfo {
 	}
 
 	public void setName(final String val) {
-		name = val;
+		this.name = val;
 	}
 
 	public String getVendor() {
@@ -48,7 +48,7 @@ public class AppExchangeInfo {
 	}
 
 	public void setVendor(final String val) {
-		vendor = val;
+		this.vendor = val;
 	}
 
 }

@@ -20,7 +20,7 @@ public class ShareMData {
 	}
 
 	public void setTypeTag(final long val) {
-		typeTag = val;
+		this.typeTag = val;
 	}
 
 	public byte[] getName() {
@@ -28,7 +28,7 @@ public class ShareMData {
 	}
 
 	public void setName(final byte[] val) {
-		name = val;
+		this.name = val;
 	}
 
 	public PermissionSet getPerm() {
@@ -36,7 +36,7 @@ public class ShareMData {
 	}
 
 	public void setPerm(final PermissionSet val) {
-		perms = val;
+		this.perms = val;
 	}
 
 }

@@ -33,7 +33,7 @@ public class MDataInfo {
 	}
 
 	public void setName(final byte[] val) {
-		name = val;
+		this.name = val;
 	}
 
 	public long getTypeTag() {
@@ -41,7 +41,7 @@ public class MDataInfo {
 	}
 
 	public void setTypeTag(final long val) {
-		typeTag = val;
+		this.typeTag = val;
 	}
 
 	public boolean getHasEncInfo() {
@@ -49,7 +49,7 @@ public class MDataInfo {
 	}
 
 	public void setHasEncInfo(final boolean val) {
-		hasEncInfo = val;
+		this.hasEncInfo = val;
 	}
 
 	public byte[] getEncKey() {
@@ -57,7 +57,7 @@ public class MDataInfo {
 	}
 
 	public void setEncKey(final byte[] val) {
-		encKey = val;
+		this.encKey = val;
 	}
 
 	public byte[] getEncNonce() {
@@ -65,7 +65,7 @@ public class MDataInfo {
 	}
 
 	public void setEncNonce(final byte[] val) {
-		encNonce = val;
+		this.encNonce = val;
 	}
 
 	public boolean getHasNewEncInfo() {
@@ -73,7 +73,7 @@ public class MDataInfo {
 	}
 
 	public void setHasNewEncInfo(final boolean val) {
-		hasNewEncInfo = val;
+		this.hasNewEncInfo = val;
 	}
 
 	public byte[] getNewEncKey() {
@@ -81,7 +81,7 @@ public class MDataInfo {
 	}
 
 	public void setNewEncKey(final byte[] val) {
-		newEncKey = val;
+		this.newEncKey = val;
 	}
 
 	public byte[] getNewEncNonce() {
@@ -89,7 +89,7 @@ public class MDataInfo {
 	}
 
 	public void setNewEncNonce(final byte[] val) {
-		newEncNonce = val;
+		this.newEncNonce = val;
 	}
 
 }

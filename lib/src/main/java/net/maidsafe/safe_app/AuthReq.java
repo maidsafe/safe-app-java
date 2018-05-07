@@ -4,15 +4,15 @@ package net.maidsafe.safe_app;
 public class AuthReq {
 	private AppExchangeInfo app;
 	private boolean appContainer;
-	private ContainerPermissions containers;
+	private ContainerPermissions[] containers;
 	private long containersLen;
 	private long containersCap;
 
 	public AuthReq() {
 		this.app = new AppExchangeInfo();
-		this.containers = new ContainerPermissions();
+		this.containers = new ContainerPermissions[] {};
 	}
-	public AuthReq(AppExchangeInfo app, boolean appContainer, ContainerPermissions containers, long containersLen, long containersCap) {
+	public AuthReq(AppExchangeInfo app, boolean appContainer, ContainerPermissions[] containers, long containersLen, long containersCap) {
 		this.app = app;
 		this.appContainer = appContainer;
 		this.containers = containers;
@@ -24,7 +24,7 @@ public class AuthReq {
 	}
 
 	public void setApp(final AppExchangeInfo val) {
-		app = val;
+		this.app = val;
 	}
 
 	public boolean getAppContainer() {
@@ -32,15 +32,15 @@ public class AuthReq {
 	}
 
 	public void setAppContainer(final boolean val) {
-		appContainer = val;
+		this.appContainer = val;
 	}
 
-	public ContainerPermissions getContainer() {
+	public ContainerPermissions[] getContainer() {
 		return containers;
 	}
 
-	public void setContainer(final ContainerPermissions val) {
-		containers = val;
+	public void setContainer(final ContainerPermissions[] val) {
+		this.containers = val;
 	}
 
 	public long getContainersLen() {
@@ -48,7 +48,7 @@ public class AuthReq {
 	}
 
 	public void setContainersLen(final long val) {
-		containersLen = val;
+		this.containersLen = val;
 	}
 
 	public long getContainersCap() {
@@ -56,7 +56,7 @@ public class AuthReq {
 	}
 
 	public void setContainersCap(final long val) {
-		containersCap = val;
+		this.containersCap = val;
 	}
 
 }

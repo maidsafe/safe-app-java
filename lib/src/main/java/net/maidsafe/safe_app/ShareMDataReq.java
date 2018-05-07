@@ -3,15 +3,15 @@ package net.maidsafe.safe_app;
 /// Represents a request to share mutable data
 public class ShareMDataReq {
 	private AppExchangeInfo app;
-	private ShareMData mdata;
+	private ShareMData[] mdata;
 	private long mdataLen;
 	private long mdataCap;
 
 	public ShareMDataReq() {
 		this.app = new AppExchangeInfo();
-		this.mdata = new ShareMData();
+		this.mdata = new ShareMData[] {};
 	}
-	public ShareMDataReq(AppExchangeInfo app, ShareMData mdata, long mdataLen, long mdataCap) {
+	public ShareMDataReq(AppExchangeInfo app, ShareMData[] mdata, long mdataLen, long mdataCap) {
 		this.app = app;
 		this.mdata = mdata;
 		this.mdataLen = mdataLen;
@@ -22,15 +22,15 @@ public class ShareMDataReq {
 	}
 
 	public void setApp(final AppExchangeInfo val) {
-		app = val;
+		this.app = val;
 	}
 
-	public ShareMData getMdaum() {
+	public ShareMData[] getMdaum() {
 		return mdata;
 	}
 
-	public void setMdaum(final ShareMData val) {
-		mdata = val;
+	public void setMdaum(final ShareMData[] val) {
+		this.mdata = val;
 	}
 
 	public long getMdataLen() {
@@ -38,7 +38,7 @@ public class ShareMDataReq {
 	}
 
 	public void setMdataLen(final long val) {
-		mdataLen = val;
+		this.mdataLen = val;
 	}
 
 	public long getMdataCap() {
@@ -46,7 +46,7 @@ public class ShareMDataReq {
 	}
 
 	public void setMdataCap(final long val) {
-		mdataCap = val;
+		this.mdataCap = val;
 	}
 
 }

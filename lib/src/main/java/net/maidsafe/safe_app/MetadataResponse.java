@@ -23,7 +23,7 @@ public class MetadataResponse {
 	}
 
 	public void setName(final String val) {
-		name = val;
+		this.name = val;
 	}
 
 	public String getDescription() {
@@ -31,7 +31,7 @@ public class MetadataResponse {
 	}
 
 	public void setDescription(final String val) {
-		description = val;
+		this.description = val;
 	}
 
 	public byte[] getXorName() {
@@ -39,7 +39,7 @@ public class MetadataResponse {
 	}
 
 	public void setXorName(final byte[] val) {
-		xorName = val;
+		this.xorName = val;
 	}
 
 	public long getTypeTag() {
@@ -47,7 +47,7 @@ public class MetadataResponse {
 	}
 
 	public void setTypeTag(final long val) {
-		typeTag = val;
+		this.typeTag = val;
 	}
 
 }

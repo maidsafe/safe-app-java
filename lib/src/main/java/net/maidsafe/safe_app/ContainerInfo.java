@@ -21,7 +21,7 @@ public class ContainerInfo {
 	}
 
 	public void setName(final String val) {
-		name = val;
+		this.name = val;
 	}
 
 	public MDataInfo getMdataInfo() {
@@ -29,7 +29,7 @@ public class ContainerInfo {
 	}
 
 	public void setMdataInfo(final MDataInfo val) {
-		mdataInfo = val;
+		this.mdataInfo = val;
 	}
 
 	public PermissionSet getPermission() {
@@ -37,7 +37,7 @@ public class ContainerInfo {
 	}
 
 	public void setPermission(final PermissionSet val) {
-		permissions = val;
+		this.permissions = val;
 	}
 
 }
