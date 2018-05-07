@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class Client extends Session {
 
     public static void load() {
@@ -25,23 +27,21 @@ public class Client extends Session {
                 default:
                     break;
             }
-            String tempDir = System.getProperty("java.library.path");
+            String tempDir = System.getProperty("java.temp.io");
             File generatedDir = new File(tempDir, "safe_app_java" + System.nanoTime());
             if (!generatedDir.mkdir()) {
                 throw new IOException("Failed to create temp directory " + generatedDir.getName());
             }
-
-            generatedDir.deleteOnExit();
             File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
-            Files.copy(inputStream, file.toPath());
-
+            Files.copy(inputStream, file.toPath(), REPLACE_EXISTING);
+            System.loadLibrary("safe_app");
             file = new File(generatedDir, libName.concat(extension));
             file.deleteOnExit();
             inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
-            Files.copy(inputStream, file.toPath());
-            System.load(file.getAbsolutePath());
+            Files.copy(inputStream, file.toPath(), REPLACE_EXISTING);
+            System.loadLibrary("safe_app_jni");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

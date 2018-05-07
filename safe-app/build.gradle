@@ -42,7 +42,7 @@ task copyTestResources(type: Copy) {
 }
 processTestResources.dependsOn copyTestResources
 
-def nativeLibsVersion = "nikita-d67a875"
+def nativeLibsVersion = "nikita-cdl"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"
 
 static def getCombinations() {
