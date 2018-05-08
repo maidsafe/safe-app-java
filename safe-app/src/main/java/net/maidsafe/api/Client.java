@@ -5,17 +5,20 @@ import net.maidsafe.utils.OSInfo;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 
 public class Client extends Session {
 
     public static void load() {
         try {
-            String libName = "libsafe_app";
+            String baseLibName = "libsafe_app";
+            String libName = "libsafe_app_jni";
             String extension = ".so";
             switch (OSInfo.getOs()) {
                 case WINDOWS:
-                    libName = "safe_app";
+                    libName = "safe_app_jni";
+                    baseLibName = "safe_app";
                     extension = ".dll";
                     break;
                 case MAC:
@@ -30,11 +33,24 @@ public class Client extends Session {
                 throw new IOException("Failed to create temp directory " + generatedDir.getName());
             }
             generatedDir.deleteOnExit();
-            File file = new File(generatedDir, libName.concat(extension));
+            System.setProperty("java.library.path", generatedDir.getAbsolutePath() + File.pathSeparator
+                    + System.getProperty("java.library.path"));
+            Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+            fieldSysPath.setAccessible(true);
+            fieldSysPath.set(null, null);
+
+            File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
-            InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
+            InputStream inputStream = Client.class.getResourceAsStream("/native/"
+                    .concat(baseLibName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.load(file.getAbsolutePath());
+
+            file = new File(generatedDir, libName.concat(extension));
+            file.deleteOnExit();
+            inputStream = Client.class.getResourceAsStream("/native/"
+                    .concat(libName).concat(extension));
+            Files.copy(inputStream, file.toPath());
+            System.loadLibrary("safe_app_jni");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

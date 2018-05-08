@@ -1,98 +1,30 @@
+// Copyright 2018 MaidSafe.net limited.
+//
+// This SAFE Network Software is licensed to you under the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT> or the Modified
+// BSD license <LICENSE-BSD or https://opensource.org/licenses/BSD-3-Clause>,
+// at your option. This file may not be copied, modified, or distributed
+// except according to those terms. Please review the Licences for the
+// specific language governing permissions and limitations relating to use
+// of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
 /// FFI-wrapper for `File`.
 public class File {
-	public File() { }
 	private long size;
-
-	public long getSize() {
-		return size;
-	}
-
-	public void setSize(final long val) {
-		size = val;
-	}
-
 	private long createdSec;
-
-	public long getCreatedSec() {
-		return createdSec;
-	}
-
-	public void setCreatedSec(final long val) {
-		createdSec = val;
-	}
-
 	private int createdNsec;
-
-	public int getCreatedNsec() {
-		return createdNsec;
-	}
-
-	public void setCreatedNsec(final int val) {
-		createdNsec = val;
-	}
-
 	private long modifiedSec;
-
-	public long getModifiedSec() {
-		return modifiedSec;
-	}
-
-	public void setModifiedSec(final long val) {
-		modifiedSec = val;
-	}
-
 	private int modifiedNsec;
-
-	public int getModifiedNsec() {
-		return modifiedNsec;
-	}
-
-	public void setModifiedNsec(final int val) {
-		modifiedNsec = val;
-	}
-
 	private byte[] userMetadataPtr;
-
-	public byte[] getUserMetadataPtr() {
-		return userMetadataPtr;
-	}
-
-	public void setUserMetadataPtr(final byte[] val) {
-		userMetadataPtr = val;
-	}
-
 	private long userMetadataLen;
-
-	public long getUserMetadataLen() {
-		return userMetadataLen;
-	}
-
-	public void setUserMetadataLen(final long val) {
-		userMetadataLen = val;
-	}
-
 	private long userMetadataCap;
-
-	public long getUserMetadataCap() {
-		return userMetadataCap;
-	}
-
-	public void setUserMetadataCap(final long val) {
-		userMetadataCap = val;
-	}
-
 	private byte[] dataMapName;
 
-	public byte[] getDataMapName() {
-		return dataMapName;
+	public File() {
+		this.userMetadataPtr = new byte[] {};
+		this.dataMapName = new byte[] {};
 	}
-
-	public void setDataMapName(final byte[] val) {
-		dataMapName = val;
-	}
-
 	public File(long size, long createdSec, int createdNsec, long modifiedSec, int modifiedNsec, byte[] userMetadataPtr, long userMetadataLen, long userMetadataCap, byte[] dataMapName) {
 		this.size = size;
 		this.createdSec = createdSec;
@@ -103,6 +35,78 @@ public class File {
 		this.userMetadataLen = userMetadataLen;
 		this.userMetadataCap = userMetadataCap;
 		this.dataMapName = dataMapName;
-}
+	}
+	public long getSize() {
+		return size;
+	}
+
+	public void setSize(final long val) {
+		this.size = val;
+	}
+
+	public long getCreatedSec() {
+		return createdSec;
+	}
+
+	public void setCreatedSec(final long val) {
+		this.createdSec = val;
+	}
+
+	public int getCreatedNsec() {
+		return createdNsec;
+	}
+
+	public void setCreatedNsec(final int val) {
+		this.createdNsec = val;
+	}
+
+	public long getModifiedSec() {
+		return modifiedSec;
+	}
+
+	public void setModifiedSec(final long val) {
+		this.modifiedSec = val;
+	}
+
+	public int getModifiedNsec() {
+		return modifiedNsec;
+	}
+
+	public void setModifiedNsec(final int val) {
+		this.modifiedNsec = val;
+	}
+
+	public byte[] getUserMetadataPtr() {
+		return userMetadataPtr;
+	}
+
+	public void setUserMetadataPtr(final byte[] val) {
+		this.userMetadataPtr = val;
+	}
+
+	public long getUserMetadataLen() {
+		return userMetadataLen;
+	}
+
+	public void setUserMetadataLen(final long val) {
+		this.userMetadataLen = val;
+	}
+
+	public long getUserMetadataCap() {
+		return userMetadataCap;
+	}
+
+	public void setUserMetadataCap(final long val) {
+		this.userMetadataCap = val;
+	}
+
+	public byte[] getDataMapName() {
+		return dataMapName;
+	}
+
+	public void setDataMapName(final byte[] val) {
+		this.dataMapName = val;
+	}
+
 }
 
