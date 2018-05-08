@@ -46,12 +46,12 @@ public class Client extends Session {
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.loadLibrary(baseLibName);
+            System.loadLibrary("safe_app");
             file = new File(generatedDir, libName.concat(extension));
             file.deleteOnExit();
             inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.loadLibrary(libName);
+            System.loadLibrary("safe_app_jni");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
