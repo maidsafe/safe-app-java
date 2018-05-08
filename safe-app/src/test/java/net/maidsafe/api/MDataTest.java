@@ -167,25 +167,25 @@
 //        publicMDataCrud(mDataInfo);
 //    }
 //
-////    @Test
-////    public void randomPrivateMDataCRUDTest() throws Exception {
-////        NativeHandle nativeHandle = TestHelper.createTestApp(Helper.APP_ID).get();
-////        Client client = new Client(new AppHandle(nativeHandle.toLong()), new DisconnectListener());
-////        long tagType = 15001;
-////        MDataInfo mDataInfo = client.mData.getRandomPrivateMData(tagType).get();
-////        privateMDataCrud(mDataInfo);
-////    }
-////
-////    @Test
-////    public void privateMDataCRUDTest() throws Exception {
-////        NativeHandle nativeHandle = TestHelper.createTestApp(Helper.APP_ID).get();
-////        Client client = new Client(new AppHandle(nativeHandle.toLong()), new DisconnectListener());
-////        long tagType = 15001;
-////        EncryptKeyPair encryptKeyPair = client.crypto.generateEncryptKeyPair().get();
-////        byte[] nonce = client.crypto.generateNonce().get();
-////        byte[] secretKey = client.crypto.getRawSecretEncryptKey(encryptKeyPair.getSecretEncryptKey()).get();
-////        MDataInfo mDataInfo = client.mData.getPrivateMData(Helper.randomAlphaNumeric(Constants.XOR_NAME_LENGTH).getBytes(), tagType, secretKey, nonce).get();
-////        privateMDataCrud(mDataInfo);
-////    }
+//    @Test
+//    public void randomPrivateMDataCRUDTest() throws Exception {
+//        NativeHandle nativeHandle = TestHelper.createTestApp(Helper.APP_ID).get();
+//        Client client = new Client(new AppHandle(nativeHandle.toLong()), new DisconnectListener());
+//        long tagType = 15001;
+//        MDataInfo mDataInfo = client.mData.getRandomPrivateMData(tagType).get();
+//        privateMDataCrud(mDataInfo);
+//    }
+//
+//    @Test
+//    public void privateMDataCRUDTest() throws Exception {
+//        NativeHandle nativeHandle = TestHelper.createTestApp(Helper.APP_ID).get();
+//        Client client = new Client(new AppHandle(nativeHandle.toLong()), new DisconnectListener());
+//        long tagType = 15001;
+//        EncryptKeyPair encryptKeyPair = client.crypto.generateEncryptKeyPair().get();
+//        byte[] nonce = client.crypto.generateNonce().get();
+//        byte[] secretKey = client.crypto.getRawSecretEncryptKey(encryptKeyPair.getSecretEncryptKey()).get();
+//        MDataInfo mDataInfo = client.mData.getPrivateMData(Helper.randomAlphaNumeric(Constants.XOR_NAME_LENGTH).getBytes(), tagType, secretKey, nonce).get();
+//        privateMDataCrud(mDataInfo);
+//    }
 //
 //}

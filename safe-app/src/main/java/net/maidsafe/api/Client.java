@@ -35,23 +35,23 @@ public class Client extends Session {
                 throw new IOException("Failed to create temp directory " + generatedDir.getName());
             }
             generatedDir.deleteOnExit();
-            System.setProperty("java.library.path", generatedDir.getAbsolutePath());
-
-            final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
-            sysPathsField.setAccessible(true);
-            sysPathsField.set(null, null);
+//            System.setProperty("java.library.path", generatedDir.getAbsolutePath());
+//
+//            final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+//            sysPathsField.setAccessible(true);
+//            sysPathsField.set(null, null);
 
             System.out.println(System.getProperty("java.library.path"));
             File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.loadLibrary("safe_app");
+            System.load(file.getAbsolutePath());
             file = new File(generatedDir, libName.concat(extension));
             file.deleteOnExit();
             inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.loadLibrary("safe_app_jni");
+            System.load(file.getAbsolutePath());
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
