@@ -18,7 +18,8 @@ public class Client extends Session {
             String extension = ".so";
             switch (OSInfo.getOs()) {
                 case WINDOWS:
-                    libName = "safe_app";
+                    libName = "safe_app_jni";
+                    baseLibName = "safe_app";
                     extension = ".dll";
                     break;
                 case MAC:
@@ -35,13 +36,13 @@ public class Client extends Session {
             File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
-            Files.copy(inputStream, file.toPath(), REPLACE_EXISTING);
-            System.loadLibrary("safe_app");
+            Files.copy(inputStream, file.toPath());
+            System.load(file.getAbsolutePath());
             file = new File(generatedDir, libName.concat(extension));
             file.deleteOnExit();
             inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
-            Files.copy(inputStream, file.toPath(), REPLACE_EXISTING);
-            System.loadLibrary("safe_app_jni");
+            Files.copy(inputStream, file.toPath());
+            System.load(file.getAbsolutePath());
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

@@ -24,7 +24,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
-        classpath 'de.undercouch:gradle-download-task:3.2.0'
+        classpath 'de.undercouch:gradle-download-task:3.4.2'
     }
 }
 
@@ -42,7 +42,7 @@ task copyTestResources(type: Copy) {
 }
 processTestResources.dependsOn copyTestResources
 
-def nativeLibsVersion = "nikita-cdl"
+def nativeLibsVersion = "nikita-d67a875"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"
 
 static def getCombinations() {
