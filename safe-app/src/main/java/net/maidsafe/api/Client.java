@@ -5,8 +5,10 @@ import net.maidsafe.utils.OSInfo;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.Map;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -35,23 +37,38 @@ public class Client extends Session {
                 throw new IOException("Failed to create temp directory " + generatedDir.getName());
             }
             generatedDir.deleteOnExit();
-//            System.setProperty("java.library.path", generatedDir.getAbsolutePath());
-//
-//            final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
-//            sysPathsField.setAccessible(true);
-//            sysPathsField.set(null, null);
 
-            System.out.println(System.getProperty("java.library.path"));
+            System.setProperty("java.library.path", generatedDir.getAbsolutePath());
+
+            Field fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
+            fieldSysPath.setAccessible( true );
+            fieldSysPath.set( null, null );
+
+            ProcessBuilder pb = new ProcessBuilder("CMD", "/C", "SET");
+            Map<String, String> env = pb.environment();
+            env.put("Path", System.getenv("PATH") + File.pathSeparator + generatedDir.getAbsolutePath());
+            Process p = pb.start();
+            InputStreamReader isr = new InputStreamReader(p.getInputStream());
+            char[] buf = new char[1024];
+            while (!isr.ready()) {
+                ;
+            }
+            while (isr.read(buf) != -1) {
+                System.out.println(buf);
+            }
+
             File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.load(file.getAbsolutePath());
+
             file = new File(generatedDir, libName.concat(extension));
             file.deleteOnExit();
             inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
-            System.load(file.getAbsolutePath());
+
+            System.loadLibrary("safe_app");
+            System.loadLibrary("safe_app_jni");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

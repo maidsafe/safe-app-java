@@ -45,7 +45,7 @@
 //        client.nfs.insertFile(mDataInfo, "sample.txt", file);
 //        fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.READ).get();
 //        byte[] readData = client.nfs.fileRead(fileHandle, 0, 0).get();
-//        Assert.assertEquals(fileContent, readData);
+//        Assert.assertEquals(new String(fileContent), new String(readData));
 //        fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.APPEND).get();
 //        byte[] appendedContent = Helper.randomAlphaNumeric(10).getBytes();
 //        client.nfs.fileWrite(fileHandle, Helper.randomAlphaNumeric(10).getBytes()).get();
