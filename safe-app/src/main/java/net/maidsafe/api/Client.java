@@ -8,7 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.security.AccessController;
+import java.security.Permission;
 import java.util.Map;
+import java.util.PropertyPermission;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -38,7 +41,15 @@ public class Client extends Session {
             }
             generatedDir.deleteOnExit();
 
-            System.setProperty("java.library.path", generatedDir.getAbsolutePath());
+            Permission p = new PropertyPermission("java.*", "read, write");
+            if(!p.implies(new PropertyPermission("java.library", "write"))) {
+                throw new SecurityException("Access Denied");
+            }
+                System.setProperty("java.library.path", System.getProperty("java.library.path") + File.pathSeparator + generatedDir.getAbsolutePath());
+                Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+                fieldSysPath.setAccessible(true);
+                fieldSysPath.set(null, null);
+
 
             File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
