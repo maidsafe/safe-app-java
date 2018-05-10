@@ -40,23 +40,6 @@ public class Client extends Session {
 
             System.setProperty("java.library.path", generatedDir.getAbsolutePath());
 
-            Field fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
-            fieldSysPath.setAccessible( true );
-            fieldSysPath.set( null, null );
-
-            ProcessBuilder pb = new ProcessBuilder("CMD", "/C", "SET");
-            Map<String, String> env = pb.environment();
-            env.put("Path", System.getenv("PATH") + File.pathSeparator + generatedDir.getAbsolutePath());
-            Process p = pb.start();
-            InputStreamReader isr = new InputStreamReader(p.getInputStream());
-            char[] buf = new char[1024];
-            while (!isr.ready()) {
-                ;
-            }
-            while (isr.read(buf) != -1) {
-                System.out.println(buf);
-            }
-
             File file = new File(generatedDir, baseLibName.concat(extension));
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/".concat(baseLibName).concat(extension));
@@ -67,7 +50,6 @@ public class Client extends Session {
             inputStream = Client.class.getResourceAsStream("/native/".concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
 
-            System.loadLibrary("safe_app");
             System.loadLibrary("safe_app_jni");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
