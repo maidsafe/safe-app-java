@@ -60,7 +60,8 @@ public class Client extends Session {
             throw new ExceptionInInitializerError(ex);
         }
     }
-    private Client(AppHandle appHandle, DisconnectListener disconnectListener) {
+//    TODO: make private
+    public Client(AppHandle appHandle, DisconnectListener disconnectListener) {
         super(appHandle, disconnectListener);
     }
 }

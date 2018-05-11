@@ -1,10 +1,10 @@
 package net.maidsafe.api;
 
-        import net.maidsafe.api.model.*;
-        import net.maidsafe.test.utils.SessionLoader;
+import net.maidsafe.api.model.*;
+import net.maidsafe.test.utils.SessionLoader;
 
-        import org.junit.Assert;
-        import org.junit.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ClientTest {
 
