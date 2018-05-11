@@ -6,12 +6,12 @@ import net.maidsafe.safe_app.NativeBindings;
 class AppHandle extends NativeHandle {
 
     AppHandle(long handle) {
-        super(handle, h -> {});//NativeBindings.appFree(h));
+        super(handle, h -> NativeBindings.appFree(h));
     }
 
     public void invalidate() {
         if (handle > 0) {
-//            NativeBindings.appFree(handle);
+            NativeBindings.appFree(handle);
             this.handle = -1;
         }
     }

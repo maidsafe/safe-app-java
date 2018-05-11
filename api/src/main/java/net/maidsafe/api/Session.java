@@ -33,14 +33,15 @@ class Session {
     }
 
     private void init() {
-        if (this.disconnectListener != null)
-        this.disconnectListener.setListener((val) -> {
-            if (onDisconnected == null) {
-                return;
-            }
-            disconnected = true;
-            onDisconnected.disconnected(this);
-        });
+        if (this.disconnectListener != null) {
+            this.disconnectListener.setListener((val) -> {
+                if (onDisconnected == null) {
+                    return;
+                }
+                disconnected = true;
+                onDisconnected.disconnected(this);
+            });
+        }
 
         this.cipherOpt = new CipherOpt(this.appHandle);
         this.crypto = new Crypto(this.appHandle);
@@ -270,15 +271,14 @@ class Session {
 
     public Future<Void> reconnect() {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            CallbackResult callback = result -> {
+            NativeBindings.appReconnect(appHandle.toLong(), result -> {
                 if(result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
                 disconnected = false;
                 binder.onResult(null);
-            };
-            NativeBindings.appReconnect(appHandle.toLong(), callback);
+            });
         }));
     }
 
