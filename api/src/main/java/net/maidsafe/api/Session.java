@@ -1,31 +1,8 @@
 package net.maidsafe.api;
 
 import net.maidsafe.api.listener.OnDisconnected;
-import net.maidsafe.api.model.App;
-import net.maidsafe.api.model.AuthResponse;
-import net.maidsafe.api.model.ContainerResponse;
-import net.maidsafe.api.model.DecodeError;
-import net.maidsafe.api.model.DecodeResult;
-import net.maidsafe.api.model.NativeHandle;
-import net.maidsafe.api.model.Request;
-import net.maidsafe.api.model.RevokedResponse;
-import net.maidsafe.api.model.ShareMutableDataResponse;
-import net.maidsafe.api.model.UnregisteredClientResponse;
-import net.maidsafe.safe_app.AccountInfo;
-import net.maidsafe.safe_app.AuthGranted;
-import net.maidsafe.safe_app.AuthReq;
-import net.maidsafe.safe_app.CallbackInt;
-import net.maidsafe.safe_app.CallbackIntAuthGranted;
-import net.maidsafe.safe_app.CallbackIntByteArrayLen;
-import net.maidsafe.safe_app.CallbackResultApp;
-import net.maidsafe.safe_app.CallbackResultInt;
-import net.maidsafe.safe_app.CallbackResultIntString;
-import net.maidsafe.safe_app.CallbackVoid;
-import net.maidsafe.safe_app.ContainerPermissions;
-import net.maidsafe.safe_app.ContainersReq;
-import net.maidsafe.safe_app.MDataInfo;
-import net.maidsafe.safe_app.NativeBindings;
-import net.maidsafe.safe_app.ShareMDataReq;
+import net.maidsafe.api.model.*;
+import net.maidsafe.safe_app.*;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
@@ -34,17 +11,61 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
-public class BaseSession {
+class Session {
 
-    public static OnDisconnected onDisconnected;
-    public static CallbackVoid onDisconnectCb = () -> {
-        if (onDisconnected != null) {
-            onDisconnected.disconnected();
+    private AppHandle appHandle;
+    private OnDisconnected onDisconnected;
+    private DisconnectListener disconnectListener;
+    private boolean disconnected = false;
+    public CipherOpt cipherOpt;
+    public Crypto crypto;
+    public IData iData;
+    public MData mData;
+    public MDataEntries mDataEntries;
+    public MDataEntryAction mDataEntryAction;
+    public MDataPermission mDataPermission;
+    public NFS nfs;
+
+    protected Session(AppHandle appHandle, DisconnectListener disconnectListener) {
+        this.appHandle = appHandle;
+        this.disconnectListener = disconnectListener;
+        init();
+    }
+
+    private void init() {
+        if (this.disconnectListener != null) {
+            this.disconnectListener.setListener((val) -> {
+                if (onDisconnected == null) {
+                    return;
+                }
+                disconnected = true;
+                onDisconnected.disconnected(this);
+            });
         }
-    };
-    public static NativeHandle appHandle = new NativeHandle(0, res -> {});
 
-    public static Future<AccountInfo> getAccountInfo() {
+        this.cipherOpt = new CipherOpt(this.appHandle);
+        this.crypto = new Crypto(this.appHandle);
+        this.iData = new IData(this.appHandle);
+        this.mData = new MData(this.appHandle);
+        this.mDataEntries = new MDataEntries(this.appHandle);
+        this.mDataEntryAction = new MDataEntryAction(this.appHandle);
+        this.mDataPermission = new MDataPermission(this.appHandle);
+        this.nfs = new NFS(this.appHandle);
+    }
+
+    public boolean isConnected() {
+        return !disconnected;
+    }
+
+    public boolean isMock() { 
+	return NativeBindings.isMockBuild();
+   }
+
+    public void setOnDisconnectListener(OnDisconnected onDisconnected) {
+        this.onDisconnected = onDisconnected;
+    }
+
+    public Future<AccountInfo> getAccountInfo() {
         return Executor.getInstance().submit(new CallbackHelper(binder -> {
             NativeBindings.appAccountInfo(appHandle.toLong(), (result, accountInfo) -> {
                 if (result.getErrorCode() != 0) {
@@ -56,7 +77,7 @@ public class BaseSession {
         }));
     }
 
-    public static Future<Void> resetObjectCache() {
+    public Future<Void> resetObjectCache() {
         return Executor.getInstance().submit(new CallbackHelper<Void>((binder) -> {
             NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
                 if (result.getErrorCode() != 0) {
@@ -68,7 +89,7 @@ public class BaseSession {
         }));
     }
 
-    public static Future<Void> refreshAccessInfo() {
+    public Future<Void> refreshAccessInfo() {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
             NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
                 if (result.getErrorCode() != 0) {
@@ -80,7 +101,7 @@ public class BaseSession {
         }));
     }
 
-    public static Future<MDataInfo> getContainerMDataInfo(String containerName) {
+    public Future<MDataInfo> getContainerMDataInfo(String containerName) {
         return Executor.getInstance().submit(new CallbackHelper<MDataInfo>(binder -> {
             NativeBindings.accessContainerGetContainerMdataInfo(appHandle.toLong(), containerName, (result, mDataInfo) -> {
                 if (result.getErrorCode() != 0) {
@@ -92,7 +113,7 @@ public class BaseSession {
         }));
     }
 
-    public static Future<List<ContainerPermissions>> getContainerPermissions() {
+    public Future<List<ContainerPermissions>> getContainerPermissions() {
         return Executor.getInstance().submit(new CallbackHelper<List<ContainerPermissions>>(binder -> {
             NativeBindings.accessContainerFetch(appHandle.toLong(), ((result, containerPerms) -> {
                 if (result.getErrorCode() != 0) {
@@ -213,41 +234,51 @@ public class BaseSession {
         }));
     }
 
-    public static Future<Void> connect(UnregisteredClientResponse response, OnDisconnected onDisconnected) {
-        return connect(response.getBootstrapConfig(), onDisconnected);
+    public static Future<Session> connect(UnregisteredClientResponse response) {
+        return connect(response.getBootstrapConfig());
     }
 
-    public static Future<Void> connect(byte[] bootStrapConfig, OnDisconnected onDisconnected) {
-        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+    public static Future<Session> connect(byte[] bootStrapConfig) {
+        return Executor.getInstance().submit(new CallbackHelper<Session>(binder -> {
+            DisconnectListener disconnectListener = new DisconnectListener();
             CallbackResultApp callback = (result, app) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                BaseSession.appHandle = new NativeHandle(app, (handle) -> {
-                    NativeBindings.appFree(handle);
-                });
-                BaseSession.onDisconnected = onDisconnected;
-                binder.onResult(null);
+
+                AppHandle appHandle = new AppHandle(app);
+                binder.onResult(new Session(appHandle, disconnectListener));
             };
-            NativeBindings.appUnregistered(bootStrapConfig, onDisconnectCb, callback);
+            NativeBindings.appUnregistered(bootStrapConfig, disconnectListener.getCallback(), callback);
         }));
     }
 
-    public static Future<Void> connect(App app, AuthGranted authGranted, OnDisconnected onDisconnected) {
-        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            BaseSession.onDisconnected = onDisconnected;
-            CallbackResultApp callback = (result, appHandle) -> {
+    public static Future<Session> connect(App app, AuthGranted authGranted) {
+        return Executor.getInstance().submit(new CallbackHelper<Session>(binder -> {
+            DisconnectListener disconnectListener = new DisconnectListener();
+            CallbackResultApp callback = (result, handle) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                BaseSession.appHandle = new NativeHandle(appHandle, (handle) -> {
-                    NativeBindings.appFree(handle);
-                });
-                binder.onResult(null);
+                AppHandle appHandle = new AppHandle(handle);
+                binder.onResult(new Session(appHandle, disconnectListener));
             };
-            NativeBindings.appRegistered(app.getId(), authGranted, onDisconnectCb, callback);
+            NativeBindings.appRegistered(app.getId(), authGranted, disconnectListener.getCallback(), callback);
+        }));
+    }
+
+    public Future<Void> reconnect() {
+        return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
+            NativeBindings.appReconnect(appHandle.toLong(), result -> {
+                if(result.getErrorCode() != 0) {
+                    binder.onException(Helper.ffiResultToException(result));
+                    return;
+                }
+                disconnected = false;
+                binder.onResult(null);
+            });
         }));
     }
 

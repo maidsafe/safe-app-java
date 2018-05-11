@@ -12,10 +12,15 @@ import net.maidsafe.utils.Helper;
 import java.util.concurrent.Future;
 
 public class NFS {
+    private AppHandle appHandle;
 
-    public static Future<NFSFileMetadata> getFileMetadata(MDataInfo parentInfo, String fileName) {
+    public NFS(AppHandle appHandle) {
+        this.appHandle = appHandle;
+    }
+
+    public Future<NFSFileMetadata> getFileMetadata(MDataInfo parentInfo, String fileName) {
         return Executor.getInstance().submit(new CallbackHelper<NFSFileMetadata>(binder -> {
-            NativeBindings.dirFetchFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (result, ffiFile, version) -> {
+            NativeBindings.dirFetchFile(appHandle.toLong(), parentInfo, fileName, (result, ffiFile, version) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -25,9 +30,9 @@ public class NFS {
         }));
     }
 
-    public static Future<Void> insertFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+    public Future<Void> insertFile(MDataInfo parentInfo, String fileName, File file) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.dirInsertFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (File) file, (result) -> {
+            NativeBindings.dirInsertFile(appHandle.toLong(), parentInfo, fileName, file, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -37,9 +42,9 @@ public class NFS {
         }));
     }
 
-    public static Future<Void> updateFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+    public Future<Void> updateFile(MDataInfo parentInfo, String fileName, File file, long version) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.dirUpdateFile(BaseSession.appHandle.toLong(), parentInfo, fileName, (net.maidsafe.safe_app.File) file, file.getVersion(), (result) -> {
+            NativeBindings.dirUpdateFile(appHandle.toLong(), parentInfo, fileName, (net.maidsafe.safe_app.File) file, version, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -49,9 +54,9 @@ public class NFS {
         }));
     }
 
-    public static Future<Void> deleteFileMetadata(MDataInfo parentInfo, String fileName, NFSFileMetadata file) {
+    public Future<Void> deleteFile(MDataInfo parentInfo, String fileName, File file, long version) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.dirDeleteFile(BaseSession.appHandle.toLong(), parentInfo, fileName, file.getVersion(), (result) -> {
+            NativeBindings.dirDeleteFile(appHandle.toLong(), parentInfo, fileName, version, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -63,7 +68,7 @@ public class NFS {
 
     public Future<NativeHandle> fileOpen(MDataInfo parentInfo, File file, NFS.OpenMode openMode) {
         return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.fileOpen(BaseSession.appHandle.toLong(), parentInfo, file, openMode.getValue(), (result, handle) -> {
+            NativeBindings.fileOpen(appHandle.toLong(), parentInfo, file, openMode.getValue(), (result, handle) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -77,7 +82,7 @@ public class NFS {
 
     public Future<Long> getSize(NativeHandle fileContextHandle) {
         return Executor.getInstance().submit(new CallbackHelper<Long>(binder -> {
-            NativeBindings.fileSize(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, size) -> {
+            NativeBindings.fileSize(appHandle.toLong(), fileContextHandle.toLong(), (result, size) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -89,7 +94,7 @@ public class NFS {
 
     public Future<byte[]> fileRead(NativeHandle fileContextHandle, long position, long length) {
         return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.fileRead(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), position, length, (result, data) -> {
+            NativeBindings.fileRead(appHandle.toLong(), fileContextHandle.toLong(), position, length, (result, data) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -101,7 +106,7 @@ public class NFS {
 
     public Future<Void> fileWrite(NativeHandle fileContextHandle, byte[] data) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.fileWrite(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), data, (result) -> {
+            NativeBindings.fileWrite(appHandle.toLong(), fileContextHandle.toLong(), data, (result) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -113,7 +118,7 @@ public class NFS {
 
     public Future<File> fileClose(NativeHandle fileContextHandle) {
         return Executor.getInstance().submit(new CallbackHelper<File>(binder -> {
-            NativeBindings.fileClose(BaseSession.appHandle.toLong(), fileContextHandle.toLong(), (result, ffiFile) -> {
+            NativeBindings.fileClose(appHandle.toLong(), fileContextHandle.toLong(), (result, ffiFile) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;

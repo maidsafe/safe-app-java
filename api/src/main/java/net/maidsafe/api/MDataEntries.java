@@ -1,30 +1,33 @@
-package net.maidsafe.api.mdata;
+package net.maidsafe.api;
 
-import net.maidsafe.api.BaseSession;
 import net.maidsafe.api.model.NativeHandle;
-import net.maidsafe.api.model.MDataEntry;
-import net.maidsafe.api.model.MDataValue;
-import net.maidsafe.safe_app.CallbackByteArrayLenByteArrayLenLong;
+import net.maidsafe.safe_app.MDataEntry;
+import net.maidsafe.safe_app.MDataValue;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
-public class MDataEntries {
+class MDataEntries {
+    private static AppHandle appHandle;
 
-    public static Future<NativeHandle> newEntriesHandle() {
+    public MDataEntries(AppHandle appHandle) {
+        this.appHandle = appHandle;
+    }
+
+    public Future<NativeHandle> newEntriesHandle() {
         return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.mdataEntriesNew(BaseSession.appHandle.toLong(), (result, entriesH) -> {
+            NativeBindings.mdataEntriesNew(appHandle.toLong(), (result, entriesH) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
                 NativeHandle entriesHandle = new NativeHandle(entriesH, handle -> {
-                    NativeBindings.mdataEntriesFree(BaseSession.appHandle.toLong(), handle, res -> {
+                    NativeBindings.mdataEntriesFree(appHandle.toLong(), handle, res -> {
                     });
                 });
                 binder.onResult(entriesHandle);
@@ -32,9 +35,9 @@ public class MDataEntries {
         }));
     }
 
-    public static Future<Void> insert(NativeHandle entriesHandle, byte[] key, byte[] value) {
+    public Future<Void> insert(NativeHandle entriesHandle, byte[] key, byte[] value) {
         return Executor.getInstance().submit(new CallbackHelper<Void>(binder -> {
-            NativeBindings.mdataEntriesInsert(BaseSession.appHandle.toLong(), entriesHandle.toLong(), key, value, result -> {
+            NativeBindings.mdataEntriesInsert(appHandle.toLong(), entriesHandle.toLong(), key, value, result -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -44,9 +47,9 @@ public class MDataEntries {
         }));
     }
 
-    public static Future<Long> length(NativeHandle entriesHandle) {
+    public Future<Long> length(NativeHandle entriesHandle) {
         return Executor.getInstance().submit(new CallbackHelper<Long>(binder -> {
-            NativeBindings.mdataEntriesLen(BaseSession.appHandle.toLong(), entriesHandle.toLong(), (result, len) -> {
+            NativeBindings.mdataEntriesLen(appHandle.toLong(), entriesHandle.toLong(), (result, len) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
@@ -56,30 +59,30 @@ public class MDataEntries {
         }));
     }
 
-    public static Future<MDataValue> getValue(NativeHandle entriesHandle, byte[] key) {
+    public Future<MDataValue> getValue(NativeHandle entriesHandle, byte[] key) {
         return Executor.getInstance().submit(new CallbackHelper<MDataValue>(binder -> {
-            NativeBindings.mdataEntriesGet(BaseSession.appHandle.toLong(), entriesHandle.toLong(), key, (result, value, version) -> {
+            NativeBindings.mdataEntriesGet(appHandle.toLong(), entriesHandle.toLong(), key, (result, value, version) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(new MDataValue(value, version));
+                MDataValue mDataValue = new MDataValue();
+                mDataValue.setContent(value);
+                mDataValue.setContentLen(value.length);
+                mDataValue.setEntryVersion(version);
+                binder.onResult(mDataValue);
             });
         }));
     }
 
-    public static Future<List<MDataEntry>> listEntries(NativeHandle entriesHandle) {
+    public Future<List<MDataEntry>> listEntries(NativeHandle entriesHandle) {
         return Executor.getInstance().submit(new CallbackHelper<List<MDataEntry>>(binder -> {
-            List<MDataEntry> entries = new ArrayList<>();
-            CallbackByteArrayLenByteArrayLenLong forEachCallback = (key, value, version) -> {
-                entries.add(new MDataEntry(key, value, version));
-            };
-            NativeBindings.mdataEntriesForEach(BaseSession.appHandle.toLong(), entriesHandle.toLong(), forEachCallback, (result) -> {
+            NativeBindings.mdataListEntries(appHandle.toLong(), entriesHandle.toLong(),(result, entries) -> {
                 if (result.getErrorCode() != 0) {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(entries);
+                binder.onResult(Arrays.asList(entries));
             });
         }));
     }

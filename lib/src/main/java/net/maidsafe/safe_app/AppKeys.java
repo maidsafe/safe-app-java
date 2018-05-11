@@ -2,67 +2,76 @@ package net.maidsafe.safe_app;
 
 /// Represents the needed keys to work with the data.
 public class AppKeys {
-	public AppKeys() { }
 	private byte[] ownerKey;
+	private byte[] encKey;
+	private byte[] signPk;
+	private byte[] signSk;
+	private byte[] encPk;
+	private byte[] encSk;
 
+	public AppKeys() {
+		this.ownerKey = new byte[] {};
+		this.encKey = new byte[] {};
+		this.signPk = new byte[] {};
+		this.signSk = new byte[] {};
+		this.encPk = new byte[] {};
+		this.encSk = new byte[] {};
+	}
+	public AppKeys(byte[] ownerKey, byte[] encKey, byte[] signPk, byte[] signSk, byte[] encPk, byte[] encSk) {
+		this.ownerKey = ownerKey;
+		this.encKey = encKey;
+		this.signPk = signPk;
+		this.signSk = signSk;
+		this.encPk = encPk;
+		this.encSk = encSk;
+	}
 	public byte[] getOwnerKey() {
 		return ownerKey;
 	}
 
 	public void setOwnerKey(final byte[] val) {
-		ownerKey = val;
+		this.ownerKey = val;
 	}
-
-	private byte[] encKey;
 
 	public byte[] getEncKey() {
 		return encKey;
 	}
 
 	public void setEncKey(final byte[] val) {
-		encKey = val;
+		this.encKey = val;
 	}
-
-	private byte[] signPk;
 
 	public byte[] getSignPk() {
 		return signPk;
 	}
 
 	public void setSignPk(final byte[] val) {
-		signPk = val;
+		this.signPk = val;
 	}
-
-	private byte[] signSk;
 
 	public byte[] getSignSk() {
 		return signSk;
 	}
 
 	public void setSignSk(final byte[] val) {
-		signSk = val;
+		this.signSk = val;
 	}
-
-	private byte[] encPk;
 
 	public byte[] getEncPk() {
 		return encPk;
 	}
 
 	public void setEncPk(final byte[] val) {
-		encPk = val;
+		this.encPk = val;
 	}
-
-	private byte[] encSk;
 
 	public byte[] getEncSk() {
 		return encSk;
 	}
 
 	public void setEncSk(final byte[] val) {
-		encSk = val;
+		this.encSk = val;
 	}
 
-	public AppKeys(byte[] ownerKey, byte[] encKey, byte[] signPk, byte[] signSk, byte[] encPk, byte[] encSk) { }
 }
 

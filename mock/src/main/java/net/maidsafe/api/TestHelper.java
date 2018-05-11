@@ -33,7 +33,7 @@ public class TestHelper {
                     binder.onException(Helper.ffiResultToException(result));
                     return;
                 }
-                binder.onResult(new NativeHandle(appHandle, (handle) -> {
+                binder.onResult(new NativeHandle(appHandle, handle -> {
                     NativeBindings.appFree(handle);
                 }));
             });

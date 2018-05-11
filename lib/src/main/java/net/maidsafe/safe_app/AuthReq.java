@@ -2,57 +2,62 @@ package net.maidsafe.safe_app;
 
 /// Represents an authorisation request
 public class AuthReq {
-	public AuthReq() { }
 	private AppExchangeInfo app;
+	private boolean appContainer;
+	private ContainerPermissions[] containers;
+	private long containersLen;
+	private long containersCap;
 
+	public AuthReq() {
+		this.app = new AppExchangeInfo();
+		this.containers = new ContainerPermissions[] {};
+	}
+	public AuthReq(AppExchangeInfo app, boolean appContainer, ContainerPermissions[] containers, long containersLen, long containersCap) {
+		this.app = app;
+		this.appContainer = appContainer;
+		this.containers = containers;
+		this.containersLen = containersLen;
+		this.containersCap = containersCap;
+	}
 	public AppExchangeInfo getApp() {
 		return app;
 	}
 
 	public void setApp(final AppExchangeInfo val) {
-		app = val;
+		this.app = val;
 	}
-
-	private boolean appContainer;
 
 	public boolean getAppContainer() {
 		return appContainer;
 	}
 
 	public void setAppContainer(final boolean val) {
-		appContainer = val;
+		this.appContainer = val;
 	}
-
-	private ContainerPermissions[] containers;
 
 	public ContainerPermissions[] getContainer() {
 		return containers;
 	}
 
 	public void setContainer(final ContainerPermissions[] val) {
-		containers = val;
+		this.containers = val;
 	}
-
-	private long containersLen;
 
 	public long getContainersLen() {
 		return containersLen;
 	}
 
 	public void setContainersLen(final long val) {
-		containersLen = val;
+		this.containersLen = val;
 	}
-
-	private long containersCap;
 
 	public long getContainersCap() {
 		return containersCap;
 	}
 
 	public void setContainersCap(final long val) {
-		containersCap = val;
+		this.containersCap = val;
 	}
 
-	public AuthReq(AppExchangeInfo app, boolean appContainer, ContainerPermissions[] containers, long containersLen, long containersCap) { }
 }
 
