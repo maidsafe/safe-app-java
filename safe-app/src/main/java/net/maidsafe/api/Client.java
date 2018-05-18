@@ -11,14 +11,19 @@ import java.nio.file.Files;
 public class Client extends Session {
 
     public static void load() {
+        clientTypeFactory = ClientTypeFactory.load(Client.class);
         try {
             String baseLibName = "libsafe_app";
             String libName = "libsafe_app_jni";
+            String baseAuthLibName = "libsafe_authenticator";
+            String authLibName = "libsafe_authenticator_jni";
             String extension = ".so";
             switch (OSInfo.getOs()) {
                 case WINDOWS:
                     libName = "safe_app_jni";
                     baseLibName = "safe_app";
+                    authLibName = "safe_authenticator_jni";
+                    baseAuthLibName = "safe_authenticator";
                     extension = ".dll";
                     break;
                 case MAC:
@@ -51,12 +56,27 @@ public class Client extends Session {
                     .concat(libName).concat(extension));
             Files.copy(inputStream, file.toPath());
             System.loadLibrary("safe_app_jni");
+
+            if(Session.isMock()) {
+
+                file = new File(generatedDir, authLibName.concat(extension));
+                file.deleteOnExit();
+                inputStream = Client.class.getResourceAsStream("/native/"
+                        .concat(authLibName).concat(extension));
+                Files.copy(inputStream, file.toPath());
+
+                file = new File(generatedDir, baseAuthLibName.concat(extension));
+                file.deleteOnExit();
+                inputStream = Client.class.getResourceAsStream("/native/"
+                        .concat(baseAuthLibName).concat(extension));
+                Files.copy(inputStream, file.toPath());
+                System.loadLibrary("safe_authenticator_jni");
+            }
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
     }
-//  TODO: make private
-    public Client(AppHandle appHandle, DisconnectListener disconnectListener) {
+    protected Client(AppHandle appHandle, DisconnectListener disconnectListener) {
         super(appHandle, disconnectListener);
     }
 }

@@ -12,7 +12,7 @@ version '0.1.0'
 dependencies {
     implementation project(':lib')
     implementation project(':api')
-    implementation project(':mock')
+    implementation project(':safe-authenticator')
     testImplementation 'junit:junit:4.12'
 }
 repositories {
@@ -41,6 +41,20 @@ task copyTestResources(type: Copy) {
     into "${buildDir}/classes/java/test/native"
 }
 processTestResources.dependsOn copyTestResources
+
+task copyAuthTestResources(type: Copy) {
+    def platform = "linux"
+    def x64Versions = ["x86_64", "amd64", "x64", "x86-64", "ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
+    def arch = x64Versions.find { it == "x64" } == null ? "x86" : "x64"
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        platform = "win"
+    } else if (Os.isFamily(Os.FAMILY_MAC)) {
+        platform = "osx"
+    }
+    from "${projectDir}/../safe-authenticator/libs/${platform}/mock/${arch}"
+    into "${projectDir}/build/classes/java/test/native"
+}
+processTestResources.dependsOn copyAuthTestResources
 
 def nativeLibsVersion = "nikita-d67a875"
 def tempDownloadDir =  "${projectDir}/.tempDownloads"

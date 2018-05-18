@@ -5,6 +5,8 @@ build/
 safe-app/build
 safe-app/libs
 safe-app-android/build
+safe-authenticator/build
+safe-authenticator/libs
 .DS_Store
 .idea/
 *.iml

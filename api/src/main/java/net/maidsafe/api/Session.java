@@ -7,6 +7,7 @@ import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -25,11 +26,24 @@ class Session {
     public MDataEntryAction mDataEntryAction;
     public MDataPermission mDataPermission;
     public NFS nfs;
+    protected static ClientTypeFactory clientTypeFactory;
+
 
     protected Session(AppHandle appHandle, DisconnectListener disconnectListener) {
         this.appHandle = appHandle;
         this.disconnectListener = disconnectListener;
         init();
+    }
+
+    public static <T extends Session> T create(AppHandle appHandle, DisconnectListener disconnectListener) {
+        try {
+            Constructor constructor = clientTypeFactory.getClientType().getDeclaredConstructor(new Class[] {AppHandle.class, DisconnectListener.class});
+            return (T) constructor.newInstance(appHandle, disconnectListener);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void init() {
@@ -52,7 +66,7 @@ class Session {
         this.nfs = new NFS(this.appHandle);
     }
 
-    public boolean isMock() {
+    public static boolean isMock() {
         return NativeBindings.isMockBuild();
     }
 
@@ -198,7 +212,7 @@ class Session {
         }));
     }
 
-    public static Future<Request> getAuthRequest(AuthReq req) {
+    public static Future<Request> encodeAuthReq(AuthReq req) {
         return Executor.getInstance().submit(new CallbackHelper<Request>(binder -> {
             NativeBindings.encodeAuthReq(req, handleRequestCallback(binder));
         }));
@@ -229,7 +243,7 @@ class Session {
         }));
     }
 
-    public static Future<DecodeResult> decodeResponse(String uri) {
+    public static Future<DecodeResult> decodeIpcMessage(String uri) {
         return Executor.getInstance().submit(new CallbackHelper<DecodeResult>((binder) -> {
             CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) -> binder.onResult(new AuthResponse(reqId, authGranted));
 
@@ -247,11 +261,11 @@ class Session {
         }));
     }
 
-    public static Future<Session> connect(UnregisteredClientResponse response) {
+    public static Future<Object> connect(UnregisteredClientResponse response) {
         return connect(response.getBootstrapConfig());
     }
 
-    public static Future<Session> connect(byte[] bootStrapConfig) {
+    public static Future<Object> connect(byte[] bootStrapConfig) {
         return Executor.getInstance().submit(new CallbackHelper<Session>(binder -> {
             DisconnectListener disconnectListener = new DisconnectListener();
             CallbackResultApp callback = (result, app) -> {
@@ -261,13 +275,13 @@ class Session {
                 }
 
                 AppHandle appHandle = new AppHandle(app);
-                binder.onResult(new Session(appHandle, disconnectListener));
+                binder.onResult(Session.create(appHandle, disconnectListener));
             };
             NativeBindings.appUnregistered(bootStrapConfig, disconnectListener.getCallback(), callback);
         }));
     }
 
-    public static Future<Session> connect(App app, AuthGranted authGranted) {
+    public static Future<Object> connect(App app, AuthGranted authGranted) {
         return Executor.getInstance().submit(new CallbackHelper<Session>(binder -> {
             DisconnectListener disconnectListener = new DisconnectListener();
             CallbackResultApp callback = (result, handle) -> {
@@ -276,7 +290,7 @@ class Session {
                     return;
                 }
                 AppHandle appHandle = new AppHandle(handle);
-                binder.onResult(new Session(appHandle, disconnectListener));
+                binder.onResult(Session.create(appHandle, disconnectListener));
             };
             NativeBindings.appRegistered(app.getId(), authGranted, disconnectListener.getCallback(), callback);
         }));
