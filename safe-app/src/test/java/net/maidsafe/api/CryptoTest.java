@@ -69,10 +69,10 @@ public class CryptoTest {
     Assert.assertEquals(new String(actPlainText), new String(plainText));
   }
 
-//  @Test
+  @Test
   public void boxEncryption() throws Exception {
-    Client senderClient = (Client)TestHelper.createSession("net.maidsafe.test").get();
-    Client receiverClient = (Client)TestHelper.createSession("net.maidsafe.test").get();
+    Client senderClient = (Client)TestHelper.createSession().get();
+    Client receiverClient = (Client)TestHelper.createSession().get();
     EncryptKeyPair encryptKeyPairSender = senderClient.crypto.generateEncryptKeyPair().get();
     byte[] senderPublicEncKey = senderClient.crypto.getRawPublicEncryptKey(
         encryptKeyPairSender.getPublicEncryptKey()).get();
