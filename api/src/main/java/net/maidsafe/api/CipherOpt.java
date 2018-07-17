@@ -1,15 +1,14 @@
 package net.maidsafe.api;
 
+import java.util.concurrent.CompletableFuture;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
-import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
-import java.lang.annotation.Native;
-import java.util.concurrent.Future;
 
-class CipherOpt {
+
+public class CipherOpt {
 
     private static AppHandle appHandle;
 
@@ -25,39 +24,41 @@ class CipherOpt {
         });
     }
 
-    public Future<NativeHandle> getPlainCipherOpt() {
-        return Executor.getInstance().submit(new CallbackHelper(binder -> {
-            NativeBindings.cipherOptNewPlaintext(appHandle.toLong(), (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getNativeHandle(handle));
-            });
-        }));
+    public CompletableFuture<NativeHandle> getPlainCipherOpt() {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.cipherOptNewPlaintext(appHandle.toLong(), (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                Helper.ffiResultToException(result);
+                return;
+            }
+            future.complete(getNativeHandle(handle));
+        });
+        return future;
     }
 
-    public Future<NativeHandle> getSymmetricCipherOpt() {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.cipherOptNewSymmetric(appHandle.toLong(), (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getNativeHandle(handle));
-            });
-        }));
+    public CompletableFuture<NativeHandle> getSymmetricCipherOpt() {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+
+        NativeBindings.cipherOptNewSymmetric(appHandle.toLong(), (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                Helper.ffiResultToException(result);
+                return;
+            }
+            future.complete(getNativeHandle(handle));
+        });
+        return future;
     }
 
-    public Future<NativeHandle> getAsymmetricCipherOpt(NativeHandle publicEncryptKey) {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.cipherOptNewAsymmetric(appHandle.toLong(), publicEncryptKey.toLong(), (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getNativeHandle(handle));
-            });
-        }));
+    public CompletableFuture<NativeHandle> getAsymmetricCipherOpt(NativeHandle publicEncryptKey) {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.cipherOptNewAsymmetric(appHandle.toLong(), publicEncryptKey.toLong(),
+                (result, handle) -> {
+                    if (result.getErrorCode() != 0) {
+                        Helper.ffiResultToException(result);
+                        return;
+                    }
+                    future.complete(getNativeHandle(handle));
+                });
+        return future;
     }
 }
