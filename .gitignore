@@ -4,6 +4,7 @@ api/build
 build/
 safe-app/build
 safe-app/libs
+safe-app/.tempDownloads
 safe-app-android/build
 safe-authenticator/build
 safe-authenticator/libs
@@ -13,5 +14,6 @@ safe-authenticator/libs
 api/*.iml
 safe-app/*.iml
 safe-app-android/*.iml
-/safe-app-android/src/non-mock
-/safe-app-android/src/mock
+safe-app-android/src/non-mock
+safe-app-android/src/mock
+safe-app-android/.temp_downloads

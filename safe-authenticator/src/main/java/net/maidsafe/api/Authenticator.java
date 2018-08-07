@@ -1,6 +1,5 @@
 package net.maidsafe.api;
 
-import com.sun.org.apache.bcel.internal.generic.DCMPL;
 import net.maidsafe.api.model.App;
 import net.maidsafe.api.model.Request;
 import net.maidsafe.models.IpcRequest;

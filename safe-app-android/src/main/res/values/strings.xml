@@ -1,3 +1,53 @@
 <resources>
     <string name="app_name">api</string>
+    <string name="core_config">{
+        \"dev\": {
+        \"mock_unlimited_mutations\": false,
+        \"mock_in_memory_storage\": false,
+        \"mock_vault_path\": \"applicationFilesPath\"
+        }
+        }
+    </string>
+    <string name="logtoml">[appenders.async_console]\n
+        kind = \"async_console\"\n
+        pattern = \"{({l}):1.1} {d(%y-%m-%d %H:%M:%S%.6f)} [{M} #FS#{f}#FE#:{L}] {m}\\n\"\n
+\n
+        [[appenders.async_console.filters]]\n
+        kind = \"threshold\"\n
+        level = \"trace\"\n
+        \n
+        [appenders.async_file]\n
+        kind = \"async_file\"\n
+        output_file_name = \"Client.log\"\n
+        pattern = \"{({l}):1.1} {d(%y-%m-%d %H:%M:%S%.6f)} [{M} #FS#{f}#FE#:{L}] {m}\\n\"\n
+        append = false\n
+        file_timestamp = false\n
+        \n
+        [root]\n
+        level = \"error\"\n
+        appenders = [\"async_file\"]\n
+        \n
+        [loggers.\"crust\"]\n
+        level = \"debug\"\n
+        \n
+        [loggers.\"routing\"]\n
+        level = \"trace\"\n
+        \n
+        [loggers.\"config_file_handler\"]\n
+        level = \"trace\"\n
+        \n
+        [loggers.\"routing_stats\"]\n
+        level = \"trace\"\n
+        \n
+        [loggers.\"safe_core\"]\n
+        level = \"trace\"\n
+        \n
+        [loggers.\"safe_app\"]\n
+        level = \"trace\"\n
+        \n
+        [loggers.\"safe_authenticator\"]\n
+        level = \"trace\"\n
+        \n
+        [loggers.\"ffi_utils\"]\n
+        level = \"trace\"\n</string>
 </resources>

@@ -2,7 +2,6 @@ package net.maidsafe.api;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.sun.corba.se.spi.copyobject.CopierManager;
 import net.maidsafe.api.model.NFSFileMetadata;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.File;
