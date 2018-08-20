@@ -1,0 +1,27 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'java'
+
+
+dependencies {
+    compile group: 'com.github.jnr', name: 'jnr-ffi', version: '2.1.8'
+    implementation project(':lib')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation('junit:junit:4.12')
+}
+
+task copyTestResources(type: Copy) {
+    def platform = "linux"
+    def arch = "x64";
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        platform = "win"
+    } else if (Os.isFamily(Os.FAMILY_MAC)) {
+        platform = "osx"
+    }
+    from "${projectDir}/libs/${platform}/${arch}"
+    into "${buildDir}/classes/java/test/native"
+}
+processTestResources.dependsOn copyTestResources
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
