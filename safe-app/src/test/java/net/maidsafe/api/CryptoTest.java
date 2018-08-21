@@ -1,6 +1,5 @@
 package net.maidsafe.api;
 
-import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import net.maidsafe.api.model.EncryptKeyPair;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.api.model.SignKeyPair;

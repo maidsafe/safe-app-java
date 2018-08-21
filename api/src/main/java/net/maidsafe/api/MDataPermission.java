@@ -23,8 +23,7 @@ public class MDataPermission {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataPermissionsNew(appHandle.toLong(), (result, permissionsHandle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new NativeHandle(permissionsHandle, handle -> {
                 NativeBindings.mdataPermissionsFree(appHandle.toLong(), handle, res -> {
@@ -39,8 +38,7 @@ public class MDataPermission {
         NativeBindings.mdataPermissionsLen(appHandle.toLong(), permissionHandle.toLong(),
                 (result, len) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(len);
                 });
@@ -53,8 +51,7 @@ public class MDataPermission {
         NativeBindings.mdataPermissionsGet(appHandle.toLong(), permissionHandle.toLong(),
                 signKey.toLong(), (result, permsSet) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(permsSet);
                 });
@@ -66,8 +63,7 @@ public class MDataPermission {
         NativeBindings.mdataListPermissionSets(appHandle.toLong(), permissionHandle.toLong(),
                 (result, permsArray) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(Arrays.asList(permsArray));
                 });

@@ -17,8 +17,7 @@ public class MDataEntryAction {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntryActionsNew(appHandle.toLong(), (result, entriesH) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             NativeHandle entriesActionHandle = new NativeHandle(entriesH, handle -> {
                 NativeBindings.mdataEntryActionsFree(appHandle.toLong(), handle, res -> {

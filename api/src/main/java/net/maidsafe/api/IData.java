@@ -19,8 +19,7 @@ public class IData {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.idataNewSelfEncryptor(appHandle.toLong(), (result, writerHandle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new NativeHandle(writerHandle, (handle) -> {
                 NativeBindings.idataSelfEncryptorWriterFree(appHandle.toLong(), handle, res -> {
@@ -58,8 +57,7 @@ public class IData {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.idataFetchSelfEncryptor(appHandle.toLong(), name, (result, readerHandle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new NativeHandle(readerHandle, (handle) -> {
                 NativeBindings.idataSelfEncryptorWriterFree(appHandle.toLong(), handle, res -> {
@@ -85,8 +83,7 @@ public class IData {
         CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.idataSize(appHandle.toLong(), readerHandle.toLong(), (result, size) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(size);
         });
@@ -97,8 +94,7 @@ public class IData {
         CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.idataSerialisedSize(appHandle.toLong(), name, (result, size) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(size);
         });

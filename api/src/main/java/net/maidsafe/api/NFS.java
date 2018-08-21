@@ -23,8 +23,7 @@ public class NFS {
         NativeBindings.dirFetchFile(appHandle.toLong(), parentInfo, fileName,
                 (result, ffiFile, version) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(new NFSFileMetadata(ffiFile, version));
                 });
@@ -73,11 +72,11 @@ public class NFS {
         NativeBindings.fileOpen(appHandle.toLong(), parentInfo, file, openMode.getValue(),
                 (result, handle) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(new NativeHandle(handle, (fileContext) -> {
                         // TODO implement free function once made available in safe_app
+                      NativeBindings.appFree(fileContext);
                     }));
                 });
         return future;
@@ -87,8 +86,7 @@ public class NFS {
         CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.fileSize(appHandle.toLong(), fileContextHandle.toLong(), (result, size) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(size);
         });
@@ -100,8 +98,7 @@ public class NFS {
         NativeBindings.fileRead(appHandle.toLong(), fileContextHandle.toLong(), position, length,
                 (result, data) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(data);
                 });
@@ -125,8 +122,7 @@ public class NFS {
         NativeBindings.fileClose(appHandle.toLong(), fileContextHandle.toLong(),
                 (result, ffiFile) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(new NFSFileMetadata(ffiFile, 0));
                 });
