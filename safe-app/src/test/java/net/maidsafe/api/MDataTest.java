@@ -13,7 +13,10 @@ import net.maidsafe.test.utils.Helper;
 import net.maidsafe.test.utils.SessionLoader;
 import net.maidsafe.utils.Constants;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import javax.swing.*;
 
 
 public class MDataTest {
@@ -198,5 +201,4 @@ public class MDataTest {
         Constants.XOR_NAME_LENGTH).getBytes(), tagType, secretKey, nonce).get();
     privateMDataCrud(mDataInfo);
   }
-
 }

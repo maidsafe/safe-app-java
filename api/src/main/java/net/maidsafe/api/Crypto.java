@@ -30,8 +30,7 @@ public class Crypto {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.generateNonce((result, nonce) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(nonce);
         });
@@ -42,8 +41,7 @@ public class Crypto {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.sha3Hash(data, (result, hashedData) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(hashedData);
         });
@@ -54,12 +52,10 @@ public class Crypto {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.appPubSignKey(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new NativeHandle(handle, (key) -> {
                 NativeBindings.signPubKeyFree(appHandle.toLong(), key, (freeResult) -> {
-
                 });
             }));
         });
@@ -71,8 +67,7 @@ public class Crypto {
         NativeBindings.signGenerateKeyPair(appHandle.toLong(),
                 (result, pubSignKeyHandle, secSignKeyHandle) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(new SignKeyPair(getPublicSignKeyHandle(pubSignKeyHandle),
                             getSecretSignKeyHandle(secSignKeyHandle)));
@@ -84,8 +79,7 @@ public class Crypto {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.signPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getPublicSignKeyHandle(handle));
         });
@@ -96,8 +90,7 @@ public class Crypto {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.signSecKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getSecretSignKeyHandle(handle));
         });
@@ -109,8 +102,7 @@ public class Crypto {
         NativeBindings.encGenerateKeyPair(appHandle.toLong(),
                 (result, pubEncHandle, secEncHandle) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     EncryptKeyPair keyPair = new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle),
                             getSecretEncKeyHandle(secEncHandle));
@@ -123,8 +115,7 @@ public class Crypto {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.appPubEncKey(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getPublicEncKeyHandle(handle));
         });
@@ -135,8 +126,7 @@ public class Crypto {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.encPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getPublicEncKeyHandle(handle));
         });
@@ -147,8 +137,7 @@ public class Crypto {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.encSecretKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getSecretEncKeyHandle(handle));
         });
@@ -160,8 +149,7 @@ public class Crypto {
         NativeBindings.sign(appHandle.toLong(), data, secretSignKey.toLong(),
                 (result, signedData) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(signedData);
                 });
@@ -173,8 +161,7 @@ public class Crypto {
         NativeBindings.verify(appHandle.toLong(), signedData, publicSignKey.toLong(),
                 (result, verifiedData) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(verifiedData);
                 });
@@ -187,8 +174,7 @@ public class Crypto {
         NativeBindings.encrypt(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
                 senderSecretEncryptKey.toLong(), (result, cipherText) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(cipherText);
                 });
@@ -201,8 +187,7 @@ public class Crypto {
         NativeBindings.decrypt(appHandle.toLong(), cipherText, senderPublicEncryptKey.toLong(),
                 recipientSecretEncryptKey.toLong(), (result, plainData) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(plainData);
                 });
@@ -214,8 +199,7 @@ public class Crypto {
         NativeBindings.encryptSealedBox(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
                 (result, cipherText) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(cipherText);
                 });
@@ -229,8 +213,7 @@ public class Crypto {
                 senderPublicEncryptKey.toLong(), senderSecretEncryptKey.toLong(),
                 (result, plainText) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(plainText);
                 });
@@ -241,8 +224,7 @@ public class Crypto {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encPubKeyGet(appHandle.toLong(), publicEncKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(key);
         });
@@ -253,8 +235,7 @@ public class Crypto {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encSecretKeyGet(appHandle.toLong(), secretEncKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(key);
         });
@@ -265,8 +246,7 @@ public class Crypto {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.signPubKeyGet(appHandle.toLong(), publicSignKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(key);
         });
@@ -277,8 +257,7 @@ public class Crypto {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.signSecKeyGet(appHandle.toLong(), secretSignKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(key);
         });
