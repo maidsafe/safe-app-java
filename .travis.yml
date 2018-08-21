@@ -22,4 +22,5 @@ matrix:
 script:
 - chmod +x gradlew
 - ./gradlew download-nativelibs
-- ./gradlew check
+- ./gradlew check --info
+

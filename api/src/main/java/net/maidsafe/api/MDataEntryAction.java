@@ -17,8 +17,7 @@ public class MDataEntryAction {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntryActionsNew(appHandle.toLong(), (result, entriesH) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             NativeHandle entriesActionHandle = new NativeHandle(entriesH, handle -> {
                 NativeBindings.mdataEntryActionsFree(appHandle.toLong(), handle, res -> {
@@ -30,41 +29,38 @@ public class MDataEntryAction {
     }
 
     public CompletableFuture insert(NativeHandle actionHandle, byte[] key, byte[] value) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.mdataEntryActionsInsert(appHandle.toLong(), actionHandle.toLong(), key, value,
                     (result) -> {
                         if (result.getErrorCode() != 0) {
-                            Helper.ffiResultToException(result);
-                            return;
+                            future.completeExceptionally(Helper.ffiResultToException(result));
                         }
+                        future.complete(null);
                     });
-        });
         return future;
     }
 
     public CompletableFuture update(NativeHandle actionHandle, byte[] key, byte[] value, long version) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.mdataEntryActionsUpdate(appHandle.toLong(), actionHandle.toLong(), key, value,
                     version, (result) -> {
                         if (result.getErrorCode() != 0) {
-                            Helper.ffiResultToException(result);
-                            return;
+                            future.completeExceptionally(Helper.ffiResultToException(result));
                         }
+                        future.complete(null);
                     });
-        });
         return future;
     }
 
     public CompletableFuture<Void> delete(NativeHandle actionHandle, byte[] key, long version) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.mdataEntryActionsDelete(appHandle.toLong(), actionHandle.toLong(), key,
                     version, (result) -> {
                         if (result.getErrorCode() != 0) {
-                            Helper.ffiResultToException(result);
-                            return;
+                            future.completeExceptionally(Helper.ffiResultToException(result));
                         }
+                        future.complete(null);
                     });
-        });
         return future;
     }
 }

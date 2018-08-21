@@ -22,8 +22,7 @@ public class MDataEntries {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntriesNew(appHandle.toLong(), (result, entriesH) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             NativeHandle entriesHandle = new NativeHandle(entriesH, handle -> {
                 NativeBindings.mdataEntriesFree(appHandle.toLong(), handle, res -> {
@@ -35,15 +34,14 @@ public class MDataEntries {
     }
 
     public CompletableFuture<Void> insert(NativeHandle entriesHandle, byte[] key, byte[] value) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.mdataEntriesInsert(appHandle.toLong(), entriesHandle.toLong(), key, value,
                     result -> {
                         if (result.getErrorCode() != 0) {
-                            Helper.ffiResultToException(result);
-                            return;
+                            future.completeExceptionally(Helper.ffiResultToException(result));
                         }
+                        future.complete(null);
                     });
-        });
         return future;
     }
 
@@ -51,8 +49,7 @@ public class MDataEntries {
         CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.mdataEntriesLen(appHandle.toLong(), entriesHandle.toLong(), (result, len) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(len);
         });
@@ -64,8 +61,7 @@ public class MDataEntries {
         NativeBindings.mdataEntriesGet(appHandle.toLong(), entriesHandle.toLong(), key,
                 (result, value, version) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     MDataValue mDataValue = new MDataValue();
                     mDataValue.setContent(value);
@@ -81,8 +77,7 @@ public class MDataEntries {
         NativeBindings.mdataListEntries(appHandle.toLong(), entriesHandle.toLong(),
                 (result, entries) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(Arrays.asList(entries));
                 });

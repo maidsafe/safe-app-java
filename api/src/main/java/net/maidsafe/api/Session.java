@@ -70,14 +70,13 @@ public class Session {
     }
 
     public static CompletableFuture initLogging(String outputFileName) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.appInitLogging(outputFileName, (result) -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -85,8 +84,7 @@ public class Session {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.appOutputLogPath(logFileName, (result, path) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(path);
         });
@@ -97,8 +95,7 @@ public class Session {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.appContainerName(appId, (result, name) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(name);
         });
@@ -106,13 +103,12 @@ public class Session {
     }
 
     public static CompletableFuture setAdditionalSearchPath(String path) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.appSetAdditionalSearchPath(path, (result) -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
-            });
+                future.complete(null);
         });
         return future;
     }
@@ -121,8 +117,7 @@ public class Session {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.appExeFileStem((result, path) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(path);
         });
@@ -179,8 +174,7 @@ public class Session {
         DisconnectListener disconnectListener = new DisconnectListener();
         CallbackResultApp callback = (result, app) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
 
             AppHandle appHandle = new AppHandle(app);
@@ -195,8 +189,7 @@ public class Session {
         DisconnectListener disconnectListener = new DisconnectListener();
         CallbackResultApp callback = (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             AppHandle appHandle = new AppHandle(handle);
             future.complete(Session.create(appHandle, disconnectListener));
@@ -209,8 +202,7 @@ public class Session {
     private static CallbackResultIntString handleRequestCallback(CompletableFuture<Request> future) {
         return (result, reqId, uri) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new Request(uri, reqId));
         };
@@ -253,8 +245,7 @@ public class Session {
         CompletableFuture<AccountInfo> future = new CompletableFuture<>();
         NativeBindings.appAccountInfo(appHandle.toLong(), (result, accountInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(accountInfo);
         });
@@ -262,26 +253,24 @@ public class Session {
     }
 
     public CompletableFuture resetObjectCache() {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
     public CompletableFuture refreshAccessInfo() {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -290,8 +279,7 @@ public class Session {
         NativeBindings.accessContainerGetContainerMdataInfo(appHandle.toLong(), containerName,
                 (result, mDataInfo) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(mDataInfo);
                 });
@@ -302,8 +290,7 @@ public class Session {
         CompletableFuture<List<ContainerPermissions>> future = new CompletableFuture<>();
         NativeBindings.accessContainerFetch(appHandle.toLong(), ((result, containerPerms) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(containerPerms));
         }));
@@ -311,15 +298,14 @@ public class Session {
     }
 
     public CompletableFuture reconnect() {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.appReconnect(appHandle.toLong(), result -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
                 disconnected = false;
+                future.complete(null);
             });
-        });
         return future;
     }
 }

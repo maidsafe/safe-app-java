@@ -1,15 +1,10 @@
 package net.maidsafe.api;
 
-import com.sun.org.apache.bcel.internal.generic.DCMPL;
 import net.maidsafe.api.model.App;
 import net.maidsafe.api.model.Request;
 import net.maidsafe.models.IpcRequest;
 import net.maidsafe.safe_authenticator.*;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
-
-import javax.naming.AuthenticationNotSupportedException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,8 +25,7 @@ public class Authenticator {
         AuthDisconnectListener disconnectListener = new AuthDisconnectListener();
         NativeBindings.createAcc(accountLocator, accountPassword, invitation, disconnectListener.getCallback(), (result, authenticator) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new Authenticator(authenticator));
         });
@@ -43,8 +37,7 @@ public class Authenticator {
         AuthDisconnectListener disconnectListener = new AuthDisconnectListener();
         NativeBindings.login(accountLocator, accountPassword, disconnectListener.getCallback(), (result, authenticator) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new Authenticator(authenticator));
         });
@@ -55,8 +48,7 @@ public class Authenticator {
         CompletableFuture<List<AppExchangeInfo>> future = new CompletableFuture<>();
         NativeBindings.authRevokedApps(auth, (result, appExchangeInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(appExchangeInfo));
         });
@@ -64,13 +56,13 @@ public class Authenticator {
     }
 
     public CompletableFuture flushAppRevocationQueue(long auth) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.authFlushAppRevocationQueue(auth, result -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
+                    future.complete(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -78,8 +70,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeUnregisteredResp(request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(response);
         });
@@ -90,8 +81,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeAuthResp(auth, authReq, request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(response);
         });
@@ -102,8 +92,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeContainersResp(auth, containersReq, request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(response);
         });
@@ -111,14 +100,13 @@ public class Authenticator {
     }
 
     public CompletableFuture initLogging(String outputFileNameOverride) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.authInitLogging(outputFileNameOverride, result -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -126,8 +114,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.authOutputLogPath(outputFileName, (result, path) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(path);
         });
@@ -135,14 +122,13 @@ public class Authenticator {
     }
 
     public CompletableFuture reconnect(long auth) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.authReconnect(auth, result -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -150,8 +136,7 @@ public class Authenticator {
         CompletableFuture<AccountInfo> future = new CompletableFuture<>();
         NativeBindings.authAccountInfo(auth, (result, accountInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(accountInfo);
         });
@@ -162,8 +147,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.authExeFileStem((result, appName) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(appName);
         });
@@ -171,14 +155,13 @@ public class Authenticator {
     }
 
     public CompletableFuture setAdditionalSearchPath(String newPath) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.authSetAdditionalSearchPath(newPath, result -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
-                    return;
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -187,13 +170,13 @@ public class Authenticator {
     }
 
     public CompletableFuture removeRevokedApp(long auth, App app) {
-        CompletableFuture future = CompletableFuture.runAsync(() -> {
+        CompletableFuture future = new CompletableFuture();
             NativeBindings.authRmRevokedApp(auth, app.getId(), result -> {
                 if (result.getErrorCode() != 0) {
-                    Helper.ffiResultToException(result);
+                    future.completeExceptionally(Helper.ffiResultToException(result));
                 }
+                future.complete(null);
             });
-        });
         return future;
     }
 
@@ -201,8 +184,7 @@ public class Authenticator {
         CompletableFuture<List<RegisteredApp>> future = new CompletableFuture<>();
         CallbackResultRegisteredAppArrayLen callback = (result, registeredApp) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             Arrays.asList(registeredApp);
         };
@@ -214,8 +196,7 @@ public class Authenticator {
         CompletableFuture<List<AppAccess>> future = new CompletableFuture<>();
         NativeBindings.authAppsAccessingMutableData(auth, mDataInfo.getName(), mDataInfo.getTypeTag(), (result, appAccess) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(appAccess));
         });
@@ -226,8 +207,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeShareMdataResp(auth, shareMDataReq, request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(response);
         });
@@ -238,8 +218,7 @@ public class Authenticator {
         CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.authRevokeApp(auth, app.getId(), (result, response) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(response);
         });
@@ -250,8 +229,7 @@ public class Authenticator {
         CompletableFuture<List<RegisteredApp>> future = new CompletableFuture<>();
         NativeBindings.authRegisteredApps(auth, (result, registeredApp) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(registeredApp));
         });
@@ -289,8 +267,7 @@ public class Authenticator {
         };
         NativeBindings.authUnregisteredDecodeIpcMsg(message, callback, (result, response) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(new IpcRequest.IpcReqError(result.getErrorCode(), result.getDescription(), response));
         });

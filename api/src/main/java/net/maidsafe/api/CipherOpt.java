@@ -28,8 +28,7 @@ public class CipherOpt {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.cipherOptNewPlaintext(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getNativeHandle(handle));
         });
@@ -41,8 +40,7 @@ public class CipherOpt {
 
         NativeBindings.cipherOptNewSymmetric(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(getNativeHandle(handle));
         });
@@ -54,8 +52,7 @@ public class CipherOpt {
         NativeBindings.cipherOptNewAsymmetric(appHandle.toLong(), publicEncryptKey.toLong(),
                 (result, handle) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(getNativeHandle(handle));
                 });
