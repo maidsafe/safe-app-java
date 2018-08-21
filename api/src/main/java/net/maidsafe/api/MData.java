@@ -3,6 +3,7 @@ package net.maidsafe.api;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.*;
@@ -22,8 +23,7 @@ public class MData {
         CompletableFuture<MDataInfo> future = new CompletableFuture<>();
         NativeBindings.mdataInfoNewPrivate(name, typeTag, secretKey, nonce, (result, mdInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(mdInfo);
         });
@@ -34,8 +34,7 @@ public class MData {
         CompletableFuture<MDataInfo> future = new CompletableFuture<>();
         NativeBindings.mdataInfoRandomPrivate(typeTag, (result, mdInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(mdInfo);
         });
@@ -46,8 +45,7 @@ public class MData {
         CompletableFuture<MDataInfo> future = new CompletableFuture<>();
         NativeBindings.mdataInfoRandomPublic(typeTag, (result, mdInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(mdInfo);
         });
@@ -58,8 +56,7 @@ public class MData {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.mdataInfoEncryptEntryKey(mDataInfo, key, (result, encryptedKey) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(encryptedKey);
         });
@@ -70,8 +67,7 @@ public class MData {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.mdataInfoEncryptEntryValue(mDataInfo, value, (result, encryptedValue) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(encryptedValue);
         });
@@ -82,8 +78,7 @@ public class MData {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.mdataInfoDecrypt(mDataInfo, value, (result, decryptedValue) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(decryptedValue);
         });
@@ -94,8 +89,7 @@ public class MData {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.mdataInfoSerialise(mDataInfo, (result, serialisedData) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(serialisedData);
         });
@@ -106,8 +100,7 @@ public class MData {
         CompletableFuture<MDataInfo> future = new CompletableFuture<>();
         NativeBindings.mdataInfoDeserialise(serialisedMData, (result, mDataInfo) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(mDataInfo);
         });
@@ -132,8 +125,7 @@ public class MData {
         CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.mdataGetVersion(appHandle.toLong(), mDataInfo, (result, version) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(version);
         });
@@ -144,8 +136,7 @@ public class MData {
         CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.mdataSerialisedSize(appHandle.toLong(), mDataInfo, (result, size) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(size);
         });
@@ -157,8 +148,7 @@ public class MData {
         NativeBindings.mdataGetValue(appHandle.toLong(), mDataInfo, key,
                 (result, value, version) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                      future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     MDataValue mDataValue = new MDataValue();
                     mDataValue.setContent(value);
@@ -173,8 +163,7 @@ public class MData {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntries(appHandle.toLong(), mDataInfo, (result, entriesH) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+              future.completeExceptionally(Helper.ffiResultToException(result));
             }
 
             future.complete(new NativeHandle(entriesH,
@@ -188,8 +177,7 @@ public class MData {
         CompletableFuture<List<MDataKey>> future = new CompletableFuture<>();
         NativeBindings.mdataListKeys(appHandle.toLong(), mDataInfo, (result, keys) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(keys));
         });
@@ -200,8 +188,7 @@ public class MData {
         CompletableFuture<List<MDataValue>> future = new CompletableFuture<>();
         NativeBindings.mdataListValues(appHandle.toLong(), mDataInfo, (result, values) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(values));
         });
@@ -225,8 +212,7 @@ public class MData {
         CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataListPermissions(appHandle.toLong(), mDataInfo, (result, permsHandle) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             NativeHandle permissionHandle = new NativeHandle(permsHandle, (handle) -> {
                 NativeBindings.mdataPermissionsFree(appHandle.toLong(), handle, res -> {
@@ -243,8 +229,7 @@ public class MData {
         NativeBindings.mdataListUserPermissions(appHandle.toLong(), mDataInfo,
                 publicSignKey.toLong(), (result, permissionSet) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
-                        return;
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(permissionSet);
                 });
@@ -284,8 +269,7 @@ public class MData {
         CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.mdataEncodeMetadata(metadataResponse, (result, encodedMetadata) -> {
             if (result.getErrorCode() != 0) {
-                Helper.ffiResultToException(result);
-                return;
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(encodedMetadata);
         });
