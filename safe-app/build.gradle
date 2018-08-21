@@ -74,6 +74,7 @@ tasks.addRule('Pattern: NativeLibs-<ID>') { String taskName ->
     if (taskName.startsWith('NativeLibs-')) {
         task(taskName, type: Copy) {
             dependsOn << [ name.replace('NativeLibs', 'delete') ]
+            dependsOn << [ name.replace('NativeLibs', 'SystemURI') ]
             def args = name.split('-')
             String platform = args[1]
             String arch = args[2]
@@ -116,6 +117,28 @@ tasks.addRule('Pattern: AuthDelete-<ID>') { String taskName ->
         }
     }
 }
+tasks.addRule('Pattern: SystemURI-<ID>') { String taskName ->
+    if (taskName.startsWith('SystemURI-')) {
+        println("this is happening:" + taskName)
+        task(taskName, type: Copy) {
+            dependsOn << [name.replace('SystemURI', 'SystemURIDelete')]
+            def args = name.split('-')
+            String platform = args[1]
+            String arch = args[2]
+            from "${rootDir}/system-uri/libs/${platform}/${arch}/"
+            into "${rootDir}/system-uri/src/main/resources/native"
+        }
+    }
+}
+tasks.addRule('Pattern: SystemURIDelete-<ID>') { String taskName ->
+    if (taskName.startsWith('SystemURIDelete-')) {
+        task(taskName, dependsOn: build, type: Delete) {
+            delete "${rootDir}/system-uri/src/main/resources/native/"
+            delete "${projectDir}/system-uri/build/resources/main/native/"
+            delete "${projectDir}/system-uri/build/classes/java/test/native"
+        }
+    }
+}
 tasks.addRule('Pattern: pack-<ID>') { String taskName ->
     if (taskName.startsWith('pack')) {
         task(taskName, type: ShadowJar) {
@@ -130,6 +153,8 @@ tasks.addRule('Pattern: pack-<ID>') { String taskName ->
             from project(':api').sourceSets.main.resources
             from project(':lib').sourceSets.main.output
             from project(':lib').sourceSets.main.resources
+            from project(':system-uri').sourceSets.main.output
+            from project(':system-uri').sourceSets.main.resources
             if (isMock) {
                 from project(':safe-authenticator').sourceSets.main.output
                 from project(':safe-authenticator').sourceSets.main.resources
