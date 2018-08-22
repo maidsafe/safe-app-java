@@ -133,9 +133,9 @@ tasks.addRule('Pattern: SystemURI-<ID>') { String taskName ->
 tasks.addRule('Pattern: SystemURIDelete-<ID>') { String taskName ->
     if (taskName.startsWith('SystemURIDelete-')) {
         task(taskName, dependsOn: build, type: Delete) {
-            delete "${rootDir}/system-uri/src/main/resources/native/"
-            delete "${projectDir}/system-uri/build/resources/main/native/"
-            delete "${projectDir}/system-uri/build/classes/java/test/native"
+            delete "${rootDir}/system-uri/src/main/resources/native"
+            delete "${rootDir}/system-uri/build/resources/main/native"
+            delete "${rootDir}/system-uri/build/classes/java/test/native"
         }
     }
 }
