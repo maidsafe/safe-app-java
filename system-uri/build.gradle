@@ -1,0 +1,71 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'java'
+
+
+dependencies {
+    compile group: 'com.github.jnr', name: 'jnr-ffi', version: '2.1.8'
+    implementation project(':lib')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation('junit:junit:4.12')
+}
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.undercouch:gradle-download-task:3.2.0'
+    }
+}
+def nativeLibsVersion = 'v0.4.0'
+def tempDownloadDir = "${projectDir}/.tempDownloads"
+
+static def getCombinations() {
+    def platforms = ['win', 'linux', 'osx']
+    def architectures = ['x64']
+    [platforms, architectures].combinations().findAll()
+}
+task ("downloadNativeLibs", type: Download) {
+    File dir = new File(tempDownloadDir)
+    if (dir.exists()) {
+        assert dir.deleteDir()
+    }
+    def endPoints = getCombinations().collect {
+        "https://s3.eu-west-2.amazonaws.com/system-uri/system_uri-${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
+    }
+    src(endPoints)
+    dest tempDownloadDir
+}
+task copyTestResources(type: Copy) {
+    def platform = "linux"
+    def arch = "x64";
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        platform = "win"
+    } else if (Os.isFamily(Os.FAMILY_MAC)) {
+        platform = "osx"
+    }
+    from "${projectDir}/libs/${platform}/${arch}"
+    into "${buildDir}/classes/java/test/native"
+}
+processTestResources.dependsOn copyTestResources
+
+tasks.addRule('Pattern: unzip-<ID>') { String taskName ->
+    if (taskName.startsWith('unzip')) {
+        task(taskName, type: Copy) {
+            def args = name.split('-')
+            String platform = args[1]
+            String arch = args[2]
+            from zipTree("${tempDownloadDir}/system_uri-${nativeLibsVersion}-${platform}-${arch}.zip")
+            into "${projectDir}/libs/${platform}/${arch}"
+        }
+    }
+}
+
+task('download-nativeLibs') {
+    dependsOn << [ 'downloadNativeLibs', getCombinations().collect() {
+        "unzip-${it[0]}-${it[1]}" } ]
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

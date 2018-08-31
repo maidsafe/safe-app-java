@@ -1,0 +1,9 @@
+
+*.iml
+.idea/
+.gradle/
+.tempDownloads
+build/
+src/main/resources/libs
+src/main/resources/native
+libs
