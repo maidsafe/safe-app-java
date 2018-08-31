@@ -1,287 +1,286 @@
 package net.maidsafe.api;
 
+import java.lang.annotation.Native;
+import java.net.CookieManager;
+import java.util.concurrent.CompletableFuture;
 import net.maidsafe.api.model.EncryptKeyPair;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.api.model.SignKeyPair;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.CallbackHelper;
-import net.maidsafe.utils.Executor;
 import net.maidsafe.utils.Helper;
 
-import java.util.concurrent.Future;
+
 
 public class Crypto {
+    private static AppHandle appHandle;
 
-    public static Future<NativeHandle> getAppPublicSignKey() {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.appPubSignKey(BaseSession.appHandle.toLong(), (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(new NativeHandle(handle, (key) -> {
-                    NativeBindings.signPubKeyFree(BaseSession.appHandle.toLong(), key, (freeResult) -> {
-
-                    });
-                }));
-            });
-        }));
-    }
-
-    public static Future<SignKeyPair> generateSignKeyPair() {
-        return Executor.getInstance().submit(new CallbackHelper<SignKeyPair>(binder -> {
-            NativeBindings.signGenerateKeyPair(BaseSession.appHandle.toLong(), (result, pubSignKeyHandle, secSignKeyHandle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(new SignKeyPair(getPublicSignKeyHandle(pubSignKeyHandle), getSecretSignKeyHandle(secSignKeyHandle)));
-            });
-        }));
-    }
-
-    public static Future<NativeHandle> getPublicSignKey(byte[] key) {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.signPubKeyNew(BaseSession.appHandle.toLong(), key, (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getPublicSignKeyHandle(handle));
-            });
-        }));
-    }
-
-    public static Future<NativeHandle> getSecretSignKey(byte[] key) {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.signSecKeyNew(BaseSession.appHandle.toLong(), key, (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getSecretSignKeyHandle(handle));
-            });
-        }));
-    }
-
-    public static Future<EncryptKeyPair> generateEncryptKeyPair() {
-        return Executor.getInstance().submit(new CallbackHelper<EncryptKeyPair>(binder -> {
-            NativeBindings.encGenerateKeyPair(BaseSession.appHandle.toLong(), (result, pubEncHandle, secEncHandle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                EncryptKeyPair keyPair = new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle), getSecretEncKeyHandle(secEncHandle));
-                binder.onResult(keyPair);
-            });
-        }));
-    }
-
-    public static Future<NativeHandle> getAppPublicEncryptKey() {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.appPubEncKey(BaseSession.appHandle.toLong(), (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getPublicEncKeyHandle(handle));
-            });
-        }));
-    }
-
-    public static Future<NativeHandle> getPublicEncryptKey(byte[] key) {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.encPubKeyNew(BaseSession.appHandle.toLong(), key, (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getPublicEncKeyHandle(handle));
-            });
-        }));
-    }
-
-    public static Future<NativeHandle> getSecretEncryptKey(byte[] key) {
-        return Executor.getInstance().submit(new CallbackHelper<NativeHandle>(binder -> {
-            NativeBindings.encSecretKeyNew(BaseSession.appHandle.toLong(), key, (result, handle) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(getSecretEncKeyHandle(handle));
-            });
-        }));
-    }
-
-    public static Future<byte[]> sign(NativeHandle secretSignKey, byte[] data) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.sign(BaseSession.appHandle.toLong(), data, secretSignKey.toLong(), (result, signedData) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(signedData);
-            });
-        }));
-    }
-
-    public static Future<byte[]> verify(NativeHandle publicSignKey, byte[] signedData) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.verify(BaseSession.appHandle.toLong(), signedData, publicSignKey.toLong(), (result, verifiedData) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(verifiedData);
-            });
-        }));
-    }
-
-    public static Future<byte[]> encrypt(NativeHandle recipientPublicEncryptKey, NativeHandle senderSecretEncryptKey, byte[] data) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.encrypt(BaseSession.appHandle.toLong(), data, recipientPublicEncryptKey.toLong(), senderSecretEncryptKey.toLong(), (result, cipherText) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(cipherText);
-            });
-        }));
-    }
-
-    public static Future<byte[]> decrypt(NativeHandle senderPublicEncryptKey, NativeHandle recipientSecretEncryptKey, byte[] cipherText) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.decrypt(BaseSession.appHandle.toLong(), cipherText, senderPublicEncryptKey.toLong(), recipientSecretEncryptKey.toLong(), (result, plainData) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(plainData);
-            });
-        }));
-    }
-
-    public static Future<byte[]> encryptSealedBox(NativeHandle recipientPublicEncryptKey, byte[] data) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.encryptSealedBox(BaseSession.appHandle.toLong(), data, recipientPublicEncryptKey.toLong(), (result, cipherText) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(cipherText);
-            });
-        }));
-    }
-
-    public static Future<byte[]> decryptSealedBox(NativeHandle senderPublicEncryptKey, NativeHandle senderSecretEncryptKey, byte[] cipherText) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.decryptSealedBox(BaseSession.appHandle.toLong(), cipherText, senderPublicEncryptKey.toLong(), senderSecretEncryptKey.toLong(), (result, plainText) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(plainText);
-            });
-        }));
-    }
-
-    public static Future<byte[]> getRawPublicEncryptKey(NativeHandle publicEncKey) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.encPubKeyGet(BaseSession.appHandle.toLong(), publicEncKey.toLong(), (result, key) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(key);
-            });
-        }));
-    }
-
-    public static Future<byte[]> getRawSecretEncryptKey(NativeHandle secretEncKey) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.encSecretKeyGet(BaseSession.appHandle.toLong(), secretEncKey.toLong(), (result, key) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(key);
-            });
-        }));
-    }
-
-
-    public static Future<byte[]> getRawPublicSignKey(NativeHandle publicSignKey) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.signPubKeyGet(BaseSession.appHandle.toLong(), publicSignKey.toLong(), (result, key) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(key);
-            });
-        }));
-    }
-
-    public static Future<byte[]> getRawSecretSignKey(NativeHandle secretSignKey) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.signSecKeyGet(BaseSession.appHandle.toLong(), secretSignKey.toLong(), (result, key) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(key);
-            });
-        }));
+    public Crypto(AppHandle appHandle) {
+        this.appHandle = appHandle;
     }
 
     private static NativeHandle getPublicSignKeyHandle(long handle) {
         return new NativeHandle(handle, (signKey) -> {
-            NativeBindings.signPubKeyFree(BaseSession.appHandle.toLong(), signKey, (result) -> {
+            NativeBindings.signPubKeyFree(appHandle.toLong(), signKey, (result) -> {
             });
         });
     }
 
-    public static Future<byte[]> generateNonce() {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.generateNonce((result, nonce) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(nonce);
-            });
-        }));
+    public static CompletableFuture<byte[]> generateNonce() {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.generateNonce((result, nonce) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(nonce);
+        });
+        return future;
     }
 
-    public static Future<byte[]> sha3Hash(byte[] data) {
-        return Executor.getInstance().submit(new CallbackHelper<byte[]>(binder -> {
-            NativeBindings.sha3Hash(data, (result, hashedData) -> {
-                if (result.getErrorCode() != 0) {
-                    binder.onException(Helper.ffiResultToException(result));
-                    return;
-                }
-                binder.onResult(hashedData);
-            });
-        }));
+    public static CompletableFuture<byte[]> sha3Hash(byte[] data) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.sha3Hash(data, (result, hashedData) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(hashedData);
+        });
+        return future;
     }
 
-    private static NativeHandle getSecretSignKeyHandle(long handle) {
+    public CompletableFuture<NativeHandle> getAppPublicSignKey() {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.appPubSignKey(appHandle.toLong(), (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(new NativeHandle(handle, (key) -> {
+                NativeBindings.signPubKeyFree(appHandle.toLong(), key, (freeResult) -> {
+                });
+            }));
+        });
+        return future;
+    }
+
+    public CompletableFuture<SignKeyPair> generateSignKeyPair() {
+        CompletableFuture<SignKeyPair> future = new CompletableFuture<>();
+        NativeBindings.signGenerateKeyPair(appHandle.toLong(),
+                (result, pubSignKeyHandle, secSignKeyHandle) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(new SignKeyPair(getPublicSignKeyHandle(pubSignKeyHandle),
+                            getSecretSignKeyHandle(secSignKeyHandle)));
+                });
+        return future;
+    }
+
+    public CompletableFuture<NativeHandle> getPublicSignKey(byte[] key) {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.signPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(getPublicSignKeyHandle(handle));
+        });
+        return future;
+    }
+
+    public CompletableFuture<NativeHandle> getSecretSignKey(byte[] key) {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.signSecKeyNew(appHandle.toLong(), key, (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(getSecretSignKeyHandle(handle));
+        });
+        return future;
+    }
+
+    public CompletableFuture<EncryptKeyPair> generateEncryptKeyPair() {
+        CompletableFuture<EncryptKeyPair> future = new CompletableFuture<>();
+        NativeBindings.encGenerateKeyPair(appHandle.toLong(),
+                (result, pubEncHandle, secEncHandle) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    EncryptKeyPair keyPair = new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle),
+                            getSecretEncKeyHandle(secEncHandle));
+                    future.complete(keyPair);
+                });
+        return future;
+    }
+
+    public CompletableFuture<NativeHandle> getAppPublicEncryptKey() {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.appPubEncKey(appHandle.toLong(), (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(getPublicEncKeyHandle(handle));
+        });
+        return future;
+    }
+
+    public CompletableFuture<NativeHandle> getPublicEncryptKey(byte[] key) {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.encPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(getPublicEncKeyHandle(handle));
+        });
+        return future;
+    }
+
+    public CompletableFuture<NativeHandle> getSecretEncryptKey(byte[] key) {
+        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.encSecretKeyNew(appHandle.toLong(), key, (result, handle) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(getSecretEncKeyHandle(handle));
+        });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> sign(NativeHandle secretSignKey, byte[] data) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.sign(appHandle.toLong(), data, secretSignKey.toLong(),
+                (result, signedData) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(signedData);
+                });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> verify(NativeHandle publicSignKey, byte[] signedData) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.verify(appHandle.toLong(), signedData, publicSignKey.toLong(),
+                (result, verifiedData) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(verifiedData);
+                });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> encrypt(NativeHandle recipientPublicEncryptKey,
+                                             NativeHandle senderSecretEncryptKey, byte[] data) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.encrypt(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
+                senderSecretEncryptKey.toLong(), (result, cipherText) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(cipherText);
+                });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> decrypt(NativeHandle senderPublicEncryptKey,
+                                             NativeHandle recipientSecretEncryptKey, byte[] cipherText) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.decrypt(appHandle.toLong(), cipherText, senderPublicEncryptKey.toLong(),
+                recipientSecretEncryptKey.toLong(), (result, plainData) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(plainData);
+                });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> encryptSealedBox(NativeHandle recipientPublicEncryptKey, byte[] data) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.encryptSealedBox(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
+                (result, cipherText) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(cipherText);
+                });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> decryptSealedBox(NativeHandle senderPublicEncryptKey,
+                                                      NativeHandle senderSecretEncryptKey, byte[] cipherText) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.decryptSealedBox(appHandle.toLong(), cipherText,
+                senderPublicEncryptKey.toLong(), senderSecretEncryptKey.toLong(),
+                (result, plainText) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(plainText);
+                });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> getRawPublicEncryptKey(NativeHandle publicEncKey) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.encPubKeyGet(appHandle.toLong(), publicEncKey.toLong(), (result, key) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(key);
+        });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> getRawSecretEncryptKey(NativeHandle secretEncKey) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.encSecretKeyGet(appHandle.toLong(), secretEncKey.toLong(), (result, key) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(key);
+        });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> getRawPublicSignKey(NativeHandle publicSignKey) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.signPubKeyGet(appHandle.toLong(), publicSignKey.toLong(), (result, key) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(key);
+        });
+        return future;
+    }
+
+    public CompletableFuture<byte[]> getRawSecretSignKey(NativeHandle secretSignKey) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        NativeBindings.signSecKeyGet(appHandle.toLong(), secretSignKey.toLong(), (result, key) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(key);
+        });
+        return future;
+    }
+
+    private NativeHandle getSecretSignKeyHandle(long handle) {
         return new NativeHandle(handle, (signKey) -> {
-            NativeBindings.signSecKeyFree(BaseSession.appHandle.toLong(), signKey, (result) -> {
+            NativeBindings.signSecKeyFree(appHandle.toLong(), signKey, (result) -> {
             });
         });
     }
 
-    private static NativeHandle getPublicEncKeyHandle(long handle) {
+    private NativeHandle getPublicEncKeyHandle(long handle) {
         return new NativeHandle(handle, (encKey) -> {
-            NativeBindings.encPubKeyFree(BaseSession.appHandle.toLong(), encKey, (result) -> {
+            NativeBindings.encPubKeyFree(appHandle.toLong(), encKey, (result) -> {
             });
         });
     }
 
-    private static NativeHandle getSecretEncKeyHandle(long handle) {
+    private NativeHandle getSecretEncKeyHandle(long handle) {
         return new NativeHandle(handle, (encKey) -> {
-            NativeBindings.encSecretKeyFree(BaseSession.appHandle.toLong(), encKey, (result) -> {
+            NativeBindings.encSecretKeyFree(appHandle.toLong(), encKey, (result) -> {
             });
         });
     }
