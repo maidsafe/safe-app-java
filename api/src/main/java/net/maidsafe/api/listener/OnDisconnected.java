@@ -1,5 +1,5 @@
 package net.maidsafe.api.listener;
 
 public interface OnDisconnected {
-    public void disconnected();
+    void disconnected(Object o);
 }

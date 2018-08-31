@@ -3,7 +3,7 @@ package net.maidsafe.api.model;
 import net.maidsafe.utils.IFreeFunc;
 
 public class NativeHandle {
-    private long handle;
+    protected long handle;
     private IFreeFunc freeFunc;
 
     public NativeHandle(long handle, IFreeFunc freeFunc) {
