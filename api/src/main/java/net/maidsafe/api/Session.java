@@ -26,15 +26,10 @@ import net.maidsafe.safe_app.CallbackResultInt;
 import net.maidsafe.safe_app.CallbackResultIntString;
 import net.maidsafe.safe_app.CallbackVoid;
 import net.maidsafe.safe_app.ContainerPermissions;
-import net.maidsafe.safe_app.ContainersReq;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.ShareMDataReq;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
-
-import javax.annotation.processing.Completion;
-
 
 public class Session {
 

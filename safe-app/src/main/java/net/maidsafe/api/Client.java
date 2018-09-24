@@ -1,7 +1,5 @@
 package net.maidsafe.api;
 
-import net.maidsafe.utils.OSInfo;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,25 +11,10 @@ public class Client extends Session {
     public static void load() {
         clientTypeFactory = ClientTypeFactory.load(Client.class);
         try {
-            String baseLibName = "libsafe_app";
-            String libName = "libsafe_app_jni";
-            String baseAuthLibName = "libsafe_authenticator";
-            String authLibName = "libsafe_authenticator_jni";
-            String extension = ".so";
-            switch (OSInfo.getOs()) {
-                case WINDOWS:
-                    libName = "safe_app_jni";
-                    baseLibName = "safe_app";
-                    authLibName = "safe_authenticator_jni";
-                    baseAuthLibName = "safe_authenticator";
-                    extension = ".dll";
-                    break;
-                case MAC:
-                    extension = ".dylib";
-                    break;
-                default:
-                    break;
-            }
+            String baseLibName = System.mapLibraryName("safe_app");
+            String libName = System.mapLibraryName("safe_app_jni");
+            String baseAuthLibName = System.mapLibraryName("safe_authenticator");
+            String authLibName = System.mapLibraryName("safe_authenticator_jni");
             String tempDir = System.getProperty("java.io.tmpdir");
             File generatedDir = new File(tempDir, "safe_app_java" + System.nanoTime());
             if (!generatedDir.mkdir()) {
@@ -44,31 +27,31 @@ public class Client extends Session {
             fieldSysPath.setAccessible(true);
             fieldSysPath.set(null, null);
 
-            File file = new File(generatedDir, baseLibName.concat(extension));
+            File file = new File(generatedDir, baseLibName);
             file.deleteOnExit();
             InputStream inputStream = Client.class.getResourceAsStream("/native/"
-                    .concat(baseLibName).concat(extension));
+                    .concat(baseLibName));
             Files.copy(inputStream, file.toPath());
 
-            file = new File(generatedDir, libName.concat(extension));
+            file = new File(generatedDir, libName);
             file.deleteOnExit();
             inputStream = Client.class.getResourceAsStream("/native/"
-                    .concat(libName).concat(extension));
+                    .concat(libName));
             Files.copy(inputStream, file.toPath());
             System.loadLibrary("safe_app_jni");
 
             if(Session.isMock()) {
 
-                file = new File(generatedDir, authLibName.concat(extension));
+                file = new File(generatedDir, authLibName);
                 file.deleteOnExit();
                 inputStream = Client.class.getResourceAsStream("/native/"
-                        .concat(authLibName).concat(extension));
+                        .concat(authLibName));
                 Files.copy(inputStream, file.toPath());
 
-                file = new File(generatedDir, baseAuthLibName.concat(extension));
+                file = new File(generatedDir, baseAuthLibName);
                 file.deleteOnExit();
                 inputStream = Client.class.getResourceAsStream("/native/"
-                        .concat(baseAuthLibName).concat(extension));
+                        .concat(baseAuthLibName));
                 Files.copy(inputStream, file.toPath());
                 System.loadLibrary("safe_authenticator_jni");
             }

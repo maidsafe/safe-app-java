@@ -1,6 +1,5 @@
 package net.maidsafe.api;
 
-import java.lang.management.CompilationMXBean;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -8,7 +7,6 @@ import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.MDataEntry;
 import net.maidsafe.safe_app.MDataValue;
 import net.maidsafe.safe_app.NativeBindings;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
 
 public class MDataEntries {

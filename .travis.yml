@@ -1,26 +1,48 @@
 language: java
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/android-sdk-dl
+
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+    - $HOME/.android/build-cache
+env:
+  - ANDROID_HOME=$HOME/.android
 matrix:
   include:
     - os: linux
-      language: android
-      jdk: oraclejdk8 
-      android:
-        components:
-        - tools
-        - android-26
-        - platform-tools
-        - build-tools-26.0.2
+      jdk: oraclejdk8
+
+      install:
+        - if test ! -e $HOME/android-sdk-dl/sdk-tools.zip ; then curl --create-dirs https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -o $HOME/android-sdk-dl/sdk-tools.zip ; fi
+        - unzip -qq -n $HOME/android-sdk-dl/sdk-tools.zip -d $ANDROID_HOME
+        - echo y | $ANDROID_HOME/tools/bin/sdkmanager 'tools' > /dev/null
+        - echo y | $ANDROID_HOME/tools/bin/sdkmanager 'platform-tools' > /dev/null
+        - echo y | $ANDROID_HOME/tools/bin/sdkmanager 'emulator' > /dev/null
+        - echo y | $ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-26' > /dev/null
+        - echo y | $ANDROID_HOME/tools/bin/sdkmanager 'system-images;android-24;default;armeabi-v7a' > /dev/null
+      before_script:
+        - echo no | $ANDROID_HOME/tools/bin/avdmanager create avd --force -n test  -k 'system-images;android-24;default;armeabi-v7a' > /dev/null
+        - curl https://gist.githubusercontent.com/lionel1704/c696119831cfda3b2c63ce8916ba21ef/raw/7c60e9e10e8abcb275361685d721be986d1be3e6/android-wait-for-emulator > android-wait-for-emulator
+        - $ANDROID_HOME/tools/emulator -avd test -no-window -no-audio &
+        - chmod +x ./android-wait-for-emulator
+        - ./android-wait-for-emulator
+        - $ANDROID_HOME/platform_tools/adb shell input keyevent 82 &
     - os: osx
       osx_image: xcode9.1
-      before_install:
-      - chmod +x gradlew
-      - export ANDROID_HOME=$HOME/.android
-      - mkdir -p $HOME/.android    
-      - mkdir -p $ANDROID_HOME/licenses
-      - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
-      - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
+before_install:
+  - chmod +x gradlew
+  - mkdir -p $HOME/.android
+  - mkdir -p $ANDROID_HOME/licenses
+  - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
 script:
-- chmod +x gradlew
-- ./gradlew download-nativelibs
-- ./gradlew check --info
+  - chmod +x gradlew
+  - ./gradlew download-nativelibs
+  - ./gradlew check
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew :safe-app-android:runInstrumentationTests --info; fi
 

@@ -1,13 +1,10 @@
 package net.maidsafe.api;
 
-import java.lang.annotation.Native;
-import java.net.CookieManager;
 import java.util.concurrent.CompletableFuture;
 import net.maidsafe.api.model.EncryptKeyPair;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.api.model.SignKeyPair;
 import net.maidsafe.safe_app.NativeBindings;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
 
 

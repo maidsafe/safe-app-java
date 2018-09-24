@@ -3,11 +3,9 @@ package net.maidsafe.api;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.*;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
 
 

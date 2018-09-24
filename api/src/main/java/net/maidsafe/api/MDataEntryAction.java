@@ -3,7 +3,6 @@ package net.maidsafe.api;
 import java.util.concurrent.CompletableFuture;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
 
 public class MDataEntryAction {

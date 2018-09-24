@@ -7,7 +7,6 @@ import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.PermissionSet;
 import net.maidsafe.safe_app.UserPermissionSet;
-import net.maidsafe.utils.CallbackHelper;
 import net.maidsafe.utils.Helper;
 
 

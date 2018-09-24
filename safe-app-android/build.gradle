@@ -33,7 +33,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion '26.0.2'
 }
 
 android.libraryVariants.all { variant ->
@@ -63,9 +62,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':api')
+    implementation project(':lib')
+    implementation project(':safe-authenticator')
 }
 
-def nativeLibsVersion = "v0.4.0"
+def nativeLibsVersion = "mobile-test"
 def tempLibDir =  "${projectDir}/.temp_downloads"
 
 task ("downloadNativeLibs", type: Download) {
@@ -73,9 +74,22 @@ task ("downloadNativeLibs", type: Download) {
     if (!dir.exists()) {
         dir.mkdir()
     }
-    def endPoints = "https://s3.eu-west-2.amazonaws.com/safe-mobile/${nativeLibsVersion}.zip"
+//    def endPoints = "https://s3.eu-west-2.amazonaws.com/safe-mobile/${nativeLibsVersion}.zip"
+    def endPoints = "https://github.com/lionel1704/safe_client_libs/releases/download/${nativeLibsVersion}/${nativeLibsVersion}.zip"
     src(endPoints)
     dest tempLibDir
+}
+
+task ("copyTests", type: Copy) {
+    from fileTree("${rootDir}/safe-app/src/test/")
+    into file("${projectDir}/src/androidTest/")
+}
+
+task runInstrumentationTests(dependsOn: 'copyTests') {
+    dependsOn('connectedMockDebugAndroidTest')
+    doLast {
+        delete "${projectDir}/src/androidTest"
+    }
 }
 
 task ("unzipNativeLibs", type: Copy) {

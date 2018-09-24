@@ -3,7 +3,6 @@ package net.maidsafe.api;
 import net.maidsafe.api.model.*;
 import net.maidsafe.test.utils.SessionLoader;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
