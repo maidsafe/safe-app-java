@@ -66,7 +66,6 @@ public class TestHelper {
         System.out.println("Decode result as AuthResponse");
         Assert.assertNotNull(authResponse);
         System.out.println("Connecting");
-        return Session.connect(new App(authReq.getApp().getId(), authReq.getApp().getScope(),
-                authReq.getApp().getName(), authReq.getApp().getVendor()), authResponse.getAuthGranted());
+        return Session.connect(authReq.getApp().getId(), authResponse.getAuthGranted());
     }
 }

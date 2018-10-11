@@ -179,7 +179,7 @@ public class Session {
         return  future;
     }
 
-    public static CompletableFuture<Object> connect(App app, AuthGranted authGranted) {
+    public static CompletableFuture<Object> connect(String appId, AuthGranted authGranted) {
         CompletableFuture<Object> future = new CompletableFuture<>();
         DisconnectListener disconnectListener = new DisconnectListener();
         CallbackResultApp callback = (result, handle) -> {
@@ -189,7 +189,7 @@ public class Session {
             AppHandle appHandle = new AppHandle(handle);
             future.complete(Session.create(appHandle, disconnectListener));
         };
-        NativeBindings.appRegistered(app.getId(), authGranted, disconnectListener.getCallback(),
+        NativeBindings.appRegistered(appId, authGranted, disconnectListener.getCallback(),
                 callback);
         return future;
     }

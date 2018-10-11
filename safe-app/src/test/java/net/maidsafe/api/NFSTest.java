@@ -59,7 +59,7 @@ public class NFSTest {
     String newContent = new String(fileContent).concat(new String(appendedContent));
     Assert.assertEquals(newContent, new String(readData));
     fileMetadata = client.nfs.getFileMetadata(mDataInfo, "sample.txt").get();
-    client.nfs.deleteFile(mDataInfo, "sample.txt", file,
+    client.nfs.deleteFile(mDataInfo, "sample.txt",
             fileMetadata.getVersion() + 1).get();
   }
 }

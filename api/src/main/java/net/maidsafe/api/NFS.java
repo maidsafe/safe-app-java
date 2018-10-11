@@ -53,7 +53,7 @@ public class NFS {
         return future;
     }
 
-    public CompletableFuture deleteFile(MDataInfo parentInfo, String fileName, File file, long version) {
+    public CompletableFuture deleteFile(MDataInfo parentInfo, String fileName, long version) {
         CompletableFuture future = new CompletableFuture();
         NativeBindings.dirDeleteFile(appHandle.toLong(), parentInfo, fileName, version, (result) -> {
             if (result.getErrorCode() != 0) {
