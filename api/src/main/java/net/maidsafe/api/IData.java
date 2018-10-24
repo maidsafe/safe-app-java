@@ -10,12 +10,18 @@ import net.maidsafe.utils.Helper;
 public class IData {
     private static AppHandle appHandle;
 
-    public IData(AppHandle appHandle) {
+
+    public IData(final AppHandle appHandle) {
+        init(appHandle);
+    }
+
+    private void init(final AppHandle appHandle) {
         this.appHandle = appHandle;
     }
 
+
     public CompletableFuture<NativeHandle> getWriter() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.idataNewSelfEncryptor(appHandle.toLong(), (result, writerHandle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -28,8 +34,9 @@ public class IData {
         return future;
     }
 
-    public CompletableFuture<Void> write(NativeHandle writerHandle, byte[] data) {
-        CompletableFuture future = new CompletableFuture();
+
+    public CompletableFuture<Void> write(final NativeHandle writerHandle, final byte[] data) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.idataWriteToSelfEncryptor(appHandle.toLong(), writerHandle.toLong(), data,
                     (result) -> {
                         if (result.getErrorCode() != 0) {
@@ -40,21 +47,23 @@ public class IData {
         return future;
     }
 
-    public CompletableFuture<byte[]> close(NativeHandle writerHandle, NativeHandle cipherOptHandle) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> close(final NativeHandle writerHandle, final NativeHandle cipherOptHandle) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.idataCloseSelfEncryptor(appHandle.toLong(), writerHandle.toLong(),
                 cipherOptHandle.toLong(), (result, name) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(name);
                 });
         return future;
     }
 
-    public CompletableFuture<NativeHandle> getReader(byte[] name) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
-        NativeBindings.idataFetchSelfEncryptor(appHandle.toLong(), name, (result, readerHandle) -> {
+
+    public CompletableFuture<NativeHandle> getReader(final byte[] address) {
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        NativeBindings.idataFetchSelfEncryptor(appHandle.toLong(), address, (result, readerHandle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
@@ -66,20 +75,22 @@ public class IData {
         return future;
     }
 
-    public CompletableFuture<byte[]> read(NativeHandle readerHandle, long position, long length) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> read(final NativeHandle readerHandle, final long position, final long length) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.idataReadFromSelfEncryptor(appHandle.toLong(), readerHandle.toLong(),
                 position, length, (result, data) -> {
                     if (result.getErrorCode() != 0) {
-                        Helper.ffiResultToException(result);
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     future.complete(data);
                 });
         return future;
     }
 
-    public CompletableFuture<Long> getSize(NativeHandle readerHandle) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
+
+    public CompletableFuture<Long> getSize(final NativeHandle readerHandle) {
+        final CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.idataSize(appHandle.toLong(), readerHandle.toLong(), (result, size) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -89,9 +100,10 @@ public class IData {
         return future;
     }
 
-    public CompletableFuture<Long> getSerialisedSize(byte[] name) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-        NativeBindings.idataSerialisedSize(appHandle.toLong(), name, (result, size) -> {
+
+    public CompletableFuture<Long> getSerialisedSize(final byte[] address) {
+        final CompletableFuture<Long> future = new CompletableFuture<>();
+        NativeBindings.idataSerialisedSize(appHandle.toLong(), address, (result, size) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }

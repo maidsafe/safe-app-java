@@ -2,7 +2,8 @@ package net.maidsafe.api.model;
 
 public class ShareMutableDataResponse extends DecodeResult {
 
-    public ShareMutableDataResponse(int reqId) {
+
+    public ShareMutableDataResponse(final int reqId) {
         super(reqId);
     }
 }

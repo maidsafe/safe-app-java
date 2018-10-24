@@ -12,11 +12,15 @@ import net.maidsafe.utils.Helper;
 public class Crypto {
     private static AppHandle appHandle;
 
-    public Crypto(AppHandle appHandle) {
+    public Crypto(final AppHandle appHandle) {
+        init(appHandle);
+    }
+
+    private void init(final AppHandle appHandle) {
         this.appHandle = appHandle;
     }
 
-    private static NativeHandle getPublicSignKeyHandle(long handle) {
+    private static NativeHandle getPublicSignKeyHandle(final long handle) {
         return new NativeHandle(handle, (signKey) -> {
             NativeBindings.signPubKeyFree(appHandle.toLong(), signKey, (result) -> {
             });
@@ -24,7 +28,7 @@ public class Crypto {
     }
 
     public static CompletableFuture<byte[]> generateNonce() {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.generateNonce((result, nonce) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -34,8 +38,8 @@ public class Crypto {
         return future;
     }
 
-    public static CompletableFuture<byte[]> sha3Hash(byte[] data) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+    public static CompletableFuture<byte[]> sha3Hash(final byte[] data) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.sha3Hash(data, (result, hashedData) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -46,7 +50,7 @@ public class Crypto {
     }
 
     public CompletableFuture<NativeHandle> getAppPublicSignKey() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.appPubSignKey(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -60,7 +64,7 @@ public class Crypto {
     }
 
     public CompletableFuture<SignKeyPair> generateSignKeyPair() {
-        CompletableFuture<SignKeyPair> future = new CompletableFuture<>();
+        final CompletableFuture<SignKeyPair> future = new CompletableFuture<>();
         NativeBindings.signGenerateKeyPair(appHandle.toLong(),
                 (result, pubSignKeyHandle, secSignKeyHandle) -> {
                     if (result.getErrorCode() != 0) {
@@ -72,8 +76,8 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<NativeHandle> getPublicSignKey(byte[] key) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+    public CompletableFuture<NativeHandle> getPublicSignKey(final byte[] key) {
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.signPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -83,8 +87,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<NativeHandle> getSecretSignKey(byte[] key) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+
+    public CompletableFuture<NativeHandle> getSecretSignKey(final byte[] key) {
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.signSecKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -95,13 +100,13 @@ public class Crypto {
     }
 
     public CompletableFuture<EncryptKeyPair> generateEncryptKeyPair() {
-        CompletableFuture<EncryptKeyPair> future = new CompletableFuture<>();
+        final CompletableFuture<EncryptKeyPair> future = new CompletableFuture<>();
         NativeBindings.encGenerateKeyPair(appHandle.toLong(),
                 (result, pubEncHandle, secEncHandle) -> {
                     if (result.getErrorCode() != 0) {
                         future.completeExceptionally(Helper.ffiResultToException(result));
                     }
-                    EncryptKeyPair keyPair = new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle),
+                    final EncryptKeyPair keyPair = new EncryptKeyPair(getPublicEncKeyHandle(pubEncHandle),
                             getSecretEncKeyHandle(secEncHandle));
                     future.complete(keyPair);
                 });
@@ -109,7 +114,7 @@ public class Crypto {
     }
 
     public CompletableFuture<NativeHandle> getAppPublicEncryptKey() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.appPubEncKey(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -119,8 +124,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<NativeHandle> getPublicEncryptKey(byte[] key) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+
+    public CompletableFuture<NativeHandle> getPublicEncryptKey(final byte[] key) {
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.encPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -130,8 +136,8 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<NativeHandle> getSecretEncryptKey(byte[] key) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+    public CompletableFuture<NativeHandle> getSecretEncryptKey(final byte[] key) {
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.encSecretKeyNew(appHandle.toLong(), key, (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -141,8 +147,8 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> sign(NativeHandle secretSignKey, byte[] data) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+    public CompletableFuture<byte[]> sign(final NativeHandle secretSignKey, final byte[] data) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.sign(appHandle.toLong(), data, secretSignKey.toLong(),
                 (result, signedData) -> {
                     if (result.getErrorCode() != 0) {
@@ -153,8 +159,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> verify(NativeHandle publicSignKey, byte[] signedData) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> verify(final NativeHandle publicSignKey, final byte[] signedData) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.verify(appHandle.toLong(), signedData, publicSignKey.toLong(),
                 (result, verifiedData) -> {
                     if (result.getErrorCode() != 0) {
@@ -165,9 +172,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> encrypt(NativeHandle recipientPublicEncryptKey,
-                                             NativeHandle senderSecretEncryptKey, byte[] data) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+    public CompletableFuture<byte[]> encrypt(final NativeHandle recipientPublicEncryptKey,
+                                             final NativeHandle senderSecretEncryptKey, final byte[] data) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encrypt(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
                 senderSecretEncryptKey.toLong(), (result, cipherText) -> {
                     if (result.getErrorCode() != 0) {
@@ -178,9 +185,10 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> decrypt(NativeHandle senderPublicEncryptKey,
-                                             NativeHandle recipientSecretEncryptKey, byte[] cipherText) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> decrypt(final NativeHandle senderPublicEncryptKey,
+                                             final NativeHandle recipientSecretEncryptKey, final byte[] cipherText) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.decrypt(appHandle.toLong(), cipherText, senderPublicEncryptKey.toLong(),
                 recipientSecretEncryptKey.toLong(), (result, plainData) -> {
                     if (result.getErrorCode() != 0) {
@@ -191,8 +199,8 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> encryptSealedBox(NativeHandle recipientPublicEncryptKey, byte[] data) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+    public CompletableFuture<byte[]> encryptSealedBox(final NativeHandle recipientPublicEncryptKey, final byte[] data) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encryptSealedBox(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
                 (result, cipherText) -> {
                     if (result.getErrorCode() != 0) {
@@ -203,11 +211,12 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> decryptSealedBox(NativeHandle senderPublicEncryptKey,
-                                                      NativeHandle senderSecretEncryptKey, byte[] cipherText) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> decryptSealedBox(final NativeHandle recipientPublicEncryptKey,
+                                                      final NativeHandle recipientSecretEncryptKey, final byte[] cipherText) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.decryptSealedBox(appHandle.toLong(), cipherText,
-                senderPublicEncryptKey.toLong(), senderSecretEncryptKey.toLong(),
+                recipientPublicEncryptKey.toLong(), recipientSecretEncryptKey.toLong(),
                 (result, plainText) -> {
                     if (result.getErrorCode() != 0) {
                         future.completeExceptionally(Helper.ffiResultToException(result));
@@ -217,8 +226,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> getRawPublicEncryptKey(NativeHandle publicEncKey) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> getRawPublicEncryptKey(final NativeHandle publicEncKey) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encPubKeyGet(appHandle.toLong(), publicEncKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -228,8 +238,8 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> getRawSecretEncryptKey(NativeHandle secretEncKey) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+    public CompletableFuture<byte[]> getRawSecretEncryptKey(final NativeHandle secretEncKey) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encSecretKeyGet(appHandle.toLong(), secretEncKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -239,8 +249,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> getRawPublicSignKey(NativeHandle publicSignKey) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> getRawPublicSignKey(final NativeHandle publicSignKey) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.signPubKeyGet(appHandle.toLong(), publicSignKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -250,8 +261,9 @@ public class Crypto {
         return future;
     }
 
-    public CompletableFuture<byte[]> getRawSecretSignKey(NativeHandle secretSignKey) {
-        CompletableFuture<byte[]> future = new CompletableFuture<>();
+
+    public CompletableFuture<byte[]> getRawSecretSignKey(final NativeHandle secretSignKey) {
+        final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.signSecKeyGet(appHandle.toLong(), secretSignKey.toLong(), (result, key) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -261,21 +273,24 @@ public class Crypto {
         return future;
     }
 
-    private NativeHandle getSecretSignKeyHandle(long handle) {
+
+    private NativeHandle getSecretSignKeyHandle(final long handle) {
         return new NativeHandle(handle, (signKey) -> {
             NativeBindings.signSecKeyFree(appHandle.toLong(), signKey, (result) -> {
             });
         });
     }
 
-    private NativeHandle getPublicEncKeyHandle(long handle) {
+
+    private NativeHandle getPublicEncKeyHandle(final long handle) {
         return new NativeHandle(handle, (encKey) -> {
             NativeBindings.encPubKeyFree(appHandle.toLong(), encKey, (result) -> {
             });
         });
     }
 
-    private NativeHandle getSecretEncKeyHandle(long handle) {
+
+    private NativeHandle getSecretEncKeyHandle(final long handle) {
         return new NativeHandle(handle, (encKey) -> {
             NativeBindings.encSecretKeyFree(appHandle.toLong(), encKey, (result) -> {
             });

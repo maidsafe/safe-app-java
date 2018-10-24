@@ -3,9 +3,9 @@ package net.maidsafe.api.model;
 import net.maidsafe.safe_app.AuthGranted;
 
 public class AuthResponse extends DecodeResult {
-    private AuthGranted authGranted;
+    private final AuthGranted authGranted;
 
-    public AuthResponse(int reqId, AuthGranted authGranted) {
+    public AuthResponse(final int reqId, final AuthGranted authGranted) {
         super(reqId);
         this.authGranted = authGranted;
     }

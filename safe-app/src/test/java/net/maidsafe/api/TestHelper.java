@@ -2,11 +2,10 @@ package net.maidsafe.api;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.maidsafe.api.model.App;
 import net.maidsafe.api.model.AuthResponse;
 import net.maidsafe.api.model.DecodeResult;
 import net.maidsafe.api.model.Request;
-import net.maidsafe.models.IpcRequest;
+import net.maidsafe.api.model.*;
 import net.maidsafe.safe_app.AppExchangeInfo;
 import net.maidsafe.safe_app.AuthReq;
 import net.maidsafe.safe_app.ContainerPermissions;
@@ -54,9 +53,10 @@ public class TestHelper {
         System.out.println("Encoded AuthReq");
         IpcRequest ipcRequest = authenticator.decodeIpcMessage(request.getUri()).get();
         System.out.println("Decoded request");
-        Assert.assertThat(ipcRequest, IsInstanceOf.instanceOf(IpcRequest.AuthIpcRequest.class));
-        IpcRequest.AuthIpcRequest authIpcRequest = (IpcRequest.AuthIpcRequest) ipcRequest;
-        String response = authenticator.encodeAuthResponse(authIpcRequest.authReq, request,
+        Assert.assertThat(ipcRequest, IsInstanceOf.instanceOf(AuthIpcRequest.class));
+        Assert.assertThat(ipcRequest, IsInstanceOf.instanceOf(AuthIpcRequest.class));
+        AuthIpcRequest authIpcRequest = (AuthIpcRequest) ipcRequest;
+        String response = authenticator.encodeAuthResponse(authIpcRequest,
                 true).get();
         System.out.println("Encoded Response");
         DecodeResult decodeResult = Session.decodeIpcMessage(response).get();

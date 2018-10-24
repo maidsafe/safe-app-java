@@ -1,6 +1,8 @@
 package net.maidsafe.api;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +33,7 @@ import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.ShareMDataReq;
 import net.maidsafe.utils.Helper;
 
+
 public class Session {
 
     public CipherOpt cipherOpt;
@@ -41,31 +44,31 @@ public class Session {
     public MDataEntryAction mDataEntryAction;
     public MDataPermission mDataPermission;
     public NFS nfs;
-    private AppHandle appHandle;
+    private final AppHandle appHandle;
     private OnDisconnected onDisconnected;
-    private DisconnectListener disconnectListener;
-    private boolean disconnected = false;
+    private final DisconnectListener disconnectListener;
+    private boolean disconnected;
     protected static ClientTypeFactory clientTypeFactory;
 
-    protected Session(AppHandle appHandle, DisconnectListener disconnectListener) {
+    protected Session(final AppHandle appHandle, final DisconnectListener disconnectListener) {
         this.appHandle = appHandle;
         this.disconnectListener = disconnectListener;
         init();
     }
 
-    public static <T extends Session> T create(AppHandle appHandle, DisconnectListener disconnectListener) {
+    private static <T extends Session> T create(final AppHandle appHandle, final DisconnectListener disconnectListener) {
         try {
-            Constructor constructor = clientTypeFactory.getClientType().getDeclaredConstructor(new Class[] {AppHandle.class, DisconnectListener.class});
-            return (T) constructor.newInstance(appHandle, disconnectListener);
+            final Class<?> clientType = clientTypeFactory.getClientType();
+            final Constructor<?>  cons = clientType.getDeclaredConstructor(new Class[] { AppHandle.class, DisconnectListener.class});
+            return (T) cons.newInstance(appHandle, disconnectListener);
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new java.lang.RuntimeException(e);
         }
-        return null;
     }
 
-    public static CompletableFuture initLogging(String outputFileName) {
-        CompletableFuture future = new CompletableFuture();
+    public static CompletableFuture initLogging(final String outputFileName) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.appInitLogging(outputFileName, (result) -> {
                 if (result.getErrorCode() != 0) {
                     future.completeExceptionally(Helper.ffiResultToException(result));
@@ -75,8 +78,9 @@ public class Session {
         return future;
     }
 
-    public static CompletableFuture<String> getLogOutputPath(String logFileName) {
-        CompletableFuture<String> future = new CompletableFuture<>();
+
+    public static CompletableFuture<String> getLogOutputPath(final String logFileName) {
+        final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.appOutputLogPath(logFileName, (result, path) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -86,8 +90,9 @@ public class Session {
         return future;
     }
 
-    public static CompletableFuture<String> getAppContainerName(String appId) {
-        CompletableFuture<String> future = new CompletableFuture<>();
+
+    public static CompletableFuture<String> getAppContainerName(final String appId) {
+        final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.appContainerName(appId, (result, name) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -97,8 +102,9 @@ public class Session {
         return future;
     }
 
-    public static CompletableFuture setAdditionalSearchPath(String path) {
-        CompletableFuture future = new CompletableFuture();
+
+    public static CompletableFuture setAdditionalSearchPath(final String path) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.appSetAdditionalSearchPath(path, (result) -> {
                 if (result.getErrorCode() != 0) {
                     future.completeExceptionally(Helper.ffiResultToException(result));
@@ -108,8 +114,9 @@ public class Session {
         return future;
     }
 
+
     public static CompletableFuture<String> getAppStem() {
-        CompletableFuture<String> future = new CompletableFuture<>();
+        final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.appExeFileStem((result, path) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -119,40 +126,44 @@ public class Session {
         return future;
     }
 
-    public static CompletableFuture<Request> encodeAuthReq(AuthReq req) {
-        CompletableFuture<Request> future = new CompletableFuture<>();
+
+    public static CompletableFuture<Request> encodeAuthReq(final AuthReq req) {
+        final CompletableFuture<Request> future = new CompletableFuture<>();
         NativeBindings.encodeAuthReq(req, handleRequestCallback(future));
         return future;
     }
 
-    public static CompletableFuture<Request> getShareMutableDataRequest(ShareMDataReq req) {
-        CompletableFuture<Request> future = new CompletableFuture<>();
+
+    public static CompletableFuture<Request> getShareMutableDataRequest(final ShareMDataReq req) {
+        final CompletableFuture<Request> future = new CompletableFuture<>();
         NativeBindings.encodeShareMdataReq(req, handleRequestCallback(future));
         return future;
     }
 
-    public static CompletableFuture<Request> getUnregisteredSessionRequest(App app) {
-        byte[] id = app.getId().getBytes();
-        CompletableFuture<Request> future = new CompletableFuture<>();
+
+    public static CompletableFuture<Request> getUnregisteredSessionRequest(final App app) {
+        final byte[] id = app.getId().getBytes(Charset.forName("UTF-8"));
+        final CompletableFuture<Request> future = new CompletableFuture<>();
         NativeBindings.encodeUnregisteredReq(id, handleRequestCallback(future));
         return future;
     }
 
-    public static CompletableFuture<DecodeResult> decodeIpcMessage(String uri) {
-        CompletableFuture<DecodeResult> future = new CompletableFuture<>();
-        CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) ->
+
+    public static CompletableFuture<DecodeResult> decodeIpcMessage(final String uri) {
+        final CompletableFuture<DecodeResult> future = new CompletableFuture<>();
+        final CallbackIntAuthGranted onAuthGranted = (reqId, authGranted) ->
                 future.complete(new AuthResponse(reqId, authGranted));
 
-        CallbackIntByteArrayLen onUnregistered = (reqId, serialisedCfgPtr) ->
+        final CallbackIntByteArrayLen onUnregistered = (reqId, serialisedCfgPtr) ->
                 future.complete(new UnregisteredClientResponse(reqId, serialisedCfgPtr));
 
-        CallbackInt onContainerCb = reqId -> future.complete(new ContainerResponse(reqId));
+        final CallbackInt onContainerCb = reqId -> future.complete(new ContainerResponse(reqId));
 
-        CallbackInt onShareMdCb = (reqId) -> future.complete(new ShareMutableDataResponse(reqId));
+        final CallbackInt onShareMdCb = (reqId) -> future.complete(new ShareMutableDataResponse(reqId));
 
-        CallbackVoid onRevoked = () -> future.complete(new RevokedResponse());
+        final CallbackVoid onRevoked = () -> future.complete(new RevokedResponse());
 
-        CallbackResultInt onErrorCb = (result, reqId) ->
+        final CallbackResultInt onErrorCb = (result, reqId) ->
                 future.complete(new DecodeError(reqId, result));
 
         NativeBindings.decodeIpcMsg(uri, onAuthGranted, onUnregistered, onContainerCb,
@@ -160,14 +171,20 @@ public class Session {
         return future;
     }
 
-    public static CompletableFuture<Object> connect(UnregisteredClientResponse response) {
+
+    public static CompletableFuture<Object> connect(final UnregisteredClientResponse response) {
         return connect(response.getBootstrapConfig());
     }
 
-    public static CompletableFuture<Object> connect(byte[] bootStrapConfig) {
-        CompletableFuture<Object> future = new CompletableFuture<>();
-        DisconnectListener disconnectListener = new DisconnectListener();
-        CallbackResultApp callback = (result, app) -> {
+    /**
+     * Create a new unregistered session using the bootstrap config from the response
+     * @param bootStrapConfig Bootstrap configuration
+     * @return A new {@link Session object}
+     */
+    public static CompletableFuture<Object> connect(final byte[] bootStrapConfig) {
+        final CompletableFuture<Object> future = new CompletableFuture<>();
+        final DisconnectListener disconnectListener = new DisconnectListener();
+        final CallbackResultApp callback = (result, app) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
@@ -179,10 +196,11 @@ public class Session {
         return  future;
     }
 
-    public static CompletableFuture<Object> connect(String appId, AuthGranted authGranted) {
-        CompletableFuture<Object> future = new CompletableFuture<>();
-        DisconnectListener disconnectListener = new DisconnectListener();
-        CallbackResultApp callback = (result, handle) -> {
+
+    public static CompletableFuture<Object> connect(final String appId, final AuthGranted authGranted) {
+        final CompletableFuture<Object> future = new CompletableFuture<>();
+        final DisconnectListener disconnectListener = new DisconnectListener();
+        final CallbackResultApp callback = (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
@@ -194,7 +212,8 @@ public class Session {
         return future;
     }
 
-    private static CallbackResultIntString handleRequestCallback(CompletableFuture<Request> future) {
+
+    private static CallbackResultIntString handleRequestCallback(final CompletableFuture<Request> future) {
         return (result, reqId, uri) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -232,12 +251,13 @@ public class Session {
         return NativeBindings.isMockBuild();
     }
 
-    public void setOnDisconnectListener(OnDisconnected onDisconnected) {
+    public void setOnDisconnectListener(final OnDisconnected onDisconnected) {
         this.onDisconnected = onDisconnected;
     }
 
+
     public CompletableFuture<AccountInfo> getAccountInfo() {
-        CompletableFuture<AccountInfo> future = new CompletableFuture<>();
+        final CompletableFuture<AccountInfo> future = new CompletableFuture<>();
         NativeBindings.appAccountInfo(appHandle.toLong(), (result, accountInfo) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -247,8 +267,9 @@ public class Session {
         return future;
     }
 
+
     public CompletableFuture resetObjectCache() {
-        CompletableFuture future = new CompletableFuture();
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
                 if (result.getErrorCode() != 0) {
                     future.completeExceptionally(Helper.ffiResultToException(result));
@@ -259,7 +280,7 @@ public class Session {
     }
 
     public CompletableFuture refreshAccessInfo() {
-        CompletableFuture future = new CompletableFuture();
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
                 if (result.getErrorCode() != 0) {
                     future.completeExceptionally(Helper.ffiResultToException(result));
@@ -269,8 +290,8 @@ public class Session {
         return future;
     }
 
-    public CompletableFuture<MDataInfo> getContainerMDataInfo(String containerName) {
-        CompletableFuture<MDataInfo> future = new CompletableFuture<>();
+    public CompletableFuture<MDataInfo> getContainerMDataInfo(final String containerName) {
+        final CompletableFuture<MDataInfo> future = new CompletableFuture<>();
         NativeBindings.accessContainerGetContainerMdataInfo(appHandle.toLong(), containerName,
                 (result, mDataInfo) -> {
                     if (result.getErrorCode() != 0) {
@@ -282,18 +303,18 @@ public class Session {
     }
 
     public CompletableFuture<List<ContainerPermissions>> getContainerPermissions() {
-        CompletableFuture<List<ContainerPermissions>> future = new CompletableFuture<>();
-        NativeBindings.accessContainerFetch(appHandle.toLong(), ((result, containerPerms) -> {
+        final CompletableFuture<List<ContainerPermissions>> future = new CompletableFuture<>();
+        NativeBindings.accessContainerFetch(appHandle.toLong(), (result, containerPerms) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
             future.complete(Arrays.asList(containerPerms));
-        }));
+        });
         return future;
     }
 
     public CompletableFuture reconnect() {
-        CompletableFuture future = new CompletableFuture();
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.appReconnect(appHandle.toLong(), result -> {
                 if (result.getErrorCode() != 0) {
                     future.completeExceptionally(Helper.ffiResultToException(result));

@@ -1,25 +1,23 @@
 package net.maidsafe.api;
 
-public class ClientTypeFactory implements Cloneable {
-  private Class clientType;
+final class ClientTypeFactory {
+  private final Class clientType;
   private static ClientTypeFactory instance;
 
-  private ClientTypeFactory(Class clientType) {
+  private ClientTypeFactory(final Class clientType) {
     this.clientType = clientType;
   }
 
-  public static synchronized ClientTypeFactory load(Class clientType) {
-    if(instance == null) {
-      instance = new ClientTypeFactory(clientType);
+  public static ClientTypeFactory load(final Class clientType) {
+    synchronized (ClientTypeFactory.class) {
+      if(instance == null) {
+        instance = new ClientTypeFactory(clientType);
+      }
+      return instance;
     }
-    return instance;
   }
   public Class getClientType() {
     return clientType;
   }
 
-  @Override
-  protected Object clone() throws CloneNotSupportedException {
-    throw new CloneNotSupportedException();
-  }
 }

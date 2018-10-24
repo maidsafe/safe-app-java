@@ -1,9 +1,10 @@
 package net.maidsafe.api.model;
 
 public class DecodeResult {
-    private int reqId;
+    private final int reqId;
 
-    public DecodeResult(int reqId) {
+
+    public DecodeResult(final int reqId) {
         this.reqId = reqId;
     }
 

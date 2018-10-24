@@ -14,12 +14,18 @@ import net.maidsafe.utils.Helper;
 public class MDataPermission {
     private AppHandle appHandle;
 
-    public MDataPermission(AppHandle appHandle) {
+    public MDataPermission(final AppHandle appHandle) {
+        init(appHandle);
+    }
+
+    private void init(final AppHandle appHandle) {
         this.appHandle = appHandle;
     }
 
+
+
     public CompletableFuture<NativeHandle> newPermissionHandle() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataPermissionsNew(appHandle.toLong(), (result, permissionsHandle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -32,8 +38,9 @@ public class MDataPermission {
         return future;
     }
 
-    public CompletableFuture<Long> getLength(NativeHandle permissionHandle) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
+
+    public CompletableFuture<Long> getLength(final NativeHandle permissionHandle) {
+        final CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.mdataPermissionsLen(appHandle.toLong(), permissionHandle.toLong(),
                 (result, len) -> {
                     if (result.getErrorCode() != 0) {
@@ -44,9 +51,9 @@ public class MDataPermission {
         return future;
     }
 
-    public CompletableFuture<PermissionSet> getPermissionForUser(NativeHandle permissionHandle,
-                                                                 NativeHandle signKey) {
-        CompletableFuture<PermissionSet> future = new CompletableFuture<>();
+    public CompletableFuture<PermissionSet> getPermissionForUser(final NativeHandle permissionHandle,
+                                                                 final NativeHandle signKey) {
+        final CompletableFuture<PermissionSet> future = new CompletableFuture<>();
         NativeBindings.mdataPermissionsGet(appHandle.toLong(), permissionHandle.toLong(),
                 signKey.toLong(), (result, permsSet) -> {
                     if (result.getErrorCode() != 0) {
@@ -57,8 +64,8 @@ public class MDataPermission {
         return future;
     }
 
-    public CompletableFuture<List<UserPermissionSet>> listAll(NativeHandle permissionHandle) {
-        CompletableFuture<List<UserPermissionSet>> future = new CompletableFuture<>();
+    public CompletableFuture<List<UserPermissionSet>> listAll(final NativeHandle permissionHandle) {
+        final CompletableFuture<List<UserPermissionSet>> future = new CompletableFuture<>();
         NativeBindings.mdataListPermissionSets(appHandle.toLong(), permissionHandle.toLong(),
                 (result, permsArray) -> {
                     if (result.getErrorCode() != 0) {
@@ -69,9 +76,9 @@ public class MDataPermission {
         return future;
     }
 
-    public CompletableFuture insert(NativeHandle permissionHandle, NativeHandle publicSignKey,
-                                    PermissionSet permissionSet) {
-        CompletableFuture future = new CompletableFuture();
+    public CompletableFuture insert(final NativeHandle permissionHandle, final NativeHandle publicSignKey,
+                                    final PermissionSet permissionSet) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.mdataPermissionsInsert(appHandle.toLong(), permissionHandle.toLong(),
                     publicSignKey.toLong(), permissionSet, (result) -> {
                         if (result.getErrorCode() != 0) {

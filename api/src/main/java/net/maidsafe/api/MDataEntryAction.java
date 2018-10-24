@@ -5,20 +5,26 @@ import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
 
+
 public class MDataEntryAction {
     private AppHandle appHandle;
 
-    public MDataEntryAction(AppHandle appHandle) {
+    public MDataEntryAction(final AppHandle appHandle) {
+        init(appHandle);
+    }
+
+    private void init(final AppHandle appHandle) {
         this.appHandle = appHandle;
     }
 
+
     public CompletableFuture<NativeHandle> newEntryAction() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntryActionsNew(appHandle.toLong(), (result, entriesH) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
-            NativeHandle entriesActionHandle = new NativeHandle(entriesH, handle -> {
+            final NativeHandle entriesActionHandle = new NativeHandle(entriesH, handle -> {
                 NativeBindings.mdataEntryActionsFree(appHandle.toLong(), handle, res -> {
                 });
             });
@@ -27,8 +33,8 @@ public class MDataEntryAction {
         return future;
     }
 
-    public CompletableFuture insert(NativeHandle actionHandle, byte[] key, byte[] value) {
-        CompletableFuture future = new CompletableFuture();
+    public CompletableFuture insert(final NativeHandle actionHandle, final byte[] key, final byte[] value) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.mdataEntryActionsInsert(appHandle.toLong(), actionHandle.toLong(), key, value,
                     (result) -> {
                         if (result.getErrorCode() != 0) {
@@ -39,8 +45,9 @@ public class MDataEntryAction {
         return future;
     }
 
-    public CompletableFuture update(NativeHandle actionHandle, byte[] key, byte[] value, long version) {
-        CompletableFuture future = new CompletableFuture();
+
+    public CompletableFuture update(final NativeHandle actionHandle, final byte[] key, final byte[] value, final long version) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.mdataEntryActionsUpdate(appHandle.toLong(), actionHandle.toLong(), key, value,
                     version, (result) -> {
                         if (result.getErrorCode() != 0) {
@@ -51,8 +58,9 @@ public class MDataEntryAction {
         return future;
     }
 
-    public CompletableFuture<Void> delete(NativeHandle actionHandle, byte[] key, long version) {
-        CompletableFuture future = new CompletableFuture();
+
+    public CompletableFuture<Void> delete(final NativeHandle actionHandle, final byte[] key, final long version) {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
             NativeBindings.mdataEntryActionsDelete(appHandle.toLong(), actionHandle.toLong(), key,
                     version, (result) -> {
                         if (result.getErrorCode() != 0) {

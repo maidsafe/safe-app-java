@@ -4,9 +4,12 @@ public class NFSFileMetadata extends net.maidsafe.safe_app.File {
     private long version;
 
     public NFSFileMetadata() {
+        super();
     }
 
-    public NFSFileMetadata(net.maidsafe.safe_app.File ffiFile, long version) {
+
+    public NFSFileMetadata(final net.maidsafe.safe_app.File ffiFile, final long version) {
+        super();
         this.version = version;
         this.setCreatedSec(ffiFile.getCreatedNsec());
         this.setCreatedSec(ffiFile.getCreatedSec());
@@ -22,7 +25,8 @@ public class NFSFileMetadata extends net.maidsafe.safe_app.File {
         return version;
     }
 
-    public void setVersion(long version) {
+
+    public void setVersion(final long version) {
         this.version = version;
     }
 

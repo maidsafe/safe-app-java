@@ -5,8 +5,8 @@ import net.maidsafe.safe_app.CallbackVoid;
 
 class DisconnectListener {
 
-    private OnDisconnected onDisconnected;
-    private CallbackVoid callback = new CallbackVoid() {
+    OnDisconnected onDisconnected;
+    private final CallbackVoid callback = new CallbackVoid() {
         @Override
         public void call() {
             if (onDisconnected == null) {
@@ -16,7 +16,11 @@ class DisconnectListener {
         }
     };
 
-    public void setListener(OnDisconnected onDisconnected) {
+    DisconnectListener() {
+        // Constructor intentionally empty
+    }
+
+    public void setListener(final OnDisconnected onDisconnected) {
         this.onDisconnected = onDisconnected;
     }
 

@@ -6,8 +6,8 @@ import net.maidsafe.safe_authenticator.CallbackVoid;
 
 public class AuthDisconnectListener {
 
-  private OnDisconnected onDisconnected;
-  private CallbackVoid callback = new CallbackVoid() {
+  OnDisconnected onDisconnected;
+  private final CallbackVoid callback = new CallbackVoid() {
     @Override
     public void call() {
       if (onDisconnected == null) {
@@ -17,7 +17,11 @@ public class AuthDisconnectListener {
     }
   };
 
-  public void setListener(OnDisconnected onDisconnected) {
+  AuthDisconnectListener() {
+      // Constructor intentionally empty
+  }
+
+  public void setListener(final OnDisconnected onDisconnected) {
     this.onDisconnected = onDisconnected;
   }
 

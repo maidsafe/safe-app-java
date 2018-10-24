@@ -11,12 +11,16 @@ public class CipherOpt {
 
     private static AppHandle appHandle;
 
-    public CipherOpt(AppHandle appHandle) {
+    public CipherOpt(final AppHandle appHandle) {
+        init(appHandle);
+    }
+
+    private void init(final AppHandle appHandle) {
         this.appHandle = appHandle;
     }
 
 
-    private NativeHandle getNativeHandle(long handle) {
+    private NativeHandle getNativeHandle(final long handle) {
         return new NativeHandle(handle, (cipherOpt) -> {
             NativeBindings.cipherOptFree(appHandle.toLong(), cipherOpt, (res) -> {
             });
@@ -24,7 +28,7 @@ public class CipherOpt {
     }
 
     public CompletableFuture<NativeHandle> getPlainCipherOpt() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.cipherOptNewPlaintext(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -35,8 +39,7 @@ public class CipherOpt {
     }
 
     public CompletableFuture<NativeHandle> getSymmetricCipherOpt() {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
-
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.cipherOptNewSymmetric(appHandle.toLong(), (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -46,8 +49,8 @@ public class CipherOpt {
         return future;
     }
 
-    public CompletableFuture<NativeHandle> getAsymmetricCipherOpt(NativeHandle publicEncryptKey) {
-        CompletableFuture<NativeHandle> future = new CompletableFuture<>();
+    public CompletableFuture<NativeHandle> getAsymmetricCipherOpt(final NativeHandle publicEncryptKey) {
+        final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.cipherOptNewAsymmetric(appHandle.toLong(), publicEncryptKey.toLong(),
                 (result, handle) -> {
                     if (result.getErrorCode() != 0) {

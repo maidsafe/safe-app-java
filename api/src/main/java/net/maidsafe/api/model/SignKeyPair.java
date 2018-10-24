@@ -1,10 +1,10 @@
 package net.maidsafe.api.model;
 
 public class SignKeyPair {
-    private NativeHandle publicSignKey;
-    private NativeHandle secretSignKey;
+    private final NativeHandle publicSignKey;
+    private final NativeHandle secretSignKey;
 
-    public SignKeyPair(NativeHandle publicSignKey, NativeHandle secretSignKey) {
+    public SignKeyPair(final NativeHandle publicSignKey, final NativeHandle secretSignKey) {
         this.publicSignKey = publicSignKey;
         this.secretSignKey = secretSignKey;
     }

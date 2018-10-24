@@ -4,9 +4,9 @@ import net.maidsafe.utils.IFreeFunc;
 
 public class NativeHandle {
     protected long handle;
-    private IFreeFunc freeFunc;
+    final private IFreeFunc freeFunc;
 
-    public NativeHandle(long handle, IFreeFunc freeFunc) {
+    public NativeHandle(final long handle, final IFreeFunc freeFunc) {
         this.handle = handle;
         this.freeFunc = freeFunc;
     }

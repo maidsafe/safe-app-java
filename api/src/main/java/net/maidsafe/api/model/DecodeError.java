@@ -4,9 +4,10 @@ import net.maidsafe.safe_app.FfiResult;
 import net.maidsafe.utils.Helper;
 
 public class DecodeError extends DecodeResult {
-    private Exception exception;
+    private final Exception exception;
 
-    public DecodeError(int reqId, FfiResult result) {
+
+    public DecodeError(final int reqId, final FfiResult result) {
         super(reqId);
         exception = Helper.ffiResultToException(result);
     }

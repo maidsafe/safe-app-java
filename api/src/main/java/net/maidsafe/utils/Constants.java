@@ -9,5 +9,8 @@ public class Constants {
     public static final long SECRET_SIGN_KEY_SIZE = 64;
     public static final long PUBLIC_ENC_KEY_SIZE = 32;
     public static final long SECRET_ENC_KEY_SIZE = 32;
+    Constants() {
+        // Constructor intentionally empty
+    }
 
 }

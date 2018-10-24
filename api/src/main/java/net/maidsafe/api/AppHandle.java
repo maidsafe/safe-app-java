@@ -5,7 +5,7 @@ import net.maidsafe.safe_app.NativeBindings;
 
 class AppHandle extends NativeHandle {
 
-    AppHandle(long handle) {
+    AppHandle(final long handle) {
         super(handle, h -> NativeBindings.appFree(h));
     }
 
@@ -19,7 +19,7 @@ class AppHandle extends NativeHandle {
     @Override
     public long toLong() {
         if (handle < 0) {
-            throw new Error("Session Invalidated");
+            throw new java.lang.RuntimeException("Session Invalidated");
         }
         return handle;
     }

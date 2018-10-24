@@ -2,10 +2,11 @@ package net.maidsafe.api.model;
 
 public class EncryptKeyPair {
 
-    private NativeHandle secretEncryptKey;
-    private NativeHandle publicEncryptKey;
+    private final NativeHandle secretEncryptKey;
+    private final NativeHandle publicEncryptKey;
 
-    public EncryptKeyPair(NativeHandle publicEncryptKey, NativeHandle secretEncryptKey) {
+
+    public EncryptKeyPair(final NativeHandle publicEncryptKey, final NativeHandle secretEncryptKey) {
         this.secretEncryptKey = secretEncryptKey;
         this.publicEncryptKey = publicEncryptKey;
     }

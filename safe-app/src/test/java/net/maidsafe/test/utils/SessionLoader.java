@@ -2,7 +2,7 @@ package net.maidsafe.test.utils;
 
 import net.maidsafe.api.Client;
 
-public class SessionLoader implements Cloneable{
+public class SessionLoader{
 
     private static SessionLoader instance;
 
@@ -14,10 +14,5 @@ public class SessionLoader implements Cloneable{
         if (instance == null) {
             instance = new SessionLoader();
         }
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
     }
 }

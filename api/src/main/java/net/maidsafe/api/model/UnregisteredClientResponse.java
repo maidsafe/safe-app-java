@@ -1,14 +1,15 @@
 package net.maidsafe.api.model;
 
 public class UnregisteredClientResponse extends DecodeResult {
-    private byte[] bootstrapConfig;
+    private final byte[] bootstrapConfig;
 
-    public UnregisteredClientResponse(int reqId, byte[] bootstrapConfig) {
+
+    public UnregisteredClientResponse(final int reqId, final byte[] bootstrapConfig) {
         super(reqId);
-        this.bootstrapConfig = bootstrapConfig;
+        this.bootstrapConfig = bootstrapConfig.clone();
     }
 
     public byte[] getBootstrapConfig() {
-        return bootstrapConfig;
+        return bootstrapConfig.clone();
     }
 }
