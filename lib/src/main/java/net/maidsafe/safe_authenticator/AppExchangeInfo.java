@@ -11,54 +11,56 @@ package net.maidsafe.safe_authenticator;
 
 /// Represents an application ID in the process of asking permissions
 public class AppExchangeInfo {
-	private String id;
-	private String scope;
-	private String name;
-	private String vendor;
+    private String id;
+    private String scope;
+    private String name;
+    private String vendor;
 
-	public AppExchangeInfo() {
-		this.id = new String();
-		this.scope = new String();
-		this.name = new String();
-		this.vendor = new String();
-	}
-	public AppExchangeInfo(String id, String scope, String name, String vendor) {
-		this.id = id;
-		this.scope = scope;
-		this.name = name;
-		this.vendor = vendor;
-	}
-	public String getId() {
-		return id;
-	}
+    public AppExchangeInfo() {
+        this.id = new String();
+        this.scope = new String();
+        this.name = new String();
+        this.vendor = new String();
+    }
 
-	public void setId(final String val) {
-		this.id = val;
-	}
+    public AppExchangeInfo(String id, String scope, String name, String vendor) {
+        this.id = id;
+        this.scope = scope;
+        this.name = name;
+        this.vendor = vendor;
+    }
 
-	public String getScope() {
-		return scope;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setScope(final String val) {
-		this.scope = val;
-	}
+    public void setId(final String val) {
+        this.id = val;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getScope() {
+        return scope;
+    }
 
-	public void setName(final String val) {
-		this.name = val;
-	}
+    public void setScope(final String val) {
+        this.scope = val;
+    }
 
-	public String getVendor() {
-		return vendor;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setVendor(final String val) {
-		this.vendor = val;
-	}
+    public void setName(final String val) {
+        this.name = val;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(final String val) {
+        this.vendor = val;
+    }
 
 }
 

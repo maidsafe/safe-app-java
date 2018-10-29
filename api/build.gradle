@@ -1,31 +1,25 @@
 plugins {
-  id "com.github.spotbugs" version "1.6.5"
+    id "com.github.spotbugs" version "1.6.5"
 }
 apply plugin: 'java-library'
 apply plugin: 'pmd'
 
 dependencies {
-  implementation project(':lib')
-  testImplementation 'junit:junit:4.12'
+    implementation project(':lib')
+    testImplementation 'junit:junit:4.12'
 }
 
 spotbugs {
-  excludeFilter = file("$rootDir/spotbugs-exclude.xml")
+    excludeFilter = file("$rootDir/config/spotbugs/spotbugs-exclude.xml")
 }
 
-pmd {
-  pmdTest.enabled=false
-  pmd {
-    pmdTest.enabled=false
-    ruleSets = ["$rootDir/pmd-ruleset.xml"]
-  }
-}
+
 
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
 
 repositories {

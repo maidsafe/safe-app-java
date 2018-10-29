@@ -3,52 +3,48 @@ import de.undercouch.gradle.tasks.download.Download
 import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
-    classpath 'de.undercouch:gradle-download-task:3.2.0'
-  }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+        classpath 'de.undercouch:gradle-download-task:3.2.0'
+    }
 }
 plugins {
-  id "com.github.spotbugs" version "1.6.5"
+    id "com.github.spotbugs" version "1.6.5"
 }
 
 apply plugin: 'java-library'
 apply plugin: 'idea'
 apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: 'pmd'
-
-pmd {
-    pmdTest.enabled=false
-    ruleSets = ["$rootDir/pmd-ruleset.xml"]
-}
-
 
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
-  spotbugsTest.enabled=false
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
+    spotbugsTest.enabled = false
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+pmd {
+    pmdTest.enabled = false
 }
 group 'net.maidsafe'
 version '0.1.0'
 
 dependencies {
-  implementation project(':lib')
-  implementation project(':api')
-  compile project(':safe-authenticator')
-  testImplementation 'junit:junit:4.12'
+    implementation project(':lib')
+    implementation project(':api')
+    compile project(':safe-authenticator')
+    testImplementation 'junit:junit:4.12'
 }
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 task copyTestResources(type: Copy) {
     def platform = "linux"
-    def x64Versions = ["x86_64", "amd64", "x64", "x86-64","ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
+    def x64Versions = ["x86_64", "amd64", "x64", "x86-64", "ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
     def arch = x64Versions.find { it == "x64" } == null ? "x86" : "x64"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         platform = "win"
@@ -75,30 +71,34 @@ task copyAuthTestResources(type: Copy) {
 processTestResources.dependsOn copyAuthTestResources
 
 def nativeLibsVersion = "lionel-test"
-def tempDownloadDir =  "${projectDir}/.tempDownloads"
+def tempDownloadDir = "${projectDir}/.tempDownloads"
 
 static def getCombinations() {
     def platforms = ['osx', 'linux', 'win']
     def variants = ['mock', 'non-mock']
     def architectures = ['x64'] // ['x86', 'x64']
-    [platforms, architectures, variants].combinations().findAll { !(it[0] == 'osx' && it[1] == 'x86') }
+    [platforms, architectures, variants].combinations().findAll {
+        !(it[0] == 'osx' && it[1] == 'x86')
+    }
 }
+
 static def getMockCombinations() {
     def platforms = ['osx', 'linux', 'win']
     def archictures = ['x64']
     [platforms, archictures].combinations().findAll()
 }
+
 tasks.addRule('Pattern: NativeLibs-<ID>') { String taskName ->
     if (taskName.startsWith('NativeLibs-')) {
         task(taskName, type: Copy) {
-            dependsOn << [ name.replace('NativeLibs', 'delete') ]
+            dependsOn << [name.replace('NativeLibs', 'delete')]
             def args = name.split('-')
             String platform = args[1]
             String arch = args[2]
-            if(args[3] == 'mock') {
+            if (args[3] == 'mock') {
                 dependsOn << [name.replace('NativeLibs', 'AuthNativeLibs')]
             }
-            from "${projectDir}/libs/${platform}/${args[3] == 'mock'? 'mock' : 'non-mock'}/${arch}/"
+            from "${projectDir}/libs/${platform}/${args[3] == 'mock' ? 'mock' : 'non-mock'}/${arch}/"
             into "${projectDir}/src/main/resources/native"
         }
     }
@@ -137,7 +137,7 @@ tasks.addRule('Pattern: AuthDelete-<ID>') { String taskName ->
 tasks.addRule('Pattern: pack-<ID>') { String taskName ->
     if (taskName.startsWith('pack')) {
         task(taskName, type: ShadowJar) {
-            dependsOn << [ name.replace('pack', 'NativeLibs') ]
+            dependsOn << [name.replace('pack', 'NativeLibs')]
             def args = name.split('-')
             String platform = args[1]
             String arch = args[2]
@@ -158,8 +158,8 @@ tasks.addRule('Pattern: pack-<ID>') { String taskName ->
         }
     }
 }
-task ('pack') {
-    def tasks = getCombinations().collect {"pack-${it[0]}-${it[1]}-${it[2]}" }
+task('pack') {
+    def tasks = getCombinations().collect { "pack-${it[0]}-${it[1]}-${it[2]}" }
     dependsOn << tasks
     doLast {
         println "Deleting default Jar..."
@@ -169,7 +169,7 @@ task ('pack') {
         }
     }
 }
-task ("downloadNativeLibs", type: Download) {
+task("downloadNativeLibs", type: Download) {
     File dir = new File(tempDownloadDir)
     if (dir.exists()) {
         assert dir.deleteDir()

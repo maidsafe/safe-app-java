@@ -12,14 +12,19 @@ package net.maidsafe.api.model;
 import net.maidsafe.utils.IFreeFunc;
 
 public class NativeHandle {
+    private final IFreeFunc freeFunc;
     protected long handle;
-    final private IFreeFunc freeFunc;
 
     public NativeHandle(final long handle, final IFreeFunc freeFunc) {
         this.handle = handle;
         this.freeFunc = freeFunc;
     }
 
+    /**
+     * Returns handle as long
+     *
+     * @return handle
+     */
     public long toLong() {
         return handle;
     }

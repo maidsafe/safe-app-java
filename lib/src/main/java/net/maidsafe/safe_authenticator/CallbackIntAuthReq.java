@@ -10,5 +10,5 @@
 package net.maidsafe.safe_authenticator;
 
 public interface CallbackIntAuthReq {
-	public void call(int reqId, AuthReq req);
+    public void call(int reqId, AuthReq req);
 }

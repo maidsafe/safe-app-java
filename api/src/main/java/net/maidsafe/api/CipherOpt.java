@@ -10,10 +10,10 @@
 package net.maidsafe.api;
 
 import java.util.concurrent.CompletableFuture;
+
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
-
 
 
 public class CipherOpt {
@@ -24,8 +24,8 @@ public class CipherOpt {
         init(appHandle);
     }
 
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
 
 

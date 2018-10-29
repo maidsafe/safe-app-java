@@ -11,42 +11,44 @@ package net.maidsafe.safe_authenticator;
 
 /// For use in `ShareMDataReq`. Represents a specific `MutableData` that is being shared.
 public class ShareMData {
-	private long typeTag;
-	private byte[] name;
-	private PermissionSet perms;
+    private long typeTag;
+    private byte[] name;
+    private PermissionSet perms;
 
-	public ShareMData() {
-		this.name = new byte[] {};
-		this.perms = new PermissionSet();
-	}
-	public ShareMData(long typeTag, byte[] name, PermissionSet perms) {
-		this.typeTag = typeTag;
-		this.name = name;
-		this.perms = perms;
-	}
-	public long getTypeTag() {
-		return typeTag;
-	}
+    public ShareMData() {
+        this.name = new byte[]{};
+        this.perms = new PermissionSet();
+    }
 
-	public void setTypeTag(final long val) {
-		this.typeTag = val;
-	}
+    public ShareMData(long typeTag, byte[] name, PermissionSet perms) {
+        this.typeTag = typeTag;
+        this.name = name;
+        this.perms = perms;
+    }
 
-	public byte[] getName() {
-		return name;
-	}
+    public long getTypeTag() {
+        return typeTag;
+    }
 
-	public void setName(final byte[] val) {
-		this.name = val;
-	}
+    public void setTypeTag(final long val) {
+        this.typeTag = val;
+    }
 
-	public PermissionSet getPerm() {
-		return perms;
-	}
+    public byte[] getName() {
+        return name;
+    }
 
-	public void setPerm(final PermissionSet val) {
-		this.perms = val;
-	}
+    public void setName(final byte[] val) {
+        this.name = val;
+    }
+
+    public PermissionSet getPerm() {
+        return perms;
+    }
+
+    public void setPerm(final PermissionSet val) {
+        this.perms = val;
+    }
 
 }
 

@@ -2,24 +2,16 @@ plugins {
     id "com.github.spotbugs" version "1.6.5"
 }
 apply plugin: 'java-library'
-apply plugin: 'pmd'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 spotbugs {
-    excludeFilter = file("$rootDir/spotbugs-exclude.xml")
+    excludeFilter = file("$rootDir/config/spotbugs/spotbugs-exclude.xml")
 }
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
     reports {
         xml.enabled = false
         html.enabled = true
-    }
-}
-pmd {
-    pmdTest.enabled=false
-    pmd {
-        pmdTest.enabled=false
-        ruleSets = ["$rootDir/pmd-ruleset.xml"]
     }
 }
 pmdMain {

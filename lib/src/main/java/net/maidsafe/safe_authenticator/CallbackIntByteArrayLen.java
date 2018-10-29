@@ -10,5 +10,5 @@
 package net.maidsafe.safe_authenticator;
 
 public interface CallbackIntByteArrayLen {
-	public void call(int reqId, byte[] extraData);
+    public void call(int reqId, byte[] extraData);
 }

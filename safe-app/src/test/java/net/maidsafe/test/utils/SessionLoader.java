@@ -11,7 +11,7 @@ package net.maidsafe.test.utils;
 
 import net.maidsafe.api.Client;
 
-public class SessionLoader{
+public final class SessionLoader {
 
     private static SessionLoader instance;
 

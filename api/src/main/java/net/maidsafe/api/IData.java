@@ -10,10 +10,10 @@
 package net.maidsafe.api;
 
 import java.util.concurrent.CompletableFuture;
+
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
-
 
 
 public class IData {
@@ -24,8 +24,8 @@ public class IData {
         init(appHandle);
     }
 
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
 
 
@@ -46,13 +46,13 @@ public class IData {
 
     public CompletableFuture<Void> write(final NativeHandle writerHandle, final byte[] data) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.idataWriteToSelfEncryptor(appHandle.toLong(), writerHandle.toLong(), data,
-                    (result) -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.idataWriteToSelfEncryptor(appHandle.toLong(), writerHandle.toLong(), data,
+                (result) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 

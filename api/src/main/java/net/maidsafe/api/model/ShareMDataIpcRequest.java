@@ -19,7 +19,8 @@ public class ShareMDataIpcRequest extends IpcRequest {
     private final ShareMDataReq shareMDataReq;
 
 
-    public ShareMDataIpcRequest(final int reqId, final ShareMDataReq shareMDataReq, final MetadataResponse metadataResponse) {
+    public ShareMDataIpcRequest(final int reqId, final ShareMDataReq shareMDataReq,
+                                final MetadataResponse metadataResponse) {
         super(reqId);
         this.shareMDataReq = shareMDataReq;
         this.metadataResponse = metadataResponse;

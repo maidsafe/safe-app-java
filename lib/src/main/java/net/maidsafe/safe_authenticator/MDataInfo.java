@@ -11,95 +11,97 @@ package net.maidsafe.safe_authenticator;
 
 /// FFI wrapper for `MDataInfo`.
 public class MDataInfo {
-	private byte[] name;
-	private long typeTag;
-	private boolean hasEncInfo;
-	private byte[] encKey;
-	private byte[] encNonce;
-	private boolean hasNewEncInfo;
-	private byte[] newEncKey;
-	private byte[] newEncNonce;
+    private byte[] name;
+    private long typeTag;
+    private boolean hasEncInfo;
+    private byte[] encKey;
+    private byte[] encNonce;
+    private boolean hasNewEncInfo;
+    private byte[] newEncKey;
+    private byte[] newEncNonce;
 
-	public MDataInfo() {
-		this.name = new byte[] {};
-		this.encKey = new byte[] {};
-		this.encNonce = new byte[] {};
-		this.newEncKey = new byte[] {};
-		this.newEncNonce = new byte[] {};
-	}
-	public MDataInfo(byte[] name, long typeTag, boolean hasEncInfo, byte[] encKey, byte[] encNonce, boolean hasNewEncInfo, byte[] newEncKey, byte[] newEncNonce) {
-		this.name = name;
-		this.typeTag = typeTag;
-		this.hasEncInfo = hasEncInfo;
-		this.encKey = encKey;
-		this.encNonce = encNonce;
-		this.hasNewEncInfo = hasNewEncInfo;
-		this.newEncKey = newEncKey;
-		this.newEncNonce = newEncNonce;
-	}
-	public byte[] getName() {
-		return name;
-	}
+    public MDataInfo() {
+        this.name = new byte[]{};
+        this.encKey = new byte[]{};
+        this.encNonce = new byte[]{};
+        this.newEncKey = new byte[]{};
+        this.newEncNonce = new byte[]{};
+    }
 
-	public void setName(final byte[] val) {
-		this.name = val;
-	}
+    public MDataInfo(byte[] name, long typeTag, boolean hasEncInfo, byte[] encKey, byte[] encNonce, boolean hasNewEncInfo, byte[] newEncKey, byte[] newEncNonce) {
+        this.name = name;
+        this.typeTag = typeTag;
+        this.hasEncInfo = hasEncInfo;
+        this.encKey = encKey;
+        this.encNonce = encNonce;
+        this.hasNewEncInfo = hasNewEncInfo;
+        this.newEncKey = newEncKey;
+        this.newEncNonce = newEncNonce;
+    }
 
-	public long getTypeTag() {
-		return typeTag;
-	}
+    public byte[] getName() {
+        return name;
+    }
 
-	public void setTypeTag(final long val) {
-		this.typeTag = val;
-	}
+    public void setName(final byte[] val) {
+        this.name = val;
+    }
 
-	public boolean getHasEncInfo() {
-		return hasEncInfo;
-	}
+    public long getTypeTag() {
+        return typeTag;
+    }
 
-	public void setHasEncInfo(final boolean val) {
-		this.hasEncInfo = val;
-	}
+    public void setTypeTag(final long val) {
+        this.typeTag = val;
+    }
 
-	public byte[] getEncKey() {
-		return encKey;
-	}
+    public boolean getHasEncInfo() {
+        return hasEncInfo;
+    }
 
-	public void setEncKey(final byte[] val) {
-		this.encKey = val;
-	}
+    public void setHasEncInfo(final boolean val) {
+        this.hasEncInfo = val;
+    }
 
-	public byte[] getEncNonce() {
-		return encNonce;
-	}
+    public byte[] getEncKey() {
+        return encKey;
+    }
 
-	public void setEncNonce(final byte[] val) {
-		this.encNonce = val;
-	}
+    public void setEncKey(final byte[] val) {
+        this.encKey = val;
+    }
 
-	public boolean getHasNewEncInfo() {
-		return hasNewEncInfo;
-	}
+    public byte[] getEncNonce() {
+        return encNonce;
+    }
 
-	public void setHasNewEncInfo(final boolean val) {
-		this.hasNewEncInfo = val;
-	}
+    public void setEncNonce(final byte[] val) {
+        this.encNonce = val;
+    }
 
-	public byte[] getNewEncKey() {
-		return newEncKey;
-	}
+    public boolean getHasNewEncInfo() {
+        return hasNewEncInfo;
+    }
 
-	public void setNewEncKey(final byte[] val) {
-		this.newEncKey = val;
-	}
+    public void setHasNewEncInfo(final boolean val) {
+        this.hasNewEncInfo = val;
+    }
 
-	public byte[] getNewEncNonce() {
-		return newEncNonce;
-	}
+    public byte[] getNewEncKey() {
+        return newEncKey;
+    }
 
-	public void setNewEncNonce(final byte[] val) {
-		this.newEncNonce = val;
-	}
+    public void setNewEncKey(final byte[] val) {
+        this.newEncKey = val;
+    }
+
+    public byte[] getNewEncNonce() {
+        return newEncNonce;
+    }
+
+    public void setNewEncNonce(final byte[] val) {
+        this.newEncNonce = val;
+    }
 
 }
 

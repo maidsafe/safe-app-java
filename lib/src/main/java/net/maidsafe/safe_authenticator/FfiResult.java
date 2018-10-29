@@ -11,31 +11,33 @@ package net.maidsafe.safe_authenticator;
 
 /// FFI result wrapper
 public class FfiResult {
-	private int errorCode;
-	private String description;
+    private int errorCode;
+    private String description;
 
-	public FfiResult() {
-		this.description = new String();
-	}
-	public FfiResult(int errorCode, String description) {
-		this.errorCode = errorCode;
-		this.description = description;
-	}
-	public int getErrorCode() {
-		return errorCode;
-	}
+    public FfiResult() {
+        this.description = new String();
+    }
 
-	public void setErrorCode(final int val) {
-		this.errorCode = val;
-	}
+    public FfiResult(int errorCode, String description) {
+        this.errorCode = errorCode;
+        this.description = description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public int getErrorCode() {
+        return errorCode;
+    }
 
-	public void setDescription(final String val) {
-		this.description = val;
-	}
+    public void setErrorCode(final int val) {
+        this.errorCode = val;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String val) {
+        this.description = val;
+    }
 
 }
 

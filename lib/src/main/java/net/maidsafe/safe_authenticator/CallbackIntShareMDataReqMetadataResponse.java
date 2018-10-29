@@ -10,5 +10,5 @@
 package net.maidsafe.safe_authenticator;
 
 public interface CallbackIntShareMDataReqMetadataResponse {
-	public void call(int reqId, ShareMDataReq req, MetadataResponse metadata);
+    public void call(int reqId, ShareMDataReq req, MetadataResponse metadata);
 }

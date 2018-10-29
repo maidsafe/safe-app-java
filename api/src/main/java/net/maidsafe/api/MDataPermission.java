@@ -12,12 +12,12 @@ package net.maidsafe.api;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.PermissionSet;
 import net.maidsafe.safe_app.UserPermissionSet;
 import net.maidsafe.utils.Helper;
-
 
 
 public class MDataPermission {
@@ -27,10 +27,9 @@ public class MDataPermission {
         init(appHandle);
     }
 
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
-
 
 
     public CompletableFuture<NativeHandle> newPermissionHandle() {
@@ -88,13 +87,13 @@ public class MDataPermission {
     public CompletableFuture insert(final NativeHandle permissionHandle, final NativeHandle publicSignKey,
                                     final PermissionSet permissionSet) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.mdataPermissionsInsert(appHandle.toLong(), permissionHandle.toLong(),
-                    publicSignKey.toLong(), permissionSet, (result) -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.mdataPermissionsInsert(appHandle.toLong(), permissionHandle.toLong(),
+                publicSignKey.toLong(), permissionSet, (result) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 }

@@ -10,5 +10,5 @@
 package net.maidsafe.safe_authenticator;
 
 public interface CallbackResultString {
-	public void call(FfiResult result, String response);
+    public void call(FfiResult result, String response);
 }

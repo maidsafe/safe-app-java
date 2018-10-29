@@ -12,12 +12,12 @@ package net.maidsafe.api;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.MDataEntry;
 import net.maidsafe.safe_app.MDataValue;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
-
 
 
 public class MDataEntries {
@@ -27,10 +27,9 @@ public class MDataEntries {
         init(appHandle);
     }
 
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
-
 
 
     public CompletableFuture<NativeHandle> newEntriesHandle() {
@@ -50,13 +49,13 @@ public class MDataEntries {
 
     public CompletableFuture<Void> insert(final NativeHandle entriesHandle, final byte[] key, final byte[] value) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.mdataEntriesInsert(appHandle.toLong(), entriesHandle.toLong(), key, value,
-                    result -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.mdataEntriesInsert(appHandle.toLong(), entriesHandle.toLong(), key, value,
+                result -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 

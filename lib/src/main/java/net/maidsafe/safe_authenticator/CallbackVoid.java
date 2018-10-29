@@ -10,5 +10,5 @@
 package net.maidsafe.safe_authenticator;
 
 public interface CallbackVoid {
-	public void call();
+    public void call();
 }

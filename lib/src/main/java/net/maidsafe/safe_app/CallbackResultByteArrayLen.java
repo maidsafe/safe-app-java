@@ -10,5 +10,5 @@
 package net.maidsafe.safe_app;
 
 public interface CallbackResultByteArrayLen {
-	public void call(FfiResult result, byte[] signedData);
+    public void call(FfiResult result, byte[] signedData);
 }

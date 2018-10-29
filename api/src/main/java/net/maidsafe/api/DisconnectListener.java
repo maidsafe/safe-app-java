@@ -29,8 +29,8 @@ class DisconnectListener {
         // Constructor intentionally empty
     }
 
-    public void setListener(final OnDisconnected onDisconnected) {
-        this.onDisconnected = onDisconnected;
+    public void setListener(final OnDisconnected disconnected) {
+        this.onDisconnected = disconnected;
     }
 
     public CallbackVoid getCallback() {

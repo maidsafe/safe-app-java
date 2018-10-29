@@ -17,8 +17,12 @@ import java.nio.file.Files;
 
 public class Client extends Session {
 
-    final private static String nativePath = "/native/";
+    private static final String NATIVE_PATH = "/native/";
     private static File generatedDir;
+
+    protected Client(final AppHandle appHandle, final DisconnectListener disconnectListener) {
+        super(appHandle, disconnectListener);
+    }
 
     public static void load() {
         clientTypeFactory = ClientTypeFactory.load(Client.class);
@@ -42,7 +46,7 @@ public class Client extends Session {
 
             System.loadLibrary("safe_app_jni");
 
-            if(Session.isMock()) {
+            if (Session.isMock()) {
                 copyLibrary(getLibraryName("safe_authenticator"));
                 copyLibrary(getLibraryName("safe_authenticator_jni"));
 
@@ -56,14 +60,11 @@ public class Client extends Session {
     private static String getLibraryName(final String library) {
         return System.mapLibraryName(library);
     }
-    protected Client(final AppHandle appHandle, final DisconnectListener disconnectListener) {
-        super(appHandle, disconnectListener);
-    }
 
     private static void copyLibrary(final String library) {
         final File file = new File(generatedDir, library);
         file.deleteOnExit();
-        final InputStream inputStream = Client.class.getResourceAsStream(nativePath.concat(library));
+        final InputStream inputStream = Client.class.getResourceAsStream(NATIVE_PATH.concat(library));
         try {
             Files.copy(inputStream, file.toPath());
         } catch (IOException e) {

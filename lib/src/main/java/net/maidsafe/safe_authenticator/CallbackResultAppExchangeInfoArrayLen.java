@@ -10,5 +10,5 @@
 package net.maidsafe.safe_authenticator;
 
 public interface CallbackResultAppExchangeInfoArrayLen {
-	public void call(FfiResult result, AppExchangeInfo[] appExchangeInfo);
+    public void call(FfiResult result, AppExchangeInfo[] appExchangeInfo);
 }

@@ -10,6 +10,7 @@
 package net.maidsafe.api;
 
 import java.util.concurrent.CompletableFuture;
+
 import net.maidsafe.api.model.EncryptKeyPair;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.api.model.SignKeyPair;
@@ -17,16 +18,11 @@ import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
 
 
-
 public class Crypto {
     private static AppHandle appHandle;
 
-    public Crypto(final AppHandle appHandle) {
-        init(appHandle);
-    }
-
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    public Crypto(final AppHandle handle) {
+        init(handle);
     }
 
     private static NativeHandle getPublicSignKeyHandle(final long handle) {
@@ -56,6 +52,10 @@ public class Crypto {
             future.complete(hashedData);
         });
         return future;
+    }
+
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
 
     public CompletableFuture<NativeHandle> getAppPublicSignKey() {
@@ -222,7 +222,8 @@ public class Crypto {
 
 
     public CompletableFuture<byte[]> decryptSealedBox(final NativeHandle recipientPublicEncryptKey,
-                                                      final NativeHandle recipientSecretEncryptKey, final byte[] cipherText) {
+                                                      final NativeHandle recipientSecretEncryptKey,
+                                                      final byte[] cipherText) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.decryptSealedBox(appHandle.toLong(), cipherText,
                 recipientPublicEncryptKey.toLong(), recipientSecretEncryptKey.toLong(),

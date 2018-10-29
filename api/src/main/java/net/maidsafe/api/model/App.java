@@ -10,10 +10,10 @@
 package net.maidsafe.api.model;
 
 public class App {
-    final private String id;
-    final private String name;
-    final private String vendor;
-    final private String version;
+    private final String id;
+    private final String name;
+    private final String vendor;
+    private final String version;
 
     public App(final String id, final String name, final String vendor, final String version) {
         this.id = id;

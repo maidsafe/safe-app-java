@@ -11,31 +11,33 @@ package net.maidsafe.safe_app;
 
 /// FFI object representing a (User, Permission Set) pair.
 public class UserPermissionSet {
-	private long userH;
-	private PermissionSet permSet;
+    private long userH;
+    private PermissionSet permSet;
 
-	public UserPermissionSet() {
-		this.permSet = new PermissionSet();
-	}
-	public UserPermissionSet(long userH, PermissionSet permSet) {
-		this.userH = userH;
-		this.permSet = permSet;
-	}
-	public long getUserH() {
-		return userH;
-	}
+    public UserPermissionSet() {
+        this.permSet = new PermissionSet();
+    }
 
-	public void setUserH(final long val) {
-		this.userH = val;
-	}
+    public UserPermissionSet(long userH, PermissionSet permSet) {
+        this.userH = userH;
+        this.permSet = permSet;
+    }
 
-	public PermissionSet getPermSet() {
-		return permSet;
-	}
+    public long getUserH() {
+        return userH;
+    }
 
-	public void setPermSet(final PermissionSet val) {
-		this.permSet = val;
-	}
+    public void setUserH(final long val) {
+        this.userH = val;
+    }
+
+    public PermissionSet getPermSet() {
+        return permSet;
+    }
+
+    public void setPermSet(final PermissionSet val) {
+        this.permSet = val;
+    }
 
 }
 

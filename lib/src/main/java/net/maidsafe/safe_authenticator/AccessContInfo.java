@@ -11,42 +11,44 @@ package net.maidsafe.safe_authenticator;
 
 /// Access container info.
 public class AccessContInfo {
-	private byte[] id;
-	private long tag;
-	private byte[] nonce;
+    private byte[] id;
+    private long tag;
+    private byte[] nonce;
 
-	public AccessContInfo() {
-		this.id = new byte[] {};
-		this.nonce = new byte[] {};
-	}
-	public AccessContInfo(byte[] id, long tag, byte[] nonce) {
-		this.id = id;
-		this.tag = tag;
-		this.nonce = nonce;
-	}
-	public byte[] getId() {
-		return id;
-	}
+    public AccessContInfo() {
+        this.id = new byte[]{};
+        this.nonce = new byte[]{};
+    }
 
-	public void setId(final byte[] val) {
-		this.id = val;
-	}
+    public AccessContInfo(byte[] id, long tag, byte[] nonce) {
+        this.id = id;
+        this.tag = tag;
+        this.nonce = nonce;
+    }
 
-	public long getTag() {
-		return tag;
-	}
+    public byte[] getId() {
+        return id;
+    }
 
-	public void setTag(final long val) {
-		this.tag = val;
-	}
+    public void setId(final byte[] val) {
+        this.id = val;
+    }
 
-	public byte[] getNonce() {
-		return nonce;
-	}
+    public long getTag() {
+        return tag;
+    }
 
-	public void setNonce(final byte[] val) {
-		this.nonce = val;
-	}
+    public void setTag(final long val) {
+        this.tag = val;
+    }
+
+    public byte[] getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(final byte[] val) {
+        this.nonce = val;
+    }
 
 }
 

@@ -11,41 +11,43 @@ package net.maidsafe.safe_authenticator;
 
 /// Access container entry for a single app.
 public class AccessContainerEntry {
-	private ContainerInfo[] containers;
-	private long containersLen;
-	private long containersCap;
+    private ContainerInfo[] containers;
+    private long containersLen;
+    private long containersCap;
 
-	public AccessContainerEntry() {
-		this.containers = new ContainerInfo[] {};
-	}
-	public AccessContainerEntry(ContainerInfo[] containers, long containersLen, long containersCap) {
-		this.containers = containers;
-		this.containersLen = containersLen;
-		this.containersCap = containersCap;
-	}
-	public ContainerInfo[] getContainer() {
-		return containers;
-	}
+    public AccessContainerEntry() {
+        this.containers = new ContainerInfo[]{};
+    }
 
-	public void setContainer(final ContainerInfo[] val) {
-		this.containers = val;
-	}
+    public AccessContainerEntry(ContainerInfo[] containers, long containersLen, long containersCap) {
+        this.containers = containers;
+        this.containersLen = containersLen;
+        this.containersCap = containersCap;
+    }
 
-	public long getContainersLen() {
-		return containersLen;
-	}
+    public ContainerInfo[] getContainer() {
+        return containers;
+    }
 
-	public void setContainersLen(final long val) {
-		this.containersLen = val;
-	}
+    public void setContainer(final ContainerInfo[] val) {
+        this.containers = val;
+    }
 
-	public long getContainersCap() {
-		return containersCap;
-	}
+    public long getContainersLen() {
+        return containersLen;
+    }
 
-	public void setContainersCap(final long val) {
-		this.containersCap = val;
-	}
+    public void setContainersLen(final long val) {
+        this.containersLen = val;
+    }
+
+    public long getContainersCap() {
+        return containersCap;
+    }
+
+    public void setContainersCap(final long val) {
+        this.containersCap = val;
+    }
 
 }
 

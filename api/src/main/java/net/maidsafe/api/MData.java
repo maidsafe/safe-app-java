@@ -14,22 +14,25 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import net.maidsafe.api.model.NativeHandle;
-import net.maidsafe.safe_app.*;
+import net.maidsafe.safe_app.MDataInfo;
+import net.maidsafe.safe_app.MDataKey;
+import net.maidsafe.safe_app.MDataValue;
+import net.maidsafe.safe_app.MetadataResponse;
+import net.maidsafe.safe_app.NativeBindings;
+import net.maidsafe.safe_app.PermissionSet;
 import net.maidsafe.utils.Helper;
 
 
-
-public class MData {
+public final class MData {
     private static AppHandle appHandle;
 
     public MData(final AppHandle appHandle) {
         init(appHandle);
     }
 
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
-
 
 
     public CompletableFuture<MDataInfo> getPrivateMData(final byte[] name, final long typeTag, final byte[] secretKey,
@@ -131,13 +134,13 @@ public class MData {
     public CompletableFuture<Void> put(final MDataInfo mDataInfo, final NativeHandle permissionHandle,
                                        final NativeHandle entriesHandle) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.mdataPut(appHandle.toLong(), mDataInfo, permissionHandle.toLong(),
-                    entriesHandle.toLong(), (result) -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.mdataPut(appHandle.toLong(), mDataInfo, permissionHandle.toLong(),
+                entriesHandle.toLong(), (result) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 
@@ -171,7 +174,7 @@ public class MData {
         NativeBindings.mdataGetValue(appHandle.toLong(), mDataInfo, key,
                 (result, value, version) -> {
                     if (result.getErrorCode() != 0) {
-                      future.completeExceptionally(Helper.ffiResultToException(result));
+                        future.completeExceptionally(Helper.ffiResultToException(result));
                     }
                     final MDataValue mDataValue = new MDataValue();
                     mDataValue.setContent(value);
@@ -187,7 +190,7 @@ public class MData {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntries(appHandle.toLong(), mDataInfo, (result, entriesH) -> {
             if (result.getErrorCode() != 0) {
-              future.completeExceptionally(Helper.ffiResultToException(result));
+                future.completeExceptionally(Helper.ffiResultToException(result));
             }
 
             future.complete(new NativeHandle(entriesH,
@@ -224,13 +227,13 @@ public class MData {
 
     public CompletableFuture<Void> mutateEntries(final MDataInfo mDataInfo, final NativeHandle actionHandle) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.mdataMutateEntries(appHandle.toLong(), mDataInfo, actionHandle.toLong(),
-                    (result) -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.mdataMutateEntries(appHandle.toLong(), mDataInfo, actionHandle.toLong(),
+                (result) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 
@@ -268,13 +271,13 @@ public class MData {
     public CompletableFuture<Void> setUserPermission(final NativeHandle publicSignKey, final MDataInfo mDataInfo,
                                                      final PermissionSet permissionSet, final long version) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.mdataSetUserPermissions(appHandle.toLong(), mDataInfo,
-                    publicSignKey.toLong(), permissionSet, version, (result) -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.mdataSetUserPermissions(appHandle.toLong(), mDataInfo,
+                publicSignKey.toLong(), permissionSet, version, (result) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 
@@ -282,13 +285,13 @@ public class MData {
     public CompletableFuture<Void> deleteUserPermission(final NativeHandle publicSignKey, final MDataInfo mDataInfo,
                                                         final long version) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.mdataDelUserPermissions(appHandle.toLong(), mDataInfo,
-                    publicSignKey.toLong(), version, (result) -> {
-                        if (result.getErrorCode() != 0) {
-                            future.completeExceptionally(Helper.ffiResultToException(result));
-                        }
-                        future.complete(null);
-                    });
+        NativeBindings.mdataDelUserPermissions(appHandle.toLong(), mDataInfo,
+                publicSignKey.toLong(), version, (result) -> {
+                    if (result.getErrorCode() != 0) {
+                        future.completeExceptionally(Helper.ffiResultToException(result));
+                    }
+                    future.complete(null);
+                });
         return future;
     }
 

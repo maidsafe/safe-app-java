@@ -45,45 +45,66 @@ import net.maidsafe.utils.Helper;
 
 public class Session {
 
-    public CipherOpt cipherOpt;
-    public Crypto crypto;
-    public IData iData;
-    public MData mData;
-    public MDataEntries mDataEntries;
-    public MDataEntryAction mDataEntryAction;
-    public MDataPermission mDataPermission;
-    public NFS nfs;
-    private final AppHandle appHandle;
-    private OnDisconnected onDisconnected;
-    private final DisconnectListener disconnectListener;
-    private boolean disconnected;
     protected static ClientTypeFactory clientTypeFactory;
+    public final CipherOpt cipherOpt;
+    public final Crypto crypto;
+    public final IData iData;
+    public final MData mData;
+    public final MDataEntries mDataEntries;
+    public final MDataEntryAction mDataEntryAction;
+    public final MDataPermission mDataPermission;
+    public final NFS nfs;
+    private final AppHandle appHandle;
+    private final DisconnectListener disconnectListener;
+    private OnDisconnected onDisconnected;
+    private boolean disconnected;
 
     protected Session(final AppHandle appHandle, final DisconnectListener disconnectListener) {
         this.appHandle = appHandle;
         this.disconnectListener = disconnectListener;
-        init();
+
+        if (this.disconnectListener != null) {
+            this.disconnectListener.setListener((val) -> {
+                if (onDisconnected == null) {
+                    return;
+                }
+                disconnected = true;
+                onDisconnected.disconnected(this);
+            });
+        }
+
+        this.cipherOpt = new CipherOpt(this.appHandle);
+        this.crypto = new Crypto(this.appHandle);
+        this.iData = new IData(this.appHandle);
+        this.mData = new MData(this.appHandle);
+        this.mDataEntries = new MDataEntries(this.appHandle);
+        this.mDataEntryAction = new MDataEntryAction(this.appHandle);
+        this.mDataPermission = new MDataPermission(this.appHandle);
+        this.nfs = new NFS(this.appHandle);
     }
 
-    private static <T extends Session> T create(final AppHandle appHandle, final DisconnectListener disconnectListener) {
+    private static <T extends Session> T create(final AppHandle appHandle,
+                                                final DisconnectListener disconnectListener) {
         try {
             final Class<?> clientType = clientTypeFactory.getClientType();
-            final Constructor<?>  cons = clientType.getDeclaredConstructor(new Class[] { AppHandle.class, DisconnectListener.class});
+            final Constructor<?> cons = clientType.getDeclaredConstructor(new Class[] {
+                    AppHandle.class, DisconnectListener.class
+            });
             return (T) cons.newInstance(appHandle, disconnectListener);
-        }
-        catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException
+                | IllegalAccessException | InvocationTargetException e) {
             throw new java.lang.RuntimeException(e);
         }
     }
 
     public static CompletableFuture initLogging(final String outputFileName) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.appInitLogging(outputFileName, (result) -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.appInitLogging(outputFileName, (result) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
@@ -114,11 +135,11 @@ public class Session {
 
     public static CompletableFuture setAdditionalSearchPath(final String path) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.appSetAdditionalSearchPath(path, (result) -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
+        NativeBindings.appSetAdditionalSearchPath(path, (result) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
         });
         return future;
     }
@@ -187,6 +208,7 @@ public class Session {
 
     /**
      * Create a new unregistered session using the bootstrap config from the response
+     *
      * @param bootStrapConfig Bootstrap configuration
      * @return A new {@link Session object}
      */
@@ -198,11 +220,11 @@ public class Session {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
 
-            AppHandle appHandle = new AppHandle(app);
-            future.complete(Session.create(appHandle, disconnectListener));
+            AppHandle handle = new AppHandle(app);
+            future.complete(Session.create(handle, disconnectListener));
         };
         NativeBindings.appUnregistered(bootStrapConfig, disconnectListener.getCallback(), callback);
-        return  future;
+        return future;
     }
 
 
@@ -213,8 +235,8 @@ public class Session {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
-            AppHandle appHandle = new AppHandle(handle);
-            future.complete(Session.create(appHandle, disconnectListener));
+            AppHandle appH = new AppHandle(handle);
+            future.complete(Session.create(appH, disconnectListener));
         };
         NativeBindings.appRegistered(appId, authGranted, disconnectListener.getCallback(),
                 callback);
@@ -231,37 +253,16 @@ public class Session {
         };
     }
 
-    private void init() {
-        if (this.disconnectListener != null) {
-            this.disconnectListener.setListener((val) -> {
-                if (onDisconnected == null) {
-                    return;
-                }
-                disconnected = true;
-                onDisconnected.disconnected(this);
-            });
-        }
-
-        this.cipherOpt = new CipherOpt(this.appHandle);
-        this.crypto = new Crypto(this.appHandle);
-        this.iData = new IData(this.appHandle);
-        this.mData = new MData(this.appHandle);
-        this.mDataEntries = new MDataEntries(this.appHandle);
-        this.mDataEntryAction = new MDataEntryAction(this.appHandle);
-        this.mDataPermission = new MDataPermission(this.appHandle);
-        this.nfs = new NFS(this.appHandle);
+    public static boolean isMock() {
+        return NativeBindings.isMockBuild();
     }
 
     public boolean isConnected() {
         return !disconnected;
     }
 
-    public static boolean isMock() {
-        return NativeBindings.isMockBuild();
-    }
-
-    public void setOnDisconnectListener(final OnDisconnected onDisconnected) {
-        this.onDisconnected = onDisconnected;
+    public void setOnDisconnectListener(final OnDisconnected disconnectedAction) {
+        this.onDisconnected = disconnectedAction;
     }
 
 
@@ -279,23 +280,23 @@ public class Session {
 
     public CompletableFuture resetObjectCache() {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.appResetObjectCache(appHandle.toLong(), (result) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
     public CompletableFuture refreshAccessInfo() {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.accessContainerRefreshAccessInfo(appHandle.toLong(), (result) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
@@ -324,13 +325,13 @@ public class Session {
 
     public CompletableFuture reconnect() {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.appReconnect(appHandle.toLong(), result -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                disconnected = false;
-                future.complete(null);
-            });
+        NativeBindings.appReconnect(appHandle.toLong(), result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            disconnected = false;
+            future.complete(null);
+        });
         return future;
     }
 }

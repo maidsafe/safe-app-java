@@ -11,32 +11,34 @@ package net.maidsafe.safe_authenticator;
 
 /// Represents an FFI-safe mutable data (key, value) entry.
 public class MDataEntry {
-	private MDataKey key;
-	private MDataValue value;
+    private MDataKey key;
+    private MDataValue value;
 
-	public MDataEntry() {
-		this.key = new MDataKey();
-		this.value = new MDataValue();
-	}
-	public MDataEntry(MDataKey key, MDataValue value) {
-		this.key = key;
-		this.value = value;
-	}
-	public MDataKey getKey() {
-		return key;
-	}
+    public MDataEntry() {
+        this.key = new MDataKey();
+        this.value = new MDataValue();
+    }
 
-	public void setKey(final MDataKey val) {
-		this.key = val;
-	}
+    public MDataEntry(MDataKey key, MDataValue value) {
+        this.key = key;
+        this.value = value;
+    }
 
-	public MDataValue getValue() {
-		return value;
-	}
+    public MDataKey getKey() {
+        return key;
+    }
 
-	public void setValue(final MDataValue val) {
-		this.value = val;
-	}
+    public void setKey(final MDataKey val) {
+        this.key = val;
+    }
+
+    public MDataValue getValue() {
+        return value;
+    }
+
+    public void setValue(final MDataValue val) {
+        this.value = val;
+    }
 
 }
 

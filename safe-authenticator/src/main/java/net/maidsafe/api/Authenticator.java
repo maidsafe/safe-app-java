@@ -18,7 +18,20 @@ import net.maidsafe.api.model.IpcRequest;
 import net.maidsafe.api.model.Request;
 import net.maidsafe.api.model.ShareMDataIpcRequest;
 import net.maidsafe.api.model.UnregisteredIpcRequest;
-import net.maidsafe.safe_authenticator.*;
+
+import net.maidsafe.safe_app.MDataInfo;
+import net.maidsafe.safe_authenticator.ShareMDataReq;
+import net.maidsafe.safe_authenticator.AccountInfo;
+import net.maidsafe.safe_authenticator.AppAccess;
+import net.maidsafe.safe_authenticator.AppExchangeInfo;
+import net.maidsafe.safe_authenticator.CallbackIntAuthReq;
+import net.maidsafe.safe_authenticator.CallbackIntByteArrayLen;
+import net.maidsafe.safe_authenticator.CallbackIntContainersReq;
+import net.maidsafe.safe_authenticator.CallbackIntShareMDataReqMetadataResponse;
+import net.maidsafe.safe_authenticator.CallbackResultRegisteredAppArrayLen;
+import net.maidsafe.safe_authenticator.ContainersReq;
+import net.maidsafe.safe_authenticator.NativeBindings;
+import net.maidsafe.safe_authenticator.RegisteredApp;
 import net.maidsafe.utils.Helper;
 
 import java.util.Arrays;
@@ -32,18 +45,13 @@ public class Authenticator {
         init(auth);
     }
 
-    private void init(final long auth) {
-        this.auth  = auth;
-    }
-
-    public boolean isMock() {
-        return NativeBindings.isMockBuild();
-    }
-
-    public static CompletableFuture<Authenticator> createAccount(final String accountLocator, final String accountPassword, final String invitation) {
+    public static CompletableFuture<Authenticator> createAccount(final String accountLocator,
+                                                                 final String accountPassword,
+                                                                 final String invitation) {
         final CompletableFuture<Authenticator> future = new CompletableFuture<>();
         final AuthDisconnectListener disconnectListener = new AuthDisconnectListener();
-        NativeBindings.createAcc(accountLocator, accountPassword, invitation, disconnectListener.getCallback(), (result, authenticator) -> {
+        NativeBindings.createAcc(accountLocator, accountPassword,
+                invitation, disconnectListener.getCallback(), (result, authenticator) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
@@ -55,7 +63,8 @@ public class Authenticator {
     public static CompletableFuture<Authenticator> login(final String accountLocator, final String accountPassword) {
         final CompletableFuture<Authenticator> future = new CompletableFuture<>();
         final AuthDisconnectListener disconnectListener = new AuthDisconnectListener();
-        NativeBindings.login(accountLocator, accountPassword, disconnectListener.getCallback(), (result, authenticator) -> {
+        NativeBindings.login(accountLocator, accountPassword,
+                disconnectListener.getCallback(), (result, authenticator) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
@@ -64,29 +73,7 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture<List<AppExchangeInfo>> listRevokedApps() {
-        final CompletableFuture<List<AppExchangeInfo>> future = new CompletableFuture<>();
-        NativeBindings.authRevokedApps(auth, (result, appExchangeInfo) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-            }
-            future.complete(Arrays.asList(appExchangeInfo));
-        });
-        return future;
-    }
-
-    public CompletableFuture flushAppRevocationQueue() {
-        final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.authFlushAppRevocationQueue(auth, result -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
-        return future;
-    }
-
-    public static  CompletableFuture<String> encodeUnregisteredResponse(final Request request, final boolean isGranted) {
+    public static CompletableFuture<String> encodeUnregisteredResponse(final Request request, final boolean isGranted) {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeUnregisteredResp(request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
@@ -108,7 +95,56 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture<String> encodeContainersResponse(final ContainersReq containersReq, final Request request, final boolean isGranted) {
+    public static CompletableFuture<IpcRequest> unregisteredDecodeIpcMessage(final String message) {
+        final CompletableFuture<IpcRequest> future = new CompletableFuture<>();
+        final CallbackIntByteArrayLen callback = (reqId, extraData) -> {
+            future.complete(new UnregisteredIpcRequest(reqId, extraData));
+        };
+        NativeBindings.authUnregisteredDecodeIpcMsg(message, callback, (result, response) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(new IpcReqError(result.getErrorCode(), result.getDescription(), response));
+        });
+        return future;
+    }
+
+    public static void dispose() {
+        NativeBindings.authFree(auth);
+    }
+
+    private void init(final long authenticator) {
+        this.auth = authenticator;
+    }
+
+    public boolean isMock() {
+        return NativeBindings.isMockBuild();
+    }
+
+    public CompletableFuture<List<AppExchangeInfo>> listRevokedApps() {
+        final CompletableFuture<List<AppExchangeInfo>> future = new CompletableFuture<>();
+        NativeBindings.authRevokedApps(auth, (result, appExchangeInfo) -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(Arrays.asList(appExchangeInfo));
+        });
+        return future;
+    }
+
+    public CompletableFuture flushAppRevocationQueue() {
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
+        NativeBindings.authFlushAppRevocationQueue(auth, result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
+        return future;
+    }
+
+    public CompletableFuture<String> encodeContainersResponse(final ContainersReq containersReq,
+                                                              final Request request, final boolean isGranted) {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeContainersResp(auth, containersReq, request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
@@ -121,12 +157,12 @@ public class Authenticator {
 
     public CompletableFuture initLogging(final String outputFileNameOverride) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.authInitLogging(outputFileNameOverride, result -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.authInitLogging(outputFileNameOverride, result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
@@ -143,12 +179,12 @@ public class Authenticator {
 
     public CompletableFuture reconnect() {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.authReconnect(auth, result -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.authReconnect(auth, result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
@@ -176,24 +212,23 @@ public class Authenticator {
 
     public CompletableFuture setAdditionalSearchPath(final String newPath) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.authSetAdditionalSearchPath(newPath, result -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.authSetAdditionalSearchPath(newPath, result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
-
     public CompletableFuture removeRevokedApp(final App app) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
-            NativeBindings.authRmRevokedApp(auth, app.getId(), result -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
-            });
+        NativeBindings.authRmRevokedApp(auth, app.getId(), result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
+        });
         return future;
     }
 
@@ -211,7 +246,8 @@ public class Authenticator {
 
     public CompletableFuture<List<AppAccess>> getAppsWithMDataAccess(final MDataInfo mDataInfo) {
         final CompletableFuture<List<AppAccess>> future = new CompletableFuture<>();
-        NativeBindings.authAppsAccessingMutableData(auth, mDataInfo.getName(), mDataInfo.getTypeTag(), (result, appAccess) -> {
+        NativeBindings.authAppsAccessingMutableData(auth, mDataInfo.getName(),
+                mDataInfo.getTypeTag(), (result, appAccess) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
@@ -220,7 +256,8 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture<String> encodeShareMDataResponse(final ShareMDataReq shareMDataReq, final Request request, final boolean isGranted) {
+    public CompletableFuture<String> encodeShareMDataResponse(final ShareMDataReq shareMDataReq,
+                                                              final Request request, final boolean isGranted) {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeShareMdataResp(auth, shareMDataReq, request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
@@ -264,10 +301,12 @@ public class Authenticator {
         final CallbackIntByteArrayLen callbackIntByteArrayLen = (reqId, extraData) -> {
             future.complete(new UnregisteredIpcRequest(reqId, extraData));
         };
-        final CallbackIntShareMDataReqMetadataResponse callbackIntShareMDataReqMetadataResponse = (reqId, req, metadata) ->  {
+        final CallbackIntShareMDataReqMetadataResponse callbackIntShareMDataReqMetadataResponse = (reqId,
+                                                                                                   req, metadata) -> {
             future.complete(new ShareMDataIpcRequest(reqId, req, metadata));
         };
-        NativeBindings.authDecodeIpcMsg(auth, message, callbackIntAuthReq, callbackIntContainersReq, callbackIntByteArrayLen, callbackIntShareMDataReqMetadataResponse, (result, response) -> {
+        NativeBindings.authDecodeIpcMsg(auth, message, callbackIntAuthReq, callbackIntContainersReq,
+                callbackIntByteArrayLen, callbackIntShareMDataReqMetadataResponse, (result, response) -> {
             if (result.getErrorCode() != 0) {
                 future.complete(new IpcReqError(result.getErrorCode(), result.getDescription(), response));
                 return;
@@ -275,24 +314,6 @@ public class Authenticator {
             future.complete(new IpcReqRejected(response));
         });
         return future;
-    }
-
-    public static CompletableFuture<IpcRequest> unregisteredDecodeIpcMessage(final String message) {
-        final CompletableFuture<IpcRequest> future = new CompletableFuture<>();
-        final CallbackIntByteArrayLen callback = (reqId, extraData) -> {
-            future.complete(new UnregisteredIpcRequest(reqId, extraData));
-        };
-        NativeBindings.authUnregisteredDecodeIpcMsg(message, callback, (result, response) -> {
-            if (result.getErrorCode() != 0) {
-                future.completeExceptionally(Helper.ffiResultToException(result));
-            }
-            future.complete(new IpcReqError(result.getErrorCode(), result.getDescription(), response));
-        });
-        return future;
-    }
-
-    public static void dispose() {
-        NativeBindings.authFree(auth);
     }
 
 }

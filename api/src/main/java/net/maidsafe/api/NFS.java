@@ -26,8 +26,8 @@ public class NFS {
         init(appHandle);
     }
 
-    private void init(final AppHandle appHandle) {
-        this.appHandle = appHandle;
+    private void init(final AppHandle handle) {
+        this.appHandle = handle;
     }
 
 
@@ -56,7 +56,8 @@ public class NFS {
     }
 
 
-    public CompletableFuture updateFile(final MDataInfo parentInfo, final String fileName, final File file, final long version) {
+    public CompletableFuture updateFile(final MDataInfo parentInfo, final String fileName,
+                                        final File file, final long version) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
         NativeBindings.dirUpdateFile(appHandle.toLong(), parentInfo, fileName,
                 file, version, (result) -> {
@@ -80,7 +81,8 @@ public class NFS {
         return future;
     }
 
-    public CompletableFuture<NativeHandle> fileOpen(final MDataInfo parentInfo, final File file, final NFS.OpenMode openMode) {
+    public CompletableFuture<NativeHandle> fileOpen(final MDataInfo parentInfo, final File file,
+                                                    final NFS.OpenMode openMode) {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.fileOpen(appHandle.toLong(), parentInfo, file, openMode.getValue(),
                 (result, handle) -> {
@@ -106,7 +108,8 @@ public class NFS {
         return future;
     }
 
-    public CompletableFuture<byte[]> fileRead(final NativeHandle fileContextHandle, final long position, final long length) {
+    public CompletableFuture<byte[]> fileRead(final NativeHandle fileContextHandle, final long position,
+                                              final long length) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.fileRead(appHandle.toLong(), fileContextHandle.toLong(), position, length,
                 (result, data) -> {
@@ -121,10 +124,10 @@ public class NFS {
     public CompletableFuture fileWrite(final NativeHandle fileContextHandle, final byte[] data) {
         final CompletableFuture<File> future = new CompletableFuture<>();
         NativeBindings.fileWrite(appHandle.toLong(), fileContextHandle.toLong(), data, (result) -> {
-                if (result.getErrorCode() != 0) {
-                    future.completeExceptionally(Helper.ffiResultToException(result));
-                }
-                future.complete(null);
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            future.complete(null);
         });
         return future;
     }

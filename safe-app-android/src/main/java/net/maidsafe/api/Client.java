@@ -20,13 +20,12 @@ public class Client extends Session {
     public static void load() {
         clientTypeFactory = ClientTypeFactory.load(Client.class);
         System.loadLibrary("safe_app_jni");
-        if(Session.isMock()) {
+        if (Session.isMock()) {
             System.loadLibrary("safe_authenticator_jni");
         }
         try {
             Os.setenv("SAFE_MOCK_VAULT_PATH", "/data/data/net.maidsafe.api.test/cache", true);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

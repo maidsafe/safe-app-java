@@ -67,9 +67,9 @@ dependencies {
 }
 
 def nativeLibsVersion = "mobile-test"
-def tempLibDir =  "${projectDir}/.temp_downloads"
+def tempLibDir = "${projectDir}/.temp_downloads"
 
-task ("downloadNativeLibs", type: Download) {
+task("downloadNativeLibs", type: Download) {
     File dir = new File(tempLibDir)
     if (!dir.exists()) {
         dir.mkdir()
@@ -80,7 +80,7 @@ task ("downloadNativeLibs", type: Download) {
     dest tempLibDir
 }
 
-task ("copyTests", type: Copy) {
+task("copyTests", type: Copy) {
     from fileTree("${rootDir}/safe-app/src/test/")
     into file("${projectDir}/src/androidTest/")
 }
@@ -92,23 +92,23 @@ task runInstrumentationTests(dependsOn: 'copyTests') {
     }
 }
 
-task ("unzipNativeLibs", type: Copy) {
+task("unzipNativeLibs", type: Copy) {
     dependsOn << ['downloadNativeLibs']
     from zipTree("${tempLibDir}/${nativeLibsVersion}.zip")
     into tempLibDir
     doLast {
-        copy{
-            from tempLibDir+"/android/lib/mock/"
+        copy {
+            from tempLibDir + "/android/lib/mock/"
             into "${projectDir}/src/mock/jniLibs"
         }
-        copy{
-            from tempLibDir+"/android/lib/non-mock/"
+        copy {
+            from tempLibDir + "/android/lib/non-mock/"
             into "${projectDir}/src/non-mock/jniLibs"
         }
     }
 }
 
-task ("download-nativelibs", type: Delete) {
+task("download-nativelibs", type: Delete) {
     dependsOn << ['unzipNativeLibs']
     delete tempLibDir
 }

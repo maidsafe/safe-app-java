@@ -11,52 +11,54 @@ package net.maidsafe.safe_authenticator;
 
 /// Application registered in the authenticator
 public class RegisteredApp {
-	private AppExchangeInfo appInfo;
-	private ContainerPermissions[] containers;
-	private long containersLen;
-	private long containersCap;
+    private AppExchangeInfo appInfo;
+    private ContainerPermissions[] containers;
+    private long containersLen;
+    private long containersCap;
 
-	public RegisteredApp() {
-		this.appInfo = new AppExchangeInfo();
-		this.containers = new ContainerPermissions[] {};
-	}
-	public RegisteredApp(AppExchangeInfo appInfo, ContainerPermissions[] containers, long containersLen, long containersCap) {
-		this.appInfo = appInfo;
-		this.containers = containers;
-		this.containersLen = containersLen;
-		this.containersCap = containersCap;
-	}
-	public AppExchangeInfo getAppInfo() {
-		return appInfo;
-	}
+    public RegisteredApp() {
+        this.appInfo = new AppExchangeInfo();
+        this.containers = new ContainerPermissions[]{};
+    }
 
-	public void setAppInfo(final AppExchangeInfo val) {
-		this.appInfo = val;
-	}
+    public RegisteredApp(AppExchangeInfo appInfo, ContainerPermissions[] containers, long containersLen, long containersCap) {
+        this.appInfo = appInfo;
+        this.containers = containers;
+        this.containersLen = containersLen;
+        this.containersCap = containersCap;
+    }
 
-	public ContainerPermissions[] getContainer() {
-		return containers;
-	}
+    public AppExchangeInfo getAppInfo() {
+        return appInfo;
+    }
 
-	public void setContainer(final ContainerPermissions[] val) {
-		this.containers = val;
-	}
+    public void setAppInfo(final AppExchangeInfo val) {
+        this.appInfo = val;
+    }
 
-	public long getContainersLen() {
-		return containersLen;
-	}
+    public ContainerPermissions[] getContainer() {
+        return containers;
+    }
 
-	public void setContainersLen(final long val) {
-		this.containersLen = val;
-	}
+    public void setContainer(final ContainerPermissions[] val) {
+        this.containers = val;
+    }
 
-	public long getContainersCap() {
-		return containersCap;
-	}
+    public long getContainersLen() {
+        return containersLen;
+    }
 
-	public void setContainersCap(final long val) {
-		this.containersCap = val;
-	}
+    public void setContainersLen(final long val) {
+        this.containersLen = val;
+    }
+
+    public long getContainersCap() {
+        return containersCap;
+    }
+
+    public void setContainersCap(final long val) {
+        this.containersCap = val;
+    }
 
 }
 

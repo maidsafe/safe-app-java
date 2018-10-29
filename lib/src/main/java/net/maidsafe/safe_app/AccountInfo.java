@@ -11,31 +11,33 @@ package net.maidsafe.safe_app;
 
 /// Represents the FFI-safe account info.
 public class AccountInfo {
-	private long mutationsDone;
-	private long mutationsAvailable;
+    private long mutationsDone;
+    private long mutationsAvailable;
 
-	public AccountInfo() {
+    public AccountInfo() {
 
-	}
-	public AccountInfo(long mutationsDone, long mutationsAvailable) {
-		this.mutationsDone = mutationsDone;
-		this.mutationsAvailable = mutationsAvailable;
-	}
-	public long getMutationsDone() {
-		return mutationsDone;
-	}
+    }
 
-	public void setMutationsDone(final long val) {
-		this.mutationsDone = val;
-	}
+    public AccountInfo(long mutationsDone, long mutationsAvailable) {
+        this.mutationsDone = mutationsDone;
+        this.mutationsAvailable = mutationsAvailable;
+    }
 
-	public long getMutationsAvailable() {
-		return mutationsAvailable;
-	}
+    public long getMutationsDone() {
+        return mutationsDone;
+    }
 
-	public void setMutationsAvailable(final long val) {
-		this.mutationsAvailable = val;
-	}
+    public void setMutationsDone(final long val) {
+        this.mutationsDone = val;
+    }
+
+    public long getMutationsAvailable() {
+        return mutationsAvailable;
+    }
+
+    public void setMutationsAvailable(final long val) {
+        this.mutationsAvailable = val;
+    }
 
 }
 

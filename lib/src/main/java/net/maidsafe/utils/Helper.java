@@ -15,6 +15,7 @@ public final class Helper {
     private Helper() {
         throw new java.lang.RuntimeException("Cannot instantiate utilities classs");
     }
+
     public static Exception ffiResultToException(final FfiResult result) {
         return new Exception(result.getDescription() + " : " + result.getErrorCode());
     }
