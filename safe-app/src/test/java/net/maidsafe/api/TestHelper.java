@@ -9,8 +9,6 @@
 // of the SAFE Network Software.
 package net.maidsafe.api;
 
-import java.util.concurrent.CompletableFuture;
-
 import net.maidsafe.api.model.AuthIpcRequest;
 import net.maidsafe.api.model.AuthResponse;
 import net.maidsafe.api.model.DecodeResult;
@@ -35,11 +33,11 @@ public final class TestHelper {
     public static final String APP_ID = "net.maidsafe.java.test";
     public static final int LENGTH = 10;
 
-    public static CompletableFuture<Object> createSession() throws Exception {
+    public static Client createSession() throws Exception {
         return createSession(APP_ID);
     }
 
-    public static CompletableFuture<Object> createSession(final String appId) throws Exception {
+    public static Client createSession(final String appId) throws Exception {
         ContainerPermissions[] permissions = new ContainerPermissions[1];
         permissions[0] = new ContainerPermissions("_public", new PermissionSet(true,
                 true, false, false, false));
@@ -51,13 +49,13 @@ public final class TestHelper {
         return createSession(locator, secret, authReq);
     }
 
-    public static CompletableFuture<Object> createSession(final AuthReq authReq) throws Exception {
+    public static Client createSession(final AuthReq authReq) throws Exception {
         String locator = Helper.randomAlphaNumeric(LENGTH);
         String secret = Helper.randomAlphaNumeric(LENGTH);
         return createSession(locator, secret, authReq);
     }
 
-    public static CompletableFuture<Object> createSession(final String locator,
+    public static Client createSession(final String locator,
                                                           final String secret, final AuthReq authReq)
             throws Exception {
         System.out.println(locator + " " + secret + " " + authReq.getApp().getId());
@@ -81,6 +79,6 @@ public final class TestHelper {
         System.out.println("Decode result as AuthResponse");
         Assert.assertNotNull(authResponse);
         System.out.println("Connecting");
-        return Session.connect(authReq.getApp().getId(), authResponse.getAuthGranted());
+        return (Client) Session.connect(authReq.getApp().getId(), authResponse.getAuthGranted()).get();
     }
 }

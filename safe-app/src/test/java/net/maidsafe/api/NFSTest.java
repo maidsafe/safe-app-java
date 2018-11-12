@@ -45,7 +45,7 @@ public class NFSTest {
 
     @Test
     public void fileCRUDTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         MDataInfo mDataInfo = getPublicMData(client);
         File file = new File();
         NativeHandle fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.OVER_WRITE).get();

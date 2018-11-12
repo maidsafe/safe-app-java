@@ -36,7 +36,7 @@ public class MDataTest {
 
 
     private void publicMDataCrud(final MDataInfo mDataInfo) throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         PermissionSet permissionSet = new PermissionSet();
         permissionSet.setInsert(true);
         permissionSet.setUpdate(true);
@@ -118,7 +118,7 @@ public class MDataTest {
     }
 
     private void privateMDataCrud(final MDataInfo mDataInfo) throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         PermissionSet permissionSet = new PermissionSet();
         permissionSet.setInsert(true);
         permissionSet.setUpdate(true);
@@ -177,7 +177,7 @@ public class MDataTest {
 
     @Test
     public void randomPublicMDataCRUDTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         long tagType = TYPE_TAG;
         MDataInfo mDataInfo = client.mData.getRandomPublicMData(tagType).get();
         publicMDataCrud(mDataInfo);
@@ -194,7 +194,7 @@ public class MDataTest {
 
     @Test
     public void randomPrivateMDataCRUDTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         long tagType = TYPE_TAG;
         MDataInfo mDataInfo = client.mData.getRandomPrivateMData(tagType).get();
         privateMDataCrud(mDataInfo);
@@ -202,7 +202,7 @@ public class MDataTest {
 
     @Test
     public void privateMDataCRUDTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         long tagType = TYPE_TAG;
         EncryptKeyPair encryptKeyPair = client.crypto.generateEncryptKeyPair().get();
         byte[] nonce = client.crypto.generateNonce().get();

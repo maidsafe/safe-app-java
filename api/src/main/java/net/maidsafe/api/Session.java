@@ -334,4 +334,16 @@ public class Session {
         });
         return future;
     }
+
+    public CompletableFuture testSimulateDisconnect() {
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        NativeBindings.testSimulateNetworkDisconnect(appHandle.toLong(), result -> {
+            if (result.getErrorCode() != 0) {
+                future.completeExceptionally(Helper.ffiResultToException(result));
+            }
+            disconnected = true;
+            future.complete(null);
+        });
+        return future;
+    }
 }

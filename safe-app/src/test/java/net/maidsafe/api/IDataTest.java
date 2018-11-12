@@ -26,7 +26,7 @@ public class IDataTest {
 
     @Test
     public void plainIDataTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         byte[] data = Helper.randomAlphaNumeric(LENGTH).getBytes();
         NativeHandle writerHandle = client.iData.getWriter().get();
         client.iData.write(writerHandle, data).get();
@@ -42,7 +42,7 @@ public class IDataTest {
 
     @Test
     public void symmetricIDataTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         byte[] data = Helper.randomAlphaNumeric(LENGTH).getBytes();
         NativeHandle writerHandle = client.iData.getWriter().get();
         client.iData.write(writerHandle, data).get();
@@ -58,7 +58,7 @@ public class IDataTest {
 
     @Test
     public void asymmetricIDataTest() throws Exception {
-        Client client = (Client) TestHelper.createSession().get();
+        Client client = TestHelper.createSession();
         byte[] data = Helper.randomAlphaNumeric(LENGTH).getBytes();
         NativeHandle publicEncryptKey = client.crypto.getAppPublicEncryptKey().get();
         NativeHandle writerHandle = client.iData.getWriter().get();

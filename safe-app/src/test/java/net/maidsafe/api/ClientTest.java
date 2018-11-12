@@ -39,4 +39,15 @@ public class ClientTest {
                 client.crypto.decrypt(encryptKeyPair.getPublicEncryptKey(),
                         encryptKeyPair.getSecretEncryptKey(), cipherText).get()));
     }
+
+    @Test
+    public void disconnectionTest() throws Exception {
+        Client client = TestHelper.createSession();
+        client.setOnDisconnectListener(o -> {
+            Assert.assertFalse(client.isConnected());
+            client.reconnect();
+            Assert.assertTrue(client.isConnected());
+        });
+        client.testSimulateDisconnect().get();
+    }
 }
