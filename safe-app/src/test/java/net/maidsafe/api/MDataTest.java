@@ -36,68 +36,68 @@ public class MDataTest {
 
 
     private void publicMDataCrud(final MDataInfo mDataInfo) throws Exception {
-        Client client = TestHelper.createSession();
+        Session session = TestHelper.createSession();
         PermissionSet permissionSet = new PermissionSet();
         permissionSet.setInsert(true);
         permissionSet.setUpdate(true);
         permissionSet.setRead(true);
         permissionSet.setDelete(true);
         permissionSet.setManagePermission(true);
-        NativeHandle permissionHandle = client.mDataPermission.newPermissionHandle().get();
-        client.mDataPermission.insert(permissionHandle, client.crypto.getAppPublicSignKey().get(),
+        NativeHandle permissionHandle = session.mDataPermission.newPermissionHandle().get();
+        session.mDataPermission.insert(permissionHandle, session.crypto.getAppPublicSignKey().get(),
                 permissionSet).get();
-        NativeHandle entriesHandle = client.mDataEntries.newEntriesHandle().get();
-        client.mDataEntries.insert(entriesHandle, "someKey".getBytes(), "someValue".getBytes()).get();
-        client.mData.put(mDataInfo, permissionHandle, entriesHandle).get();
+        NativeHandle entriesHandle = session.mDataEntries.newEntriesHandle().get();
+        session.mDataEntries.insert(entriesHandle, "someKey".getBytes(), "someValue".getBytes()).get();
+        session.mData.put(mDataInfo, permissionHandle, entriesHandle).get();
 
 
-        NativeHandle actionHandle = client.mDataEntryAction.newEntryAction().get();
-        client.mDataEntryAction.insert(actionHandle, "someKey2".getBytes(),
+        NativeHandle actionHandle = session.mDataEntryAction.newEntryAction().get();
+        session.mDataEntryAction.insert(actionHandle, "someKey2".getBytes(),
                 "someValue2".getBytes()).get();
-        client.mData.mutateEntries(mDataInfo, actionHandle).get();
+        session.mData.mutateEntries(mDataInfo, actionHandle).get();
 
-        entriesHandle = client.mData.getEntriesHandle(mDataInfo).get();
-        List<MDataEntry> entries = client.mDataEntries.listEntries(entriesHandle).get();
+        entriesHandle = session.mData.getEntriesHandle(mDataInfo).get();
+        List<MDataEntry> entries = session.mDataEntries.listEntries(entriesHandle).get();
         Assert.assertEquals(2, entries.size());
 
         // Update
-        actionHandle = client.mDataEntryAction.newEntryAction().get();
+        actionHandle = session.mDataEntryAction.newEntryAction().get();
         MDataEntry entry = entries.get(0);
         byte[] updatedValue = Helper.randomAlphaNumeric(LENGTH).getBytes();
-        client.mDataEntryAction.update(actionHandle, entry.getKey().getVal(), updatedValue,
+        session.mDataEntryAction.update(actionHandle, entry.getKey().getKey(), updatedValue,
                 entry.getValue().getEntryVersion() + 1).get();
-        client.mData.mutateEntries(mDataInfo, actionHandle).get();
-        entriesHandle = client.mData.getEntriesHandle(mDataInfo).get();
-        entries = client.mDataEntries.listEntries(entriesHandle).get();
+        session.mData.mutateEntries(mDataInfo, actionHandle).get();
+        entriesHandle = session.mData.getEntriesHandle(mDataInfo).get();
+        entries = session.mDataEntries.listEntries(entriesHandle).get();
 
         entry = entries.get(0);
-        MDataValue value = client.mData.getValue(mDataInfo, entry.getKey().getVal()).get();
+        MDataValue value = session.mData.getValue(mDataInfo, entry.getKey().getKey()).get();
         Assert.assertEquals(new String(updatedValue), new String(value.getContent()));
         // Delete
-        actionHandle = client.mDataEntryAction.newEntryAction().get();
-        client.mDataEntryAction.delete(actionHandle, entry.getKey().getVal(),
+        actionHandle = session.mDataEntryAction.newEntryAction().get();
+        session.mDataEntryAction.delete(actionHandle, entry.getKey().getKey(),
                 entry.getValue().getEntryVersion() + 1).get();
-        client.mData.mutateEntries(mDataInfo, actionHandle).get();
+        session.mData.mutateEntries(mDataInfo, actionHandle).get();
 
-        entriesHandle = client.mData.getEntriesHandle(mDataInfo).get();
-        entries = client.mDataEntries.listEntries(entriesHandle).get();
+        entriesHandle = session.mData.getEntriesHandle(mDataInfo).get();
+        entries = session.mDataEntries.listEntries(entriesHandle).get();
 
 
         Assert.assertEquals(entries.get(0).getValue().getContentLen(), 0);
 
-        byte[] serialisedMData = client.mData.serialise(mDataInfo).get();
-        final MDataInfo mdInfo = client.mData.deserialise(serialisedMData).get();
+        byte[] serialisedMData = session.mData.serialise(mDataInfo).get();
+        final MDataInfo mdInfo = session.mData.deserialise(serialisedMData).get();
 
-        List<MDataKey> keys = client.mData.getKeys(mdInfo).get();
-        List<MDataValue> values = client.mData.getValues(mdInfo).get();
+        List<MDataKey> keys = session.mData.getKeys(mdInfo).get();
+        List<MDataValue> values = session.mData.getValues(mdInfo).get();
         Assert.assertEquals(keys.size(), values.size());
-        Assert.assertEquals(new String(entries.get(0).getKey().getVal()),
-                new String(keys.get(0).getVal()));
+        Assert.assertEquals(new String(entries.get(0).getKey().getKey()),
+                new String(keys.get(0).getKey()));
         Assert.assertEquals(new String(entries.get(0).getValue().getContent()),
                 new String(values.get(0).getContent()));
 
-        PermissionSet permissions = client.mData.getPermissionForUser(
-                client.crypto.getAppPublicSignKey().get(), mdInfo).get();
+        PermissionSet permissions = session.mData.getPermissionForUser(
+                session.crypto.getAppPublicSignKey().get(), mdInfo).get();
         Assert.assertTrue(permissions.getInsert());
         Assert.assertTrue(permissions.getUpdate());
         Assert.assertTrue(permissions.getRead());
@@ -108,78 +108,78 @@ public class MDataTest {
         permissionSet.setUpdate(false);
         permissionSet.setRead(false);
         permissionSet.setDelete(false);
-        permissionHandle = client.mDataPermission.newPermissionHandle().get();
-        client.mDataPermission.insert(permissionHandle, client.crypto.getAppPublicSignKey().get(),
+        permissionHandle = session.mDataPermission.newPermissionHandle().get();
+        session.mDataPermission.insert(permissionHandle, session.crypto.getAppPublicSignKey().get(),
                 permissionSet).get();
-        client.mData.setUserPermission(client.crypto.getAppPublicSignKey().get(), mdInfo,
-                permissionSet, client.mData.getVersion(mdInfo).get() + 1).get();
-        long version = client.mData.getVersion(mdInfo).get();
+        session.mData.setUserPermission(session.crypto.getAppPublicSignKey().get(), mdInfo,
+                permissionSet, session.mData.getVersion(mdInfo).get() + 1).get();
+        long version = session.mData.getVersion(mdInfo).get();
         Assert.assertEquals(1, version);
     }
 
     private void privateMDataCrud(final MDataInfo mDataInfo) throws Exception {
-        Client client = TestHelper.createSession();
+        Session session = TestHelper.createSession();
         PermissionSet permissionSet = new PermissionSet();
         permissionSet.setInsert(true);
         permissionSet.setUpdate(true);
         permissionSet.setRead(true);
         permissionSet.setDelete(true);
-        NativeHandle permissionHandle = client.mDataPermission.newPermissionHandle().get();
-        client.mDataPermission.insert(permissionHandle, client.crypto.getAppPublicSignKey().get(),
+        NativeHandle permissionHandle = session.mDataPermission.newPermissionHandle().get();
+        session.mDataPermission.insert(permissionHandle, session.crypto.getAppPublicSignKey().get(),
                 permissionSet).get();
-        NativeHandle entriesHandle = client.mDataEntries.newEntriesHandle().get();
-        byte[] key = client.mData.encryptEntryKey(mDataInfo, "someKey".getBytes()).get();
-        byte[] value = client.mData.encryptEntryValue(mDataInfo, "someValue".getBytes()).get();
-        client.mDataEntries.insert(entriesHandle, key, value).get();
-        client.mData.put(mDataInfo, permissionHandle, entriesHandle).get();
+        NativeHandle entriesHandle = session.mDataEntries.newEntriesHandle().get();
+        byte[] key = session.mData.encryptEntryKey(mDataInfo, "someKey".getBytes()).get();
+        byte[] value = session.mData.encryptEntryValue(mDataInfo, "someValue".getBytes()).get();
+        session.mDataEntries.insert(entriesHandle, key, value).get();
+        session.mData.put(mDataInfo, permissionHandle, entriesHandle).get();
 
-        NativeHandle actionHandle = client.mDataEntryAction.newEntryAction().get();
-        key = client.mData.encryptEntryKey(mDataInfo, "someKey2".getBytes()).get();
-        value = client.mData.encryptEntryValue(mDataInfo, "someValue2".getBytes()).get();
-        client.mDataEntryAction.insert(actionHandle, key, value).get();
-        client.mData.mutateEntries(mDataInfo, actionHandle).get();
+        NativeHandle actionHandle = session.mDataEntryAction.newEntryAction().get();
+        key = session.mData.encryptEntryKey(mDataInfo, "someKey2".getBytes()).get();
+        value = session.mData.encryptEntryValue(mDataInfo, "someValue2".getBytes()).get();
+        session.mDataEntryAction.insert(actionHandle, key, value).get();
+        session.mData.mutateEntries(mDataInfo, actionHandle).get();
 
-        entriesHandle = client.mData.getEntriesHandle(mDataInfo).get();
-        List<MDataEntry> entries = client.mDataEntries.listEntries(entriesHandle).get();
+        entriesHandle = session.mData.getEntriesHandle(mDataInfo).get();
+        List<MDataEntry> entries = session.mDataEntries.listEntries(entriesHandle).get();
         Assert.assertEquals(2, entries.size());
         // Update
-        actionHandle = client.mDataEntryAction.newEntryAction().get();
+        actionHandle = session.mDataEntryAction.newEntryAction().get();
         MDataEntry entry = entries.get(0);
         byte[] updatedValue = Helper.randomAlphaNumeric(LENGTH).getBytes();
-        byte[] encryptedUpdatedValue = client.mData.encryptEntryValue(mDataInfo, updatedValue).get();
-        client.mDataEntryAction.update(actionHandle, entry.getKey().getVal(), encryptedUpdatedValue,
+        byte[] encryptedUpdatedValue = session.mData.encryptEntryValue(mDataInfo, updatedValue).get();
+        session.mDataEntryAction.update(actionHandle, entry.getKey().getKey(), encryptedUpdatedValue,
                 entry.getValue().getEntryVersion() + 1).get();
-        client.mData.mutateEntries(mDataInfo, actionHandle).get();
+        session.mData.mutateEntries(mDataInfo, actionHandle).get();
 
-        MDataValue entryValue = client.mData.getValue(mDataInfo, entry.getKey().getVal()).get();
-        byte[] decryptedValue = client.mData.decrypt(mDataInfo, entryValue.getContent()).get();
+        MDataValue entryValue = session.mData.getValue(mDataInfo, entry.getKey().getKey()).get();
+        byte[] decryptedValue = session.mData.decrypt(mDataInfo, entryValue.getContent()).get();
         Assert.assertEquals(new String(updatedValue), new String(decryptedValue));
         // Delete
-        entriesHandle = client.mData.getEntriesHandle(mDataInfo).get();
-        entries = client.mDataEntries.listEntries(entriesHandle).get();
+        entriesHandle = session.mData.getEntriesHandle(mDataInfo).get();
+        entries = session.mDataEntries.listEntries(entriesHandle).get();
 
         entry = entries.get(0);
-        actionHandle = client.mDataEntryAction.newEntryAction().get();
-        client.mDataEntryAction.delete(actionHandle, entry.getKey().getVal(),
+        actionHandle = session.mDataEntryAction.newEntryAction().get();
+        session.mDataEntryAction.delete(actionHandle, entry.getKey().getKey(),
                 entry.getValue().getEntryVersion() + 1).get();
-        client.mData.mutateEntries(mDataInfo, actionHandle).get();
+        session.mData.mutateEntries(mDataInfo, actionHandle).get();
 
-        entriesHandle = client.mData.getEntriesHandle(mDataInfo).get();
-        entries = client.mDataEntries.listEntries(entriesHandle).get();
+        entriesHandle = session.mData.getEntriesHandle(mDataInfo).get();
+        entries = session.mDataEntries.listEntries(entriesHandle).get();
         Assert.assertEquals(0, entries.get(0).getValue().getContentLen());
 
-        byte[] serialisedMData = client.mData.serialise(mDataInfo).get();
-        final MDataInfo mdInfo = client.mData.deserialise(serialisedMData).get();
-        entriesHandle = client.mData.getEntriesHandle(mdInfo).get();
-        entries = client.mDataEntries.listEntries(entriesHandle).get();
+        byte[] serialisedMData = session.mData.serialise(mDataInfo).get();
+        final MDataInfo mdInfo = session.mData.deserialise(serialisedMData).get();
+        entriesHandle = session.mData.getEntriesHandle(mdInfo).get();
+        entries = session.mDataEntries.listEntries(entriesHandle).get();
         Assert.assertEquals(2, entries.size());
     }
 
     @Test
     public void randomPublicMDataCRUDTest() throws Exception {
-        Client client = TestHelper.createSession();
+        Session session = TestHelper.createSession();
         long tagType = TYPE_TAG;
-        MDataInfo mDataInfo = client.mData.getRandomPublicMData(tagType).get();
+        MDataInfo mDataInfo = session.mData.getRandomPublicMData(tagType).get();
         publicMDataCrud(mDataInfo);
     }
 
@@ -194,21 +194,21 @@ public class MDataTest {
 
     @Test
     public void randomPrivateMDataCRUDTest() throws Exception {
-        Client client = TestHelper.createSession();
+        Session session = TestHelper.createSession();
         long tagType = TYPE_TAG;
-        MDataInfo mDataInfo = client.mData.getRandomPrivateMData(tagType).get();
+        MDataInfo mDataInfo = session.mData.getRandomPrivateMData(tagType).get();
         privateMDataCrud(mDataInfo);
     }
 
     @Test
     public void privateMDataCRUDTest() throws Exception {
-        Client client = TestHelper.createSession();
+        Session session = TestHelper.createSession();
         long tagType = TYPE_TAG;
-        EncryptKeyPair encryptKeyPair = client.crypto.generateEncryptKeyPair().get();
-        byte[] nonce = client.crypto.generateNonce().get();
-        byte[] secretKey = client.crypto.getRawSecretEncryptKey(encryptKeyPair.getSecretEncryptKey())
+        EncryptKeyPair encryptKeyPair = session.crypto.generateEncryptKeyPair().get();
+        byte[] nonce = session.crypto.generateNonce().get();
+        byte[] secretKey = session.crypto.getRawSecretEncryptKey(encryptKeyPair.getSecretEncryptKey())
                 .get();
-        MDataInfo mDataInfo = client.mData.getPrivateMData(Helper.randomAlphaNumeric(
+        MDataInfo mDataInfo = session.mData.getPrivateMData(Helper.randomAlphaNumeric(
                 Constants.XOR_NAME_LENGTH).getBytes(), tagType, secretKey, nonce).get();
         privateMDataCrud(mDataInfo);
     }

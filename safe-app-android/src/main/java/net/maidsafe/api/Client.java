@@ -9,6 +9,7 @@
 // of the SAFE Network Software.
 package net.maidsafe.api;
 
+import android.content.Context;
 import android.system.Os;
 
 public class Client extends Session {
@@ -17,16 +18,17 @@ public class Client extends Session {
         super(app, disconnectListener);
     }
 
-    public static void load() {
-        clientTypeFactory = ClientTypeFactory.load(Client.class);
+    public static void load(Context context) {
         System.loadLibrary("safe_app_jni");
         if (Session.isMock()) {
             System.loadLibrary("safe_authenticator_jni");
         }
         try {
-            Os.setenv("SAFE_MOCK_VAULT_PATH", "/data/data/net.maidsafe.api.test/cache", true);
+            String path = context.getFilesDir().getPath();
+            Os.setenv("SAFE_MOCK_VAULT_PATH", path, true);
+            Session.setAdditionalSearchPath(path).get();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Cannot set MockVault path");
         }
     }
 

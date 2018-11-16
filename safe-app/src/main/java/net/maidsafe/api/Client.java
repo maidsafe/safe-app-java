@@ -25,7 +25,6 @@ public class Client extends Session {
     }
 
     public static void load() {
-        clientTypeFactory = ClientTypeFactory.load(Client.class);
         try {
             final String tempDir = System.getProperty("java.io.tmpdir");
 

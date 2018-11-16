@@ -30,60 +30,60 @@ public class CryptoTest {
 
     @Test
     public void publicSignKeyTest() throws Exception {
-        Client client = TestHelper.createSession();
-        NativeHandle appPublicSignKey = client.crypto.getAppPublicSignKey().get();
-        byte[] rawKey = client.crypto.getRawPublicSignKey(appPublicSignKey).get();
+        Session session = TestHelper.createSession();
+        NativeHandle appPublicSignKey = session.crypto.getAppPublicSignKey().get();
+        byte[] rawKey = session.crypto.getRawPublicSignKey(appPublicSignKey).get();
         Assert.assertEquals(Constants.PUBLIC_SIGN_KEY_SIZE, rawKey.length);
-        appPublicSignKey = client.crypto.getPublicSignKey(rawKey).get();
+        appPublicSignKey = session.crypto.getPublicSignKey(rawKey).get();
         Assert.assertNotNull(appPublicSignKey);
     }
 
     @Test
     public void secretSignKeyTest() throws Exception {
-        Client client = TestHelper.createSession();
-        NativeHandle secretSignKey = client.crypto.generateSignKeyPair().get().getSecretSignKey();
-        byte[] rawKey = client.crypto.getRawSecretSignKey(secretSignKey).get();
+        Session session = TestHelper.createSession();
+        NativeHandle secretSignKey = session.crypto.generateSignKeyPair().get().getSecretSignKey();
+        byte[] rawKey = session.crypto.getRawSecretSignKey(secretSignKey).get();
         Assert.assertEquals(Constants.SECRET_SIGN_KEY_SIZE, rawKey.length);
-        secretSignKey = client.crypto.getSecretSignKey(rawKey).get();
+        secretSignKey = session.crypto.getSecretSignKey(rawKey).get();
         Assert.assertNotNull(secretSignKey);
     }
 
     @Test
     public void secretEncryptKeyTest() throws Exception {
-        Client client = TestHelper.createSession();
-        NativeHandle secretEncKey = client.crypto.generateEncryptKeyPair().get().getSecretEncryptKey();
-        byte[] rawKey = client.crypto.getRawSecretEncryptKey(secretEncKey).get();
+        Session session = TestHelper.createSession();
+        NativeHandle secretEncKey = session.crypto.generateEncryptKeyPair().get().getSecretEncryptKey();
+        byte[] rawKey = session.crypto.getRawSecretEncryptKey(secretEncKey).get();
         Assert.assertEquals(Constants.SECRET_ENC_KEY_SIZE, rawKey.length);
-        secretEncKey = client.crypto.getSecretEncryptKey(rawKey).get();
+        secretEncKey = session.crypto.getSecretEncryptKey(rawKey).get();
         Assert.assertNotNull(secretEncKey);
     }
 
     @Test
     public void publicEncryptKeyTest() throws Exception {
-        Client client = TestHelper.createSession();
-        NativeHandle appPublicEncKey = client.crypto.getAppPublicEncryptKey().get();
-        byte[] rawKey = client.crypto.getRawPublicEncryptKey(appPublicEncKey).get();
+        Session session = TestHelper.createSession();
+        NativeHandle appPublicEncKey = session.crypto.getAppPublicEncryptKey().get();
+        byte[] rawKey = session.crypto.getRawPublicEncryptKey(appPublicEncKey).get();
         Assert.assertEquals(Constants.PUBLIC_ENC_KEY_SIZE, rawKey.length);
-        appPublicEncKey = client.crypto.getPublicEncryptKey(rawKey).get();
+        appPublicEncKey = session.crypto.getPublicEncryptKey(rawKey).get();
         Assert.assertNotNull(appPublicEncKey);
     }
 
     @Test
     public void sealedEncryption() throws Exception {
-        Client client = TestHelper.createSession();
-        EncryptKeyPair encryptKeyPair = client.crypto.generateEncryptKeyPair().get();
+        Session session = TestHelper.createSession();
+        EncryptKeyPair encryptKeyPair = session.crypto.generateEncryptKeyPair().get();
         byte[] actPlainText = Helper.randomAlphaNumeric(LENGTH).getBytes();
-        byte[] cipherText = client.crypto.encryptSealedBox(encryptKeyPair.getPublicEncryptKey(),
+        byte[] cipherText = session.crypto.encryptSealedBox(encryptKeyPair.getPublicEncryptKey(),
                 actPlainText).get();
-        byte[] plainText = client.crypto.decryptSealedBox(encryptKeyPair.getPublicEncryptKey(),
+        byte[] plainText = session.crypto.decryptSealedBox(encryptKeyPair.getPublicEncryptKey(),
                 encryptKeyPair.getSecretEncryptKey(), cipherText).get();
         Assert.assertEquals(new String(actPlainText), new String(plainText));
     }
 
     @Test
     public void boxEncryption() throws Exception {
-        Client senderClient = TestHelper.createSession();
-        Client receiverClient = TestHelper.createSession();
+        Session senderClient = TestHelper.createSession();
+        Session receiverClient = TestHelper.createSession();
         EncryptKeyPair encryptKeyPairSender = senderClient.crypto.generateEncryptKeyPair().get();
         byte[] senderPublicEncKey = senderClient.crypto.getRawPublicEncryptKey(
                 encryptKeyPairSender.getPublicEncryptKey()).get();
@@ -110,17 +110,17 @@ public class CryptoTest {
 
     @Test
     public void signTest() throws Exception {
-        Client client = TestHelper.createSession();
-        SignKeyPair signKeyPair = client.crypto.generateSignKeyPair().get();
+        Session session = TestHelper.createSession();
+        SignKeyPair signKeyPair = session.crypto.generateSignKeyPair().get();
         byte[] data = Helper.randomAlphaNumeric(LENGTH).getBytes();
-        byte[] signedData = client.crypto.sign(signKeyPair.getSecretSignKey(), data).get();
-        byte[] verifiedData = client.crypto.verify(signKeyPair.getPublicSignKey(), signedData).get();
+        byte[] signedData = session.crypto.sign(signKeyPair.getSecretSignKey(), data).get();
+        byte[] verifiedData = session.crypto.verify(signKeyPair.getPublicSignKey(), signedData).get();
         Assert.assertEquals(new String(verifiedData), new String(data));
     }
 
     @Test
     public void sha3HashTest() throws Exception {
-        Client client = TestHelper.createSession();
-        client.crypto.sha3Hash(Helper.randomAlphaNumeric(LENGTH).getBytes()).get();
+        Session session = TestHelper.createSession();
+        session.crypto.sha3Hash(Helper.randomAlphaNumeric(LENGTH).getBytes()).get();
     }
 }

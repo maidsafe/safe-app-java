@@ -20,18 +20,18 @@ import net.maidsafe.api.model.ShareMDataIpcRequest;
 import net.maidsafe.api.model.UnregisteredIpcRequest;
 
 import net.maidsafe.safe_app.MDataInfo;
-import net.maidsafe.safe_authenticator.ShareMDataReq;
-import net.maidsafe.safe_authenticator.AccountInfo;
-import net.maidsafe.safe_authenticator.AppAccess;
-import net.maidsafe.safe_authenticator.AppExchangeInfo;
-import net.maidsafe.safe_authenticator.CallbackIntAuthReq;
 import net.maidsafe.safe_authenticator.CallbackIntByteArrayLen;
-import net.maidsafe.safe_authenticator.CallbackIntContainersReq;
-import net.maidsafe.safe_authenticator.CallbackIntShareMDataReqMetadataResponse;
-import net.maidsafe.safe_authenticator.CallbackResultRegisteredAppArrayLen;
-import net.maidsafe.safe_authenticator.ContainersReq;
 import net.maidsafe.safe_authenticator.NativeBindings;
+import net.maidsafe.safe_authenticator.CallbackIntContainersReq;
+import net.maidsafe.safe_authenticator.ContainersReq;
+import net.maidsafe.safe_authenticator.CallbackIntAuthReq;
+import net.maidsafe.safe_authenticator.CallbackIntShareMDataReqMetadataResponseArrayLen;
+import net.maidsafe.safe_authenticator.ShareMDataReq;
+import net.maidsafe.safe_authenticator.CallbackResultRegisteredAppArrayLen;
+import net.maidsafe.safe_authenticator.AppAccess;
 import net.maidsafe.safe_authenticator.RegisteredApp;
+import net.maidsafe.safe_authenticator.AccountInfo;
+import net.maidsafe.safe_authenticator.AppExchangeInfo;
 import net.maidsafe.utils.Helper;
 
 import java.util.Arrays;
@@ -73,7 +73,8 @@ public class Authenticator {
         return future;
     }
 
-    public static CompletableFuture<String> encodeUnregisteredResponse(final Request request, final boolean isGranted) {
+    public static CompletableFuture<String> encodeUnregisteredResponse(final IpcRequest request,
+                                                                       final boolean isGranted) {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeUnregisteredResp(request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
@@ -84,7 +85,7 @@ public class Authenticator {
         return future;
     }
 
-    public static CompletableFuture<String> encodeAuthResponse(final AuthIpcRequest request, final boolean isGranted) {
+    public CompletableFuture<String> encodeAuthResponse(final AuthIpcRequest request, final boolean isGranted) {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.encodeAuthResp(auth, request.getAuthReq(), request.getReqId(), isGranted, (result, response) -> {
             if (result.getErrorCode() != 0) {
@@ -109,16 +110,12 @@ public class Authenticator {
         return future;
     }
 
-    public static void dispose() {
-        NativeBindings.authFree(auth);
-    }
-
     private void init(final long authenticator) {
         this.auth = authenticator;
     }
 
-    public boolean isMock() {
-        return NativeBindings.isMockBuild();
+    public static boolean isMock() {
+        return NativeBindings.authIsMock();
     }
 
     public CompletableFuture<List<AppExchangeInfo>> listRevokedApps() {
@@ -155,7 +152,7 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture initLogging(final String outputFileNameOverride) {
+    public static CompletableFuture initLogging(final String outputFileNameOverride) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
         NativeBindings.authInitLogging(outputFileNameOverride, result -> {
             if (result.getErrorCode() != 0) {
@@ -166,7 +163,7 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture<String> outputLogPath(final String outputFileName) {
+    public static CompletableFuture<String> outputLogPath(final String outputFileName) {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.authOutputLogPath(outputFileName, (result, path) -> {
             if (result.getErrorCode() != 0) {
@@ -199,7 +196,7 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture<String> executeFileStem() {
+    public static CompletableFuture<String> executeFileStem() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         NativeBindings.authExeFileStem((result, appName) -> {
             if (result.getErrorCode() != 0) {
@@ -210,7 +207,7 @@ public class Authenticator {
         return future;
     }
 
-    public CompletableFuture setAdditionalSearchPath(final String newPath) {
+    public static CompletableFuture setAdditionalSearchPath(final String newPath) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
         NativeBindings.authSetAdditionalSearchPath(newPath, result -> {
             if (result.getErrorCode() != 0) {
@@ -301,8 +298,8 @@ public class Authenticator {
         final CallbackIntByteArrayLen callbackIntByteArrayLen = (reqId, extraData) -> {
             future.complete(new UnregisteredIpcRequest(reqId, extraData));
         };
-        final CallbackIntShareMDataReqMetadataResponse callbackIntShareMDataReqMetadataResponse = (reqId,
-                                                                                                   req, metadata) -> {
+        final CallbackIntShareMDataReqMetadataResponseArrayLen callbackIntShareMDataReqMetadataResponse =
+              (reqId, req, metadata) -> {
             future.complete(new ShareMDataIpcRequest(reqId, req, metadata));
         };
         NativeBindings.authDecodeIpcMsg(auth, message, callbackIntAuthReq, callbackIntContainersReq,

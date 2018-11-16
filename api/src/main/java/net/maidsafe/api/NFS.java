@@ -56,27 +56,27 @@ public class NFS {
     }
 
 
-    public CompletableFuture updateFile(final MDataInfo parentInfo, final String fileName,
+    public CompletableFuture<Long> updateFile(final MDataInfo parentInfo, final String fileName,
                                         final File file, final long version) {
-        final CompletableFuture<Void> future = new CompletableFuture<Void>();
+        final CompletableFuture<Long> future = new CompletableFuture<Long>();
         NativeBindings.dirUpdateFile(appHandle.toLong(), parentInfo, fileName,
-                file, version, (result) -> {
+                file, version, (result, nextVersion) -> {
                     if (result.getErrorCode() != 0) {
                         future.completeExceptionally(Helper.ffiResultToException(result));
                     }
-                    future.complete(null);
+                    future.complete(nextVersion);
                 });
         return future;
     }
 
 
-    public CompletableFuture deleteFile(final MDataInfo parentInfo, final String fileName, final long version) {
-        final CompletableFuture<Void> future = new CompletableFuture<Void>();
-        NativeBindings.dirDeleteFile(appHandle.toLong(), parentInfo, fileName, version, (result) -> {
+    public CompletableFuture<Long> deleteFile(final MDataInfo parentInfo, final String fileName, final long version) {
+        final CompletableFuture<Long> future = new CompletableFuture<Long>();
+        NativeBindings.dirDeleteFile(appHandle.toLong(), parentInfo, fileName, version, (result, nextVersion) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
-            future.complete(null);
+            future.complete(nextVersion);
         });
         return future;
     }

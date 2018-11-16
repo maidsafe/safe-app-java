@@ -5,10 +5,8 @@ before_cache:
 cache:
   directories:
     - $HOME/android-sdk-dl
-
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-
     - $HOME/.android/build-cache
 env:
   - ANDROID_HOME=$HOME/.android
@@ -16,7 +14,6 @@ matrix:
   include:
     - os: linux
       jdk: oraclejdk8
-
       install:
         - if test ! -e $HOME/android-sdk-dl/sdk-tools.zip ; then curl --create-dirs https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -o $HOME/android-sdk-dl/sdk-tools.zip ; fi
         - unzip -qq -n $HOME/android-sdk-dl/sdk-tools.zip -d $ANDROID_HOME
@@ -33,7 +30,9 @@ matrix:
         - ./android-wait-for-emulator
         - $ANDROID_HOME/platform_tools/adb shell input keyevent 82 &
     - os: osx
-      osx_image: xcode9.1
+      osx_image: xcode10.1
+  allow_failures:
+    - os: osx
 before_install:
   - chmod +x gradlew
   - mkdir -p $HOME/.android

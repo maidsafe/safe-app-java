@@ -38,6 +38,7 @@
         <exclude name="ConfusingTernary" />
         <exclude name="UseUtilityClass" />
         <exclude name="SingularField" />
+        <exclude name="UseVarargs"/>
     </rule>
     <rule ref="rulesets/java/typeresolution.xml" />
     <rule ref="rulesets/java/empty.xml/EmptyCatchBlock">

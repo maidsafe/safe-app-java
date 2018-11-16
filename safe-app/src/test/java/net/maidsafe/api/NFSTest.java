@@ -28,50 +28,50 @@ public class NFSTest {
     static final int LENGTH = 20;
 
 
-    private MDataInfo getPublicMData(final Client client) throws Exception {
+    private MDataInfo getPublicMData(final Session session) throws Exception {
         PermissionSet permissionSet = new PermissionSet();
         permissionSet.setRead(true);
         permissionSet.setInsert(true);
         permissionSet.setUpdate(true);
         permissionSet.setDelete(true);
-        MDataInfo mDataInfo = client.mData.getRandomPublicMData(TYPE_TAG).get();
-        NativeHandle permissionHandle = client.mDataPermission.newPermissionHandle().get();
-        client.mDataPermission.insert(permissionHandle, client.crypto.getAppPublicSignKey().get(),
+        MDataInfo mDataInfo = session.mData.getRandomPublicMData(TYPE_TAG).get();
+        NativeHandle permissionHandle = session.mDataPermission.newPermissionHandle().get();
+        session.mDataPermission.insert(permissionHandle, session.crypto.getAppPublicSignKey().get(),
                 permissionSet).get();
-        client.mData.put(mDataInfo, permissionHandle, client.mDataEntries.newEntriesHandle().get())
+        session.mData.put(mDataInfo, permissionHandle, session.mDataEntries.newEntriesHandle().get())
                 .get();
         return mDataInfo;
     }
 
     @Test
     public void fileCRUDTest() throws Exception {
-        Client client = TestHelper.createSession();
-        MDataInfo mDataInfo = getPublicMData(client);
+        Session session = TestHelper.createSession();
+        MDataInfo mDataInfo = getPublicMData(session);
         File file = new File();
-        NativeHandle fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.OVER_WRITE).get();
+        NativeHandle fileHandle = session.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.OVER_WRITE).get();
         byte[] fileContent = Helper.randomAlphaNumeric(LENGTH).getBytes();
-        client.nfs.fileWrite(fileHandle, fileContent).get();
-        file = client.nfs.fileClose(fileHandle).get();
-        client.nfs.insertFile(mDataInfo, "sample.txt", file);
-        fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.READ).get();
-        byte[] readData = client.nfs.fileRead(fileHandle, 0, 0).get();
+        session.nfs.fileWrite(fileHandle, fileContent).get();
+        file = session.nfs.fileClose(fileHandle).get();
+        session.nfs.insertFile(mDataInfo, "sample.txt", file);
+        fileHandle = session.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.READ).get();
+        byte[] readData = session.nfs.fileRead(fileHandle, 0, 0).get();
         Assert.assertEquals(new String(fileContent), new String(readData));
-        fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.APPEND).get();
+        fileHandle = session.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.APPEND).get();
         byte[] appendedContent = Helper.randomAlphaNumeric(LENGTH).getBytes();
-        client.nfs.fileWrite(fileHandle, appendedContent).get();
-        file = client.nfs.fileClose(fileHandle).get();
-        NFSFileMetadata fileMetadata = client.nfs.getFileMetadata(mDataInfo,
+        session.nfs.fileWrite(fileHandle, appendedContent).get();
+        file = session.nfs.fileClose(fileHandle).get();
+        NFSFileMetadata fileMetadata = session.nfs.getFileMetadata(mDataInfo,
                 "sample.txt").get();
-        client.nfs.updateFile(mDataInfo, "sample.txt", file,
+        session.nfs.updateFile(mDataInfo, "sample.txt", file,
                 fileMetadata.getVersion() + 1).get();
-        fileHandle = client.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.READ).get();
-        long fileSize = client.nfs.getSize(fileHandle).get();
+        fileHandle = session.nfs.fileOpen(mDataInfo, file, NFS.OpenMode.READ).get();
+        long fileSize = session.nfs.getSize(fileHandle).get();
         Assert.assertEquals(fileContent.length + appendedContent.length, fileSize);
-        readData = client.nfs.fileRead(fileHandle, 0, 0).get();
+        readData = session.nfs.fileRead(fileHandle, 0, 0).get();
         String newContent = new String(fileContent).concat(new String(appendedContent));
         Assert.assertEquals(newContent, new String(readData));
-        fileMetadata = client.nfs.getFileMetadata(mDataInfo, "sample.txt").get();
-        client.nfs.deleteFile(mDataInfo, "sample.txt",
+        fileMetadata = session.nfs.getFileMetadata(mDataInfo, "sample.txt").get();
+        session.nfs.deleteFile(mDataInfo, "sample.txt",
                 fileMetadata.getVersion() + 1).get();
     }
 }

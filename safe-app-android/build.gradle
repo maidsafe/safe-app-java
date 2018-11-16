@@ -25,7 +25,7 @@ android {
         mock {
             dimension "app"
         }
-        'non-mock' {
+        nonMock {
             dimension "app"
         }
     }
@@ -33,11 +33,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    sourceSets {
+        main {
+            java {
+                srcDir("$rootDir/api/src/main/java")
+                srcDir("$rootDir/lib/src/main/java")
+            }
+        }
+        mock {
+            java.srcDir("$rootDir/safe-authenticator/src/main/java")
+        }
+    }
 }
 
 android.libraryVariants.all { variant ->
     variant.outputs.all { it ->
-        outputFileName = "safe-app-${it.baseName}-${android.defaultConfig.versionName}.aar"
+        outputFileName = "safe-app-android-${it.baseName}-${android.defaultConfig.versionName}.aar"
     }
 }
 
@@ -48,7 +59,7 @@ buildscript {
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'de.undercouch:gradle-download-task:3.2.0'
@@ -59,14 +70,20 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation project(':api')
-    implementation project(':lib')
-    implementation project(':safe-authenticator')
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
-def nativeLibsVersion = "mobile-test"
+static def getCombinations() {
+    def packages = [ 'safe_app', 'safe_app_jni', 'safe_authenticator', 'safe_authenticator_jni' ]
+    def archs = [ 'x86_64', 'armeabiv7a' ]
+    def variants = [ 'mock', 'nonMock' ]
+    [packages, archs, variants].combinations().findAll { it ->
+        !(it[0].contains('safe_authenticator') && it[2] == 'nonMock')
+    }
+}
+
+def nativeLibsVersion = "0.9.0"
 def tempLibDir = "${projectDir}/.temp_downloads"
 
 task("downloadNativeLibs", type: Download) {
@@ -74,15 +91,16 @@ task("downloadNativeLibs", type: Download) {
     if (!dir.exists()) {
         dir.mkdir()
     }
-//    def endPoints = "https://s3.eu-west-2.amazonaws.com/safe-mobile/${nativeLibsVersion}.zip"
-    def endPoints = "https://github.com/lionel1704/safe_client_libs/releases/download/${nativeLibsVersion}/${nativeLibsVersion}.zip"
+    def endPoints = getCombinations().collect {
+        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/${it[0]}${it[2] == 'mock' ? '-mock' : ''}-${nativeLibsVersion}-android-${it[1]}.zip"
+    }
     src(endPoints)
     dest tempLibDir
 }
 
 task("copyTests", type: Copy) {
-    from fileTree("${rootDir}/safe-app/src/test/")
-    into file("${projectDir}/src/androidTest/")
+    from fileTree("${rootDir}/safe-app/src/test/java/net/maidsafe/api")
+    into file("${projectDir}/src/androidTest/test/java/net/maidsafe/api")
 }
 
 task runInstrumentationTests(dependsOn: 'copyTests') {
@@ -102,13 +120,28 @@ task("unzipNativeLibs", type: Copy) {
             into "${projectDir}/src/mock/jniLibs"
         }
         copy {
-            from tempLibDir + "/android/lib/non-mock/"
-            into "${projectDir}/src/non-mock/jniLibs"
+            from tempLibDir + "/android/lib/nonNock/"
+            into "${projectDir}/src/nonMock/jniLibs"
+        }
+    }
+}
+
+tasks.addRule('Pattern: unzip-<ID>') { String taskName ->
+    if(taskName.startsWith("unzip")) {
+        task(taskName, type: Copy) {
+            def args = name.split('-')
+            String lib = args[1]
+            String arch = args[2] == 'x86_64' ? 'x86_64' : 'armeabi-v7a'
+            boolean isMock = args[3] == "mock"
+            from zipTree("${tempLibDir}/${lib}-${isMock ? 'mock-' : ''}${nativeLibsVersion}-android-${args[2]}.zip")
+            into "${projectDir}/src/${args[3]}/jniLibs/${arch}/"
         }
     }
 }
 
 task("download-nativelibs", type: Delete) {
-    dependsOn << ['unzipNativeLibs']
+    dependsOn << ['downloadNativeLibs', getCombinations().collect {
+        "unzip-${it[0]}-${it[1]}-${it[2]}"
+    }]
     delete tempLibDir
 }

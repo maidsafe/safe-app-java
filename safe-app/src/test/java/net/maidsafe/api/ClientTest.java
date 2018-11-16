@@ -9,9 +9,7 @@
 // of the SAFE Network Software.
 package net.maidsafe.api;
 
-import net.maidsafe.api.model.App;
 import net.maidsafe.api.model.EncryptKeyPair;
-import net.maidsafe.api.model.Request;
 import net.maidsafe.test.utils.SessionLoader;
 
 import org.junit.Assert;
@@ -25,28 +23,27 @@ public class ClientTest {
 
     @Test
     public void unregisteredAccessTest() throws Exception {
-        App app = new App("net.maidsafe.java.test", "sample",
-                "MaidSafe.net Ltd", "0.1.0");
-        Request request = Client.getUnregisteredSessionRequest(app).get();
-        Assert.assertTrue(request.getReqId() != 0);
-        Assert.assertNotNull(request.getUri());
-        Client client = (Client) Client.connect(new byte[0]).get();
-        EncryptKeyPair encryptKeyPair = client.crypto.generateEncryptKeyPair().get();
+        Session unregisteredSession = TestHelper.createUnregisteredSession();
+        EncryptKeyPair encryptKeyPair = unregisteredSession.crypto.generateEncryptKeyPair().get();
         Assert.assertNotNull(encryptKeyPair);
-        byte[] cipherText = client.crypto.encrypt(encryptKeyPair.getPublicEncryptKey(),
+        byte[] cipherText = unregisteredSession.crypto.encrypt(encryptKeyPair.getPublicEncryptKey(),
                 encryptKeyPair.getSecretEncryptKey(), "Hello".getBytes()).get();
         Assert.assertEquals("Hello", new String(
-                client.crypto.decrypt(encryptKeyPair.getPublicEncryptKey(),
+                unregisteredSession.crypto.decrypt(encryptKeyPair.getPublicEncryptKey(),
                         encryptKeyPair.getSecretEncryptKey(), cipherText).get()));
     }
 
     @Test
     public void disconnectionTest() throws Exception {
-        Client client = TestHelper.createSession();
+        Session client = TestHelper.createSession();
         client.setOnDisconnectListener(o -> {
             Assert.assertFalse(client.isConnected());
-            client.reconnect();
-            Assert.assertTrue(client.isConnected());
+            try {
+                client.reconnect().get();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Unable to reconnect");
+            }
         });
         client.testSimulateDisconnect().get();
     }

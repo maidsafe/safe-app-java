@@ -13,5 +13,5 @@ safe-authenticator/libs
 api/*.iml
 safe-app/*.iml
 safe-app-android/*.iml
-/safe-app-android/src/non-mock
-/safe-app-android/src/mock
+safe-app-android/src/nonMock
+safe-app-android/src/mock

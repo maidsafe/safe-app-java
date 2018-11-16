@@ -44,8 +44,7 @@ repositories {
 
 task copyTestResources(type: Copy) {
     def platform = "linux"
-    def x64Versions = ["x86_64", "amd64", "x64", "x86-64", "ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
-    def arch = x64Versions.find { it == "x64" } == null ? "x86" : "x64"
+    def arch = "x64"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         platform = "win"
     } else if (Os.isFamily(Os.FAMILY_MAC)) {
@@ -58,28 +57,25 @@ processTestResources.dependsOn copyTestResources
 
 task copyAuthTestResources(type: Copy) {
     def platform = "linux"
-    def x64Versions = ["x86_64", "amd64", "x64", "x86-64", "ia-64", "ia64", "ppc64", "sparc64", "ultrasparc", "sparc-v9", "arm64", "arm-v8"]
-    def arch = x64Versions.find { it == "x64" } == null ? "x86" : "x64"
+    def arch = "x64"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         platform = "win"
     } else if (Os.isFamily(Os.FAMILY_MAC)) {
         platform = "osx"
     }
-    from "${projectDir}/../safe-authenticator/libs/${platform}/mock/${arch}"
+    from "${rootDir}/safe-authenticator/libs/${platform}/mock/${arch}"
     into "${projectDir}/build/classes/java/test/native"
 }
 processTestResources.dependsOn copyAuthTestResources
 
-def nativeLibsVersion = "lionel-test"
+def nativeLibsVersion = "v0.9.0"
 def tempDownloadDir = "${projectDir}/.tempDownloads"
 
 static def getCombinations() {
     def platforms = ['osx', 'linux', 'win']
     def variants = ['mock', 'non-mock']
     def architectures = ['x64'] // ['x86', 'x64']
-    [platforms, architectures, variants].combinations().findAll {
-        !(it[0] == 'osx' && it[1] == 'x86')
-    }
+    [platforms, architectures, variants].combinations().findAll()
 }
 
 static def getMockCombinations() {

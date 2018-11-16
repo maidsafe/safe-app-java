@@ -13,36 +13,23 @@ package net.maidsafe.safe_authenticator;
 public class NativeBindings {
 
     /**
-     * Returns true if this crate was compiled against mock-routing.
-     */
-    public static native boolean isMockBuild();
-
-    /**
      * Removes a revoked app from the authenticator config.
-     * <p>
-     * Callback parameters: user data, error code
      */
     public static native void authRmRevokedApp(long auth, String appId, CallbackResult oCb);
 
     /**
      * Get a list of apps revoked from authenticator.
-     * <p>
-     * Callback parameters: user data, error code, app exchange info vector, vector size
      */
     public static native void authRevokedApps(long auth, CallbackResultAppExchangeInfoArrayLen oCb);
 
     /**
      * Get a list of apps registered in authenticator.
-     * <p>
-     * Callback parameters: user data, error code, registered app vector, vector size
      */
     public static native void authRegisteredApps(long auth, CallbackResultRegisteredAppArrayLen oCb);
 
     /**
      * Return a list of apps having access to an arbitrary MD object.
      * `md_name` and `md_type_tag` together correspond to a single MD.
-     * <p>
-     * Callback parameters: user data, error code, app access vector, vector size
      */
     public static native void authAppsAccessingMutableData(long auth, byte[] mdName, long mdTypeTag, CallbackResultAppAccessArrayLen oCb);
 
@@ -54,47 +41,35 @@ public class NativeBindings {
     /**
      * Decodes a given encoded IPC message and calls a corresponding callback.
      */
-    public static native void authDecodeIpcMsg(long auth, String msg, CallbackIntAuthReq oAuth, CallbackIntContainersReq oContainers, CallbackIntByteArrayLen oUnregistered, CallbackIntShareMDataReqMetadataResponse oShareMdata, CallbackResultString oErr);
+    public static native void authDecodeIpcMsg(long auth, String msg, CallbackIntAuthReq oAuth, CallbackIntContainersReq oContainers, CallbackIntByteArrayLen oUnregistered, CallbackIntShareMDataReqMetadataResponseArrayLen oShareMdata, CallbackResultString oErr);
 
     /**
      * Encode share mutable data response.
-     * <p>
-     * Callback parameters: user data, error code, response ptr
      */
     public static native void encodeShareMdataResp(long auth, ShareMDataReq req, int reqId, boolean isGranted, CallbackResultString oCb);
 
     /**
      * Revoke app access.
-     * <p>
-     * Callback parameters: user data, error code, response ptr
      */
     public static native void authRevokeApp(long auth, String appId, CallbackResultString oCb);
 
     /**
      * Flush the revocation queue.
-     * <p>
-     * Callback parameters: user data, error code
      */
     public static native void authFlushAppRevocationQueue(long auth, CallbackResult oCb);
 
     /**
      * Encodes a response to unregistered client authentication request.
-     * <p>
-     * Callback parameters: user data, error code, response ptr
      */
     public static native void encodeUnregisteredResp(int reqId, boolean isGranted, CallbackResultString oCb);
 
     /**
      * Provides and encodes an Authenticator response.
-     * <p>
-     * Callback parameters: user data, error code, response ptr
      */
     public static native void encodeAuthResp(long auth, AuthReq req, int reqId, boolean isGranted, CallbackResultString oCb);
 
     /**
      * Update containers permissions for an App.
-     * <p>
-     * Callback parameters: user data, error code, response ptr
      */
     public static native void encodeContainersResp(long auth, ContainersReq req, int reqId, boolean isGranted, CallbackResultString oCb);
 
@@ -102,8 +77,6 @@ public class NativeBindings {
      * This function should be called to enable logging to a file.
      * If `output_file_name_override` is provided, then this path will be used for
      * the log output file.
-     * <p>
-     * Callback parameters: user data, error code
      */
     public static native void authInitLogging(String outputFileNameOverride, CallbackResult oCb);
 
@@ -111,8 +84,6 @@ public class NativeBindings {
      * This function should be called to find where log file will be created. It
      * will additionally create an empty log file in the path in the deduced
      * location and will return the file name along with complete path to it.
-     * <p>
-     * Callback parameters: user data, error code, log path
      */
     public static native void authOutputLogPath(String outputFileName, CallbackResultString oCb);
 
@@ -138,20 +109,16 @@ public class NativeBindings {
 
     /**
      * Try to restore a failed connection with the network.
-     * <p>
-     * Callback parameters: user data, error code
      */
     public static native void authReconnect(long auth, CallbackResult oCb);
 
     /**
      * Get the account usage statistics.
-     * <p>
-     * Callback parameters: user data, error code, account info
      */
     public static native void authAccountInfo(long auth, CallbackResultAccountInfo oCb);
 
     /**
-     * Returns the expected name for the application executable without an extension
+     * Returns the expected name for the application executable without an extension.
      */
     public static native void authExeFileStem(CallbackResultString oCb);
 
@@ -167,6 +134,11 @@ public class NativeBindings {
      * Using `auth` after a call to this function is undefined behaviour.
      */
     public static native void authFree(long auth);
+
+    /**
+     * Returns true if this crate was compiled against mock-routing.
+     */
+    public static native boolean authIsMock();
 
 
 }

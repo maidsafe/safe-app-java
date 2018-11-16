@@ -9,15 +9,12 @@
 // of the SAFE Network Software.
 package net.maidsafe.api;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import net.maidsafe.api.listener.OnDisconnected;
-import net.maidsafe.api.model.App;
 import net.maidsafe.api.model.AuthResponse;
 import net.maidsafe.api.model.ContainerResponse;
 import net.maidsafe.api.model.DecodeError;
@@ -37,6 +34,7 @@ import net.maidsafe.safe_app.CallbackResultInt;
 import net.maidsafe.safe_app.CallbackResultIntString;
 import net.maidsafe.safe_app.CallbackVoid;
 import net.maidsafe.safe_app.ContainerPermissions;
+import net.maidsafe.safe_app.ContainersReq;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.safe_app.ShareMDataReq;
@@ -45,7 +43,6 @@ import net.maidsafe.utils.Helper;
 
 public class Session {
 
-    protected static ClientTypeFactory clientTypeFactory;
     public final CipherOpt cipherOpt;
     public final Crypto crypto;
     public final IData iData;
@@ -81,20 +78,6 @@ public class Session {
         this.mDataEntryAction = new MDataEntryAction(this.appHandle);
         this.mDataPermission = new MDataPermission(this.appHandle);
         this.nfs = new NFS(this.appHandle);
-    }
-
-    private static <T extends Session> T create(final AppHandle appHandle,
-                                                final DisconnectListener disconnectListener) {
-        try {
-            final Class<?> clientType = clientTypeFactory.getClientType();
-            final Constructor<?> cons = clientType.getDeclaredConstructor(new Class[] {
-                    AppHandle.class, DisconnectListener.class
-            });
-            return (T) cons.newInstance(appHandle, disconnectListener);
-        } catch (NoSuchMethodException | InstantiationException
-                | IllegalAccessException | InvocationTargetException e) {
-            throw new java.lang.RuntimeException(e);
-        }
     }
 
     public static CompletableFuture initLogging(final String outputFileName) {
@@ -171,8 +154,8 @@ public class Session {
     }
 
 
-    public static CompletableFuture<Request> getUnregisteredSessionRequest(final App app) {
-        final byte[] id = app.getId().getBytes(Charset.forName("UTF-8"));
+    public static CompletableFuture<Request> getUnregisteredSessionRequest(final String appId) {
+        final byte[] id = appId.getBytes(Charset.forName("UTF-8"));
         final CompletableFuture<Request> future = new CompletableFuture<>();
         NativeBindings.encodeUnregisteredReq(id, handleRequestCallback(future));
         return future;
@@ -202,18 +185,19 @@ public class Session {
     }
 
 
-    public static CompletableFuture<Object> connect(final UnregisteredClientResponse response) {
+    public static CompletableFuture<Session> connect(final UnregisteredClientResponse response) {
         return connect(response.getBootstrapConfig());
     }
 
-    /**
-     * Create a new unregistered session using the bootstrap config from the response
-     *
-     * @param bootStrapConfig Bootstrap configuration
-     * @return A new {@link Session object}
-     */
-    public static CompletableFuture<Object> connect(final byte[] bootStrapConfig) {
-        final CompletableFuture<Object> future = new CompletableFuture<>();
+    public static CompletableFuture<Request> getContainersReq(final ContainersReq containersReq) {
+        final CompletableFuture<Request> future = new CompletableFuture<>();
+        NativeBindings.encodeContainersReq(containersReq, handleRequestCallback(future));
+        return  future;
+    }
+
+
+    public static CompletableFuture<Session> connect(final byte[] bootStrapConfig) {
+        final CompletableFuture<Session> future = new CompletableFuture<>();
         final DisconnectListener disconnectListener = new DisconnectListener();
         final CallbackResultApp callback = (result, app) -> {
             if (result.getErrorCode() != 0) {
@@ -221,22 +205,22 @@ public class Session {
             }
 
             AppHandle handle = new AppHandle(app);
-            future.complete(Session.create(handle, disconnectListener));
+            future.complete(new Session(handle, disconnectListener));
         };
         NativeBindings.appUnregistered(bootStrapConfig, disconnectListener.getCallback(), callback);
         return future;
     }
 
 
-    public static CompletableFuture<Object> connect(final String appId, final AuthGranted authGranted) {
-        final CompletableFuture<Object> future = new CompletableFuture<>();
+    public static CompletableFuture<Session> connect(final String appId, final AuthGranted authGranted) {
+        final CompletableFuture<Session> future = new CompletableFuture<>();
         final DisconnectListener disconnectListener = new DisconnectListener();
         final CallbackResultApp callback = (result, handle) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
             }
             AppHandle appH = new AppHandle(handle);
-            future.complete(Session.create(appH, disconnectListener));
+            future.complete(new Session(appH, disconnectListener));
         };
         NativeBindings.appRegistered(appId, authGranted, disconnectListener.getCallback(),
                 callback);
@@ -254,7 +238,7 @@ public class Session {
     }
 
     public static boolean isMock() {
-        return NativeBindings.isMockBuild();
+        return NativeBindings.appIsMock();
     }
 
     public boolean isConnected() {
