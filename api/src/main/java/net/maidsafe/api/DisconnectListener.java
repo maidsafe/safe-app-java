@@ -12,6 +12,9 @@ package net.maidsafe.api;
 import net.maidsafe.api.listener.OnDisconnected;
 import net.maidsafe.safe_app.CallbackVoid;
 
+/**
+ * Listener class for the disconnection event
+ */
 class DisconnectListener {
 
     OnDisconnected onDisconnected;

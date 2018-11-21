@@ -14,7 +14,6 @@ import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.api.model.SignKeyPair;
 import net.maidsafe.test.utils.Helper;
 import net.maidsafe.test.utils.SessionLoader;
-import net.maidsafe.utils.Constants;
 
 import org.junit.Assert;
 import org.junit.Test;

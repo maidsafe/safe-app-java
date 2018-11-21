@@ -9,9 +9,15 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents a Share Mutable Data Response
+ */
 public class ShareMutableDataResponse extends DecodeResult {
 
-
+    /***
+     * Initialises a SharedMutableData Response instance
+     * @param reqId  Request ID
+     */
     public ShareMutableDataResponse(final int reqId) {
         super(reqId);
     }

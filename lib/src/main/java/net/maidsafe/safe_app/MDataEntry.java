@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents an FFI-safe mutable data (key, value) entry.
+/***
+ *  Represents an FFI-safe Mutable Data (key, value) entry.
+ */
 public class MDataEntry {
     private MDataKey key;
     private MDataValue value;

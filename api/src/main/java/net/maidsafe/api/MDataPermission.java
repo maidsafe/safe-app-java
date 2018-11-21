@@ -19,8 +19,11 @@ import net.maidsafe.safe_app.PermissionSet;
 import net.maidsafe.safe_app.UserPermissionSet;
 import net.maidsafe.utils.Helper;
 
-
+/**
+ * Exposes the API for Mutable Data permissions
+ */
 public class MDataPermission {
+
     private AppHandle appHandle;
 
     public MDataPermission(final AppHandle appHandle) {
@@ -31,7 +34,10 @@ public class MDataPermission {
         this.appHandle = handle;
     }
 
-
+    /**
+     * Create a new Mutable Data permissions handle
+     * @return A new permission handle as {@link NativeHandle}
+     */
     public CompletableFuture<NativeHandle> newPermissionHandle() {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataPermissionsNew(appHandle.toLong(), (result, permissionsHandle) -> {
@@ -46,7 +52,11 @@ public class MDataPermission {
         return future;
     }
 
-
+    /**
+     * Get the number of permissions for the Mutable Data
+     * @param permissionHandle Permissions handle as {@link NativeHandle}
+     * @return Number of permissions for the Mutable Data
+     */
     public CompletableFuture<Long> getLength(final NativeHandle permissionHandle) {
         final CompletableFuture<Long> future = new CompletableFuture<>();
         NativeBindings.mdataPermissionsLen(appHandle.toLong(), permissionHandle.toLong(),
@@ -59,6 +69,12 @@ public class MDataPermission {
         return future;
     }
 
+    /**
+     * Returns the permission set for a user
+     * @param permissionHandle Permission handle as {@link NativeHandle}
+     * @param signKey Public sign key of the user
+     * @return Permission set as {@link PermissionSet} instance
+     */
     public CompletableFuture<PermissionSet> getPermissionForUser(final NativeHandle permissionHandle,
                                                                  final NativeHandle signKey) {
         final CompletableFuture<PermissionSet> future = new CompletableFuture<>();
@@ -72,6 +88,11 @@ public class MDataPermission {
         return future;
     }
 
+    /**
+     * Fetches a list of all associated user permission sets for a Mutable Data
+     * @param permissionHandle Permission handle as {@link NativeHandle}
+     * @return List of {@link UserPermissionSet}
+     */
     public CompletableFuture<List<UserPermissionSet>> listAll(final NativeHandle permissionHandle) {
         final CompletableFuture<List<UserPermissionSet>> future = new CompletableFuture<>();
         NativeBindings.mdataListPermissionSets(appHandle.toLong(), permissionHandle.toLong(),
@@ -84,6 +105,12 @@ public class MDataPermission {
         return future;
     }
 
+    /**
+     * Insert a new permission set for a user.
+     * @param permissionHandle Permission handle as {@link NativeHandle}
+     * @param publicSignKey Public sign key for the user. To insert for all users pass Constants.ZERO_HANDLE
+     * @param permissionSet Permission set to be assigned
+     */
     public CompletableFuture insert(final NativeHandle permissionHandle, final NativeHandle publicSignKey,
                                     final PermissionSet permissionSet) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();

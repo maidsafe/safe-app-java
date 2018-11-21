@@ -12,12 +12,19 @@ package net.maidsafe.api;
 import android.content.Context;
 import android.system.Os;
 
+/**
+ * Represents an Android client
+ */
 public class Client extends Session {
 
     Client(AppHandle app, DisconnectListener disconnectListener) {
         super(app, disconnectListener);
     }
 
+    /**
+     * Loads the native library in memory
+     * @param context Android Application context
+     */
     public static void load(Context context) {
         System.loadLibrary("safe_app_jni");
         if (Session.isMock()) {

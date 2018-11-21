@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_authenticator;
 
-/// Represents a request to share mutable data
+/***
+ *  Represents a request to share Mutable Data
+ */
 public class ShareMDataReq {
     private AppExchangeInfo app;
     private ShareMData[] mdata;

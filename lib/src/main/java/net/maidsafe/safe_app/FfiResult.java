@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// FFI result wrapper
+/***
+ *  FFI result wrapper
+ */
 public class FfiResult {
     private int errorCode;
     private String description;

@@ -9,7 +9,15 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents an authentication response object for a Container Request
+ */
 public class ContainerResponse extends DecodeResult {
+
+    /***
+     * Initialises a ContainerResponse object
+     * @param reqId Request ID
+     */
     public ContainerResponse(final int reqId) {
         super(reqId);
     }

@@ -11,15 +11,27 @@ package net.maidsafe.api.model;
 
 import net.maidsafe.safe_authenticator.ContainersReq;
 
+/***
+ * Represents a container IPC Request
+ */
 public class ContainersIpcReq extends IpcRequest {
 
     private final ContainersReq containersReq;
 
+    /***
+     * Initialises a ContainersIpcReq object
+     * @param reqId Request ID
+     * @param containersReq Containers Request
+     */
     public ContainersIpcReq(final int reqId, final ContainersReq containersReq) {
         super(reqId);
         this.containersReq = containersReq;
     }
 
+    /**
+     * Returns the {@link net.maidsafe.safe_app.ContainersReq}
+     * @return Containers request
+     */
     public ContainersReq getContainersReq() {
         return containersReq;
     }

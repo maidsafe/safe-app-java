@@ -10,6 +10,9 @@
 package net.maidsafe.safe_authenticator;
 
 
+/**
+ * Native functions used by safe_authenticator
+ */
 public class NativeBindings {
 
     /**
@@ -44,7 +47,7 @@ public class NativeBindings {
     public static native void authDecodeIpcMsg(long auth, String msg, CallbackIntAuthReq oAuth, CallbackIntContainersReq oContainers, CallbackIntByteArrayLen oUnregistered, CallbackIntShareMDataReqMetadataResponseArrayLen oShareMdata, CallbackResultString oErr);
 
     /**
-     * Encode share mutable data response.
+     * Encode share Mutable Data response.
      */
     public static native void encodeShareMdataResp(long auth, ShareMDataReq req, int reqId, boolean isGranted, CallbackResultString oCb);
 

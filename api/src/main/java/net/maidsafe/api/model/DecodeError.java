@@ -12,15 +12,26 @@ package net.maidsafe.api.model;
 import net.maidsafe.safe_app.FfiResult;
 import net.maidsafe.utils.Helper;
 
+/***
+ * Represents an errored authentication response
+ */
 public class DecodeError extends DecodeResult {
     private final Exception exception;
 
-
+    /***
+     * Initialises a DecodeError object
+     * @param reqId The request ID
+     * @param result The FfiResult
+     */
     public DecodeError(final int reqId, final FfiResult result) {
         super(reqId);
         exception = Helper.ffiResultToException(result);
     }
 
+    /***
+     * Returns the exception
+     * @return An Exception object
+     */
     public Exception getException() {
         return exception;
     }

@@ -9,15 +9,26 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents an unregistered client response
+ */
 public class UnregisteredClientResponse extends DecodeResult {
     private final byte[] bootstrapConfig;
 
-
+    /***
+     * Initialises an unregistered client response instance
+     * @param reqId Request ID
+     * @param bootstrapConfig Bootstrap configuration
+     */
     public UnregisteredClientResponse(final int reqId, final byte[] bootstrapConfig) {
         super(reqId);
         this.bootstrapConfig = bootstrapConfig.clone();
     }
 
+    /***
+     * Returns the bootstrap configuration
+     * @return Bootstrap configuration as byte array
+     */
     public byte[] getBootstrapConfig() {
         return bootstrapConfig.clone();
     }

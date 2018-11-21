@@ -15,8 +15,11 @@ import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
 
-
+/**
+ * Exposes API for Mutable Data entry transactions
+ */
 public class MDataEntryAction {
+
     private AppHandle appHandle;
 
     public MDataEntryAction(final AppHandle appHandle) {
@@ -27,7 +30,10 @@ public class MDataEntryAction {
         this.appHandle = handle;
     }
 
-
+    /**
+     * Get a new handle to perform Mutable Data entry actions
+     * @return New entry {@link NativeHandle} instance
+     */
     public CompletableFuture<NativeHandle> newEntryAction() {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.mdataEntryActionsNew(appHandle.toLong(), (result, entriesH) -> {
@@ -43,6 +49,12 @@ public class MDataEntryAction {
         return future;
     }
 
+    /**
+     * Store a new insert action for a new entry
+     * @param actionHandle The action handle as {@link NativeHandle}
+     * @param key The key to be inserted
+     * @param value The value to be inserted
+     */
     public CompletableFuture insert(final NativeHandle actionHandle, final byte[] key, final byte[] value) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
         NativeBindings.mdataEntryActionsInsert(appHandle.toLong(), actionHandle.toLong(), key, value,
@@ -55,7 +67,13 @@ public class MDataEntryAction {
         return future;
     }
 
-
+    /**
+     * Store a new update action for updating an existing entry
+     * @param actionHandle The action handle as {@link NativeHandle}
+     * @param key The key to be updated
+     * @param value The new value
+     * @param version The next version of the entry
+     */
     public CompletableFuture update(final NativeHandle actionHandle, final byte[] key,
                                     final byte[] value, final long version) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
@@ -69,7 +87,12 @@ public class MDataEntryAction {
         return future;
     }
 
-
+    /**
+     * Store a new delete action to remove an existing entry
+     * @param actionHandle The action handle as {@link NativeHandle}
+     * @param key The key of the entry to be deleted
+     * @param version The next version of the entry
+     */
     public CompletableFuture<Void> delete(final NativeHandle actionHandle, final byte[] key, final long version) {
         final CompletableFuture<Void> future = new CompletableFuture<Void>();
         NativeBindings.mdataEntryActionsDelete(appHandle.toLong(), actionHandle.toLong(), key,

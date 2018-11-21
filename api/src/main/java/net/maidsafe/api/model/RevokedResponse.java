@@ -9,6 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents an object for a Revocation Response from the Authenticator
+ */
 public class RevokedResponse extends DecodeResult {
     public RevokedResponse() {
         super(0);

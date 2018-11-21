@@ -11,7 +11,11 @@ package net.maidsafe.utils;
 
 import net.maidsafe.safe_app.FfiResult;
 
+/**
+ * Helper class for exception handling
+ */
 public final class Helper {
+
     private Helper() {
         throw new java.lang.RuntimeException("Cannot instantiate utilities classs");
     }

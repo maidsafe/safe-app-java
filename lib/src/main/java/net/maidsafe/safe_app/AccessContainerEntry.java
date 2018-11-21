@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Access container entry for a single app.
+/**
+ * Access container entry for a single app.
+ */
 public class AccessContainerEntry {
     private ContainerInfo[] containers;
     private long containersLen;

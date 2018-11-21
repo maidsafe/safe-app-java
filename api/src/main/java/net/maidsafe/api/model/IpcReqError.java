@@ -9,12 +9,21 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents an IPC Request error
+ */
 public class IpcReqError extends IpcRequest {
 
     private final int code;
     private final String description;
     private final String message;
 
+    /**
+     * Initialises an IpcReqError object
+     * @param code Error code
+     * @param description Error description
+     * @param message Error message
+     */
     public IpcReqError(final int code, final String description, final String message) {
         super();
         this.code = code;
@@ -22,14 +31,26 @@ public class IpcReqError extends IpcRequest {
         this.message = message;
     }
 
+    /**
+     * Returns the error code
+     * @return Error code as integer
+     */
     public int getCode() {
         return code;
     }
 
+    /**
+     * Returns the error description
+     * @return Error description as string
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns the error message
+     * @return Error message as string
+     */
     public String getMessage() {
         return message;
     }

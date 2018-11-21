@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents the FFI-safe mutable data value.
+/***
+ *  Represents the FFI-safe Mutable Data value.
+ */
 public class MDataValue {
     private byte[] content;
     private long contentLen;

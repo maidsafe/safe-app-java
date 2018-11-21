@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_authenticator;
 
-/// Application registered in the authenticator
+/***
+ *  Application registered in the authenticator
+ */
 public class RegisteredApp {
     private AppExchangeInfo appInfo;
     private ContainerPermissions[] containers;

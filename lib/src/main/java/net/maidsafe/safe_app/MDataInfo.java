@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// FFI wrapper for `MDataInfo`.
+/***
+ *  FFI wrapper for `MDataInfo`.
+ */
 public class MDataInfo {
     private byte[] name;
     private long typeTag;

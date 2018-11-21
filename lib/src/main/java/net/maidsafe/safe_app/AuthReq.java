@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents an authorisation request
+/***
+ *  Represents an authorisation request
+ */
 public class AuthReq {
     private AppExchangeInfo app;
     private boolean appContainer;

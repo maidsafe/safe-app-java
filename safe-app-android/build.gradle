@@ -52,6 +52,18 @@ android.libraryVariants.all { variant ->
     }
 }
 
+task javadoc(type: Javadoc) {
+  failOnError false
+    exclude('**/net/maidsafe/safe_authenticator')
+    exclude('**/net/maidsafe/utils')
+    exclude('**/net/maidsafe/safe_app/Callback*')
+    exclude('**/net/maidsafe/api/model/*IpcReq*')
+    exclude('**/NativeBindings.java')
+  source = android.sourceSets.main.java.sourceFiles
+  classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+  classpath += configurations.compile
+}
+
 buildscript {
     repositories {
         google()

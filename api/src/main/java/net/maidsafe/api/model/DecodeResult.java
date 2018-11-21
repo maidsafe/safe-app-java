@@ -9,14 +9,25 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents the decoded authentication response
+ */
 public class DecodeResult {
+
     private final int reqId;
 
-
+    /***
+     * Initialises a DecodeResult object
+     * @param reqId Request ID
+     */
     public DecodeResult(final int reqId) {
         this.reqId = reqId;
     }
 
+    /***
+     * Returns the Request ID
+     * @return Request ID
+     */
     public int getReqId() {
         return reqId;
     }

@@ -9,19 +9,36 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents a Request
+ */
 public class Request {
+
     private final String uri;
     private final int reqId;
 
+    /***
+     * Initialises a new Request instance
+     * @param uri  Encoded request
+     * @param reqId  Request ID
+     */
     public Request(final String uri, final int reqId) {
         this.uri = uri;
         this.reqId = reqId;
     }
 
+    /***
+     * Returns the Request ID
+     * @return Request ID as int
+     */
     public int getReqId() {
         return reqId;
     }
 
+    /***
+     * Returns the encoded request
+     * @return Request URI as a String
+     */
     public String getUri() {
         return uri;
     }

@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 
+/**
+ * Represents a desktop Client
+ */
 public class Client extends Session {
 
     private static final String NATIVE_PATH = "/native/";
@@ -24,6 +27,9 @@ public class Client extends Session {
         super(appHandle, disconnectListener);
     }
 
+    /**
+     * Loads the native libraries in memory
+     */
     public static void load() {
         try {
             final String tempDir = System.getProperty("java.io.tmpdir");

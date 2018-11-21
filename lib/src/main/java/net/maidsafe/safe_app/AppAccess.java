@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Information about an application that has access to an MD through `sign_key`
+/***
+ *  Information about an application that has access to an MD through `sign_key`
+ */
 public class AppAccess {
     private byte[] signKey;
     private PermissionSet permissions;

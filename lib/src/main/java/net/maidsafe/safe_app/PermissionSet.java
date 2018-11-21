@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents a requested set of changes to the permissions of a mutable data.
+/***
+ *  Represents a requested set of changes to the permissions of a Mutable Data.
+ */
 public class PermissionSet {
     private boolean read;
     private boolean insert;

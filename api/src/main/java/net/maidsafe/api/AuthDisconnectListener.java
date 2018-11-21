@@ -12,8 +12,10 @@ package net.maidsafe.api;
 import net.maidsafe.api.listener.OnDisconnected;
 import net.maidsafe.safe_authenticator.CallbackVoid;
 
-
-public class AuthDisconnectListener {
+/***
+ * Listener for disconnect event for the Authenticator
+ */
+class AuthDisconnectListener {
 
     OnDisconnected onDisconnected;
     private final CallbackVoid callback = new CallbackVoid() {
@@ -30,10 +32,17 @@ public class AuthDisconnectListener {
         // Constructor intentionally empty
     }
 
+    /***
+     * Sets the listener for the disconnected event
+     * @param disconnected Disconnected event
+     */
     public void setListener(final OnDisconnected disconnected) {
         this.onDisconnected = disconnected;
     }
 
+    /***
+     * Gets the callback function for the disconnected event
+     */
     public CallbackVoid getCallback() {
         return callback;
     }

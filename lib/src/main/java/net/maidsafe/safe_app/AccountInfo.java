@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents the FFI-safe account info.
+/***
+ *  Represents the FFI-safe account info.
+ */
 public class AccountInfo {
     private long mutationsDone;
     private long mutationsAvailable;

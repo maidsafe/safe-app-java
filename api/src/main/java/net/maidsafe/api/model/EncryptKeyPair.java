@@ -9,21 +9,37 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents a pair of Encryption keys
+ */
 public class EncryptKeyPair {
 
     private final NativeHandle secretEncryptKey;
     private final NativeHandle publicEncryptKey;
 
 
+    /***
+     * Initialises a new EncryptKeyPair instance
+     * @param publicEncryptKey The Public Encryption Key
+     * @param secretEncryptKey The Private Encryption Key
+     */
     public EncryptKeyPair(final NativeHandle publicEncryptKey, final NativeHandle secretEncryptKey) {
         this.secretEncryptKey = secretEncryptKey;
         this.publicEncryptKey = publicEncryptKey;
     }
 
+    /***
+     * Returns the public encryption key
+     * @return NativeHandle to the public encryption key
+     */
     public NativeHandle getPublicEncryptKey() {
         return publicEncryptKey;
     }
 
+    /***
+     * Returns the secret encryption key
+     * @return NativeHandle to the secret encryption key
+     */
     public NativeHandle getSecretEncryptKey() {
         return secretEncryptKey;
     }

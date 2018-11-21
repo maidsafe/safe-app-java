@@ -9,6 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.listener;
 
+/***
+ * Listener for the disconnection event
+ */
 public interface OnDisconnected {
     void disconnected(Object o);
 }

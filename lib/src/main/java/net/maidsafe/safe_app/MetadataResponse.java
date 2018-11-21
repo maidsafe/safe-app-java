@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// User metadata for mutable data
+/***
+ *  User metadata for Mutable Data
+ */
 public class MetadataResponse {
     private String name;
     private String description;

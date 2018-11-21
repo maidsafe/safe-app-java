@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents the needed keys to work with the data.
+/***
+ *  Represents the needed keys to work with the data.
+ */
 public class AppKeys {
     private byte[] ownerKey;
     private byte[] encKey;

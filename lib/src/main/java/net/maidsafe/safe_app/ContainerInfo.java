@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Information about a container (name, `MDataInfo` and permissions)
+/***
+ *  Information about a container (name, `MDataInfo` and permissions)
+ */
 public class ContainerInfo {
     private String name;
     private MDataInfo mdataInfo;

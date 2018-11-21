@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// For use in `ShareMDataReq`. Represents a specific `MutableData` that is being shared.
+/***
+ *  For use in `ShareMDataReq`. Represents a specific `MutableData` that is being shared.
+ */
 public class ShareMData {
     private long typeTag;
     private byte[] name;

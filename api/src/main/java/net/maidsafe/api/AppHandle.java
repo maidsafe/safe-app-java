@@ -12,12 +12,22 @@ package net.maidsafe.api;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.NativeBindings;
 
+/***
+ * Represents a pointer to the app in native code
+ */
 class AppHandle extends NativeHandle {
 
+    /***
+     * Returns an AppHandle object
+     * @param handle
+     */
     AppHandle(final long handle) {
         super(handle, h -> NativeBindings.appFree(h));
     }
 
+    /***
+     * Frees the AppHandle object
+     */
     public void invalidate() {
         if (handle > 0) {
             NativeBindings.appFree(handle);
@@ -25,6 +35,10 @@ class AppHandle extends NativeHandle {
         }
     }
 
+    /***
+     * Returns the long value of the AppHandle
+     * @return handle
+     */
     @Override
     public long toLong() {
         if (handle < 0) {

@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// FFI-wrapper for `File`.
+/***
+ *  FFI-wrapper for `File`.
+ */
 public class File {
     private long size;
     private long createdSec;

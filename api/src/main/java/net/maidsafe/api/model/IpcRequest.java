@@ -9,18 +9,32 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/**
+ * Represents IPC Requests sent to the Authenticator
+ */
 public class IpcRequest {
 
     private final int reqId;
 
+    /**
+     * Initialises an IpcRequest
+     * @param reqId Request ID
+     */
     public IpcRequest(final int reqId) {
         this.reqId = reqId;
     }
 
+    /**
+     * Initialises an errored IpcRequest
+     */
     public IpcRequest() {
         reqId = -1;
     }
 
+    /**
+     * Returns the Request ID
+     * @return Request ID as integer
+     */
     public int getReqId() {
         return reqId;
     }

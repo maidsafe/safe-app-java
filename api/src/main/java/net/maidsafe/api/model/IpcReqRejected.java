@@ -9,15 +9,26 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents a rejected IPC Request
+ */
 public class IpcReqRejected extends IpcRequest {
 
     private final String message;
 
+    /***
+     * Initialise a rejected IPC Request
+     * @param message Error message
+     */
     public IpcReqRejected(final String message) {
         super();
         this.message = message;
     }
 
+    /**
+     * Returns the error message
+     * @return Error message as string
+     */
     public String getMessage() {
         return message;
     }

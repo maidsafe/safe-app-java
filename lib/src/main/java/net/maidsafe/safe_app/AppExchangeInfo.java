@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Represents an application ID in the process of asking permissions
+/**
+ * Represents an application ID in the process of asking permissions
+ */
 public class AppExchangeInfo {
     private String id;
     private String scope;

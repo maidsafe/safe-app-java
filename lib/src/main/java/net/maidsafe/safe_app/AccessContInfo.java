@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Access container info.
+/***
+ *  Access container info.
+ */
 public class AccessContInfo {
     private byte[] id;
     private long tag;

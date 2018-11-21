@@ -9,14 +9,25 @@
 // of the SAFE Network Software.
 package net.maidsafe.api.model;
 
+/***
+ * Represents the NFS file metadata
+ */
 public class NFSFileMetadata extends net.maidsafe.safe_app.File {
     private long version;
 
+    /***
+     * Initialises a new NFSFileMetadata instance
+     */
     public NFSFileMetadata() {
         super();
     }
 
 
+    /***
+     * Initialises an NFSFileMetadata instance for the file and version
+     * @param ffiFile  File object (net.maidsafe.safe_app.File)
+     * @param version  File version
+     */
     public NFSFileMetadata(final net.maidsafe.safe_app.File ffiFile, final long version) {
         super();
         this.version = version;
@@ -30,11 +41,19 @@ public class NFSFileMetadata extends net.maidsafe.safe_app.File {
         this.setUserMetadataPtr(ffiFile.getUserMetadataPtr());
     }
 
+    /***
+     * Returns the file version
+     * @return File version as long
+     */
     public long getVersion() {
         return version;
     }
 
 
+    /***
+     * Sets the file version
+     * @param version File version
+     */
     public void setVersion(final long version) {
         this.version = version;
     }

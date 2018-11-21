@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_app;
 
-/// Containers request
+/***
+ *  Containers request
+ */
 public class ContainersReq {
     private AppExchangeInfo app;
     private ContainerPermissions[] containers;

@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_authenticator;
 
-/// Represents the authentication response.
+/***
+ *  Represents the authentication response.
+ */
 public class AuthGranted {
     private AppKeys appKeys;
     private AccessContInfo accessContainerInfo;

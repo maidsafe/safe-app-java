@@ -9,7 +9,9 @@
 // of the SAFE Network Software.
 package net.maidsafe.safe_authenticator;
 
-/// Represents the set of permissions for a given container
+/***
+ *  Represents the set of permissions for a given container
+ */
 public class ContainerPermissions {
     private String contName;
     private PermissionSet access;

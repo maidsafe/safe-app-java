@@ -17,14 +17,25 @@ import net.maidsafe.api.model.SignKeyPair;
 import net.maidsafe.safe_app.NativeBindings;
 import net.maidsafe.utils.Helper;
 
-
+/***
+ * Exposes API for the cryptographic functions
+ */
 public class Crypto {
     private static AppHandle appHandle;
 
+    /***
+     * Initialises the Crypto object
+     * @param handle App handle
+     */
     public Crypto(final AppHandle handle) {
         init(handle);
     }
 
+    /***
+     * Helper function to convert public sign key from long to {@link NativeHandle}
+     * @param handle Public sign key handle
+     * @return Public sign key as {@link NativeHandle}
+     */
     private static NativeHandle getPublicSignKeyHandle(final long handle) {
         return new NativeHandle(handle, (signKey) -> {
             NativeBindings.signPubKeyFree(appHandle.toLong(), signKey, (result) -> {
@@ -32,6 +43,10 @@ public class Crypto {
         });
     }
 
+    /***
+     * Generates a unique nonce
+     * @return Unique nonce as byte array
+     */
     public static CompletableFuture<byte[]> generateNonce() {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.generateNonce((result, nonce) -> {
@@ -43,6 +58,11 @@ public class Crypto {
         return future;
     }
 
+    /***
+     * Generates a SHA3 hash of the given data
+     * @param data Data to be hashed
+     * @return Hash of the data as byte array
+     */
     public static CompletableFuture<byte[]> sha3Hash(final byte[] data) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.sha3Hash(data, (result, hashedData) -> {
@@ -58,6 +78,10 @@ public class Crypto {
         this.appHandle = handle;
     }
 
+    /***
+     * Get App's public sign key
+     * @return App's public sign key as {@link NativeHandle}
+     */
     public CompletableFuture<NativeHandle> getAppPublicSignKey() {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.appPubSignKey(appHandle.toLong(), (result, handle) -> {
@@ -72,6 +96,10 @@ public class Crypto {
         return future;
     }
 
+    /***
+     * Generate a new signing key pair
+     * @return New {@link SignKeyPair} instance
+     */
     public CompletableFuture<SignKeyPair> generateSignKeyPair() {
         final CompletableFuture<SignKeyPair> future = new CompletableFuture<>();
         NativeBindings.signGenerateKeyPair(appHandle.toLong(),
@@ -85,6 +113,11 @@ public class Crypto {
         return future;
     }
 
+    /***
+     * Create a new public sign key from byte array
+     * @param key Byte array
+     * @return New public sign key {@link NativeHandle} instance
+     */
     public CompletableFuture<NativeHandle> getPublicSignKey(final byte[] key) {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.signPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
@@ -96,7 +129,11 @@ public class Crypto {
         return future;
     }
 
-
+    /***
+     * Create a new secret signing key from byte array
+     * @param key Byte array
+     * @return Secret sign key as {@link NativeHandle}
+     */
     public CompletableFuture<NativeHandle> getSecretSignKey(final byte[] key) {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.signSecKeyNew(appHandle.toLong(), key, (result, handle) -> {
@@ -108,6 +145,10 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Generate a new encryption key pair
+     * @return New {@link EncryptKeyPair} instance
+     */
     public CompletableFuture<EncryptKeyPair> generateEncryptKeyPair() {
         final CompletableFuture<EncryptKeyPair> future = new CompletableFuture<>();
         NativeBindings.encGenerateKeyPair(appHandle.toLong(),
@@ -122,6 +163,10 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Get the public encryption key for the App
+     * @return App's public encryption key as {@link NativeHandle}
+     */
     public CompletableFuture<NativeHandle> getAppPublicEncryptKey() {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.appPubEncKey(appHandle.toLong(), (result, handle) -> {
@@ -133,7 +178,11 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Create a new public encryption key from byte array
+     * @param key Raw byte array
+     * @return New Public encryption key {@link NativeHandle} instance
+     */
     public CompletableFuture<NativeHandle> getPublicEncryptKey(final byte[] key) {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.encPubKeyNew(appHandle.toLong(), key, (result, handle) -> {
@@ -145,6 +194,11 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Create a new secret encryption key from a raw array
+     * @param key Raw byte array
+     * @return New Secret encryption key {@link NativeHandle} instance
+     */
     public CompletableFuture<NativeHandle> getSecretEncryptKey(final byte[] key) {
         final CompletableFuture<NativeHandle> future = new CompletableFuture<>();
         NativeBindings.encSecretKeyNew(appHandle.toLong(), key, (result, handle) -> {
@@ -156,6 +210,12 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Sign data using a secret sign key
+     * @param secretSignKey Secret sign key
+     * @param data Data to be signed
+     * @return Signed data as byte array
+     */
     public CompletableFuture<byte[]> sign(final NativeHandle secretSignKey, final byte[] data) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.sign(appHandle.toLong(), data, secretSignKey.toLong(),
@@ -168,7 +228,12 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Verifies signed data using the public sign key
+     * @param publicSignKey Public sign key
+     * @param signedData Signed data
+     * @return Verified data
+     */
     public CompletableFuture<byte[]> verify(final NativeHandle publicSignKey, final byte[] signedData) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.verify(appHandle.toLong(), signedData, publicSignKey.toLong(),
@@ -181,6 +246,13 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Encrypts data with the sender's public encryption key and recipient's private encryption key
+     * @param recipientPublicEncryptKey Recipient's private encryption key
+     * @param senderSecretEncryptKey Sender's public encryption key
+     * @param data Data to be encrypted
+     * @return Encrypted data as byte array
+     */
     public CompletableFuture<byte[]> encrypt(final NativeHandle recipientPublicEncryptKey,
                                              final NativeHandle senderSecretEncryptKey, final byte[] data) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
@@ -194,7 +266,13 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Decrypts encrypted data using sender's public encryption key and recipient's private encryption key
+     * @param senderPublicEncryptKey Sender's public encryption key
+     * @param recipientSecretEncryptKey Recipient's private encryption key
+     * @param cipherText Encrypted data
+     * @return Decrypted data as byte array
+     */
     public CompletableFuture<byte[]> decrypt(final NativeHandle senderPublicEncryptKey,
                                              final NativeHandle recipientSecretEncryptKey, final byte[] cipherText) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
@@ -208,6 +286,12 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Encrypts data using private and public encryption keys with a seal
+     * @param recipientPublicEncryptKey Recipient's public encryption key
+     * @param data Data to be encrypted
+     * @return Encrypted data as byte array
+     */
     public CompletableFuture<byte[]> encryptSealedBox(final NativeHandle recipientPublicEncryptKey, final byte[] data) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encryptSealedBox(appHandle.toLong(), data, recipientPublicEncryptKey.toLong(),
@@ -220,7 +304,13 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Decrypts content encrypted by sealed box encryption
+     * @param recipientPublicEncryptKey Recipient's public encryption key
+     * @param recipientSecretEncryptKey Recipient's secret encryption key
+     * @param cipherText Cipher to be decrypted
+     * @return Decrypted data as byte array
+     */
     public CompletableFuture<byte[]> decryptSealedBox(final NativeHandle recipientPublicEncryptKey,
                                                       final NativeHandle recipientSecretEncryptKey,
                                                       final byte[] cipherText) {
@@ -236,7 +326,11 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Retrieves the public encryption key as byte array
+     * @param publicEncKey Public encryption key as {@link NativeHandle}
+     * @return Raw public encryption key as byte array
+     */
     public CompletableFuture<byte[]> getRawPublicEncryptKey(final NativeHandle publicEncKey) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encPubKeyGet(appHandle.toLong(), publicEncKey.toLong(), (result, key) -> {
@@ -248,6 +342,11 @@ public class Crypto {
         return future;
     }
 
+    /**
+     * Retrieves secret encryption key as byte array
+     * @param secretEncKey Secret encryption key as {@link NativeHandle}
+     * @return Raw secret encryption key as byte array
+     */
     public CompletableFuture<byte[]> getRawSecretEncryptKey(final NativeHandle secretEncKey) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.encSecretKeyGet(appHandle.toLong(), secretEncKey.toLong(), (result, key) -> {
@@ -259,7 +358,11 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Retrieves public sign key as byte array
+     * @param publicSignKey Public sign key as {@link NativeHandle}
+     * @return Raw public sign key as byte array
+     */
     public CompletableFuture<byte[]> getRawPublicSignKey(final NativeHandle publicSignKey) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.signPubKeyGet(appHandle.toLong(), publicSignKey.toLong(), (result, key) -> {
@@ -271,7 +374,11 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Retrieves secret sign key as byte array
+     * @param secretSignKey Secret sign key as {@link NativeHandle}
+     * @return Raw secret sign key as byte array
+     */
     public CompletableFuture<byte[]> getRawSecretSignKey(final NativeHandle secretSignKey) {
         final CompletableFuture<byte[]> future = new CompletableFuture<>();
         NativeBindings.signSecKeyGet(appHandle.toLong(), secretSignKey.toLong(), (result, key) -> {
@@ -283,7 +390,11 @@ public class Crypto {
         return future;
     }
 
-
+    /**
+     * Helper function to initialise secret sign key as {@link NativeHandle}
+     * @param handle Address of the secret sign key
+     * @return Secret sign key as {@link NativeHandle}
+     */
     private NativeHandle getSecretSignKeyHandle(final long handle) {
         return new NativeHandle(handle, (signKey) -> {
             NativeBindings.signSecKeyFree(appHandle.toLong(), signKey, (result) -> {
@@ -291,7 +402,11 @@ public class Crypto {
         });
     }
 
-
+    /**
+     * Helper function to initialise public encryption key as {@link NativeHandle}
+     * @param handle Address of the public encryption key
+     * @return Public encryption key as {@link NativeHandle}
+     */
     private NativeHandle getPublicEncKeyHandle(final long handle) {
         return new NativeHandle(handle, (encKey) -> {
             NativeBindings.encPubKeyFree(appHandle.toLong(), encKey, (result) -> {
@@ -299,7 +414,11 @@ public class Crypto {
         });
     }
 
-
+    /**
+     * Helper function to initialise secret encryption key as {@link NativeHandle}
+     * @param handle Address of the secret encryption key
+     * @return Secret encryption key as {@link NativeHandle}
+     */
     private NativeHandle getSecretEncKeyHandle(final long handle) {
         return new NativeHandle(handle, (encKey) -> {
             NativeBindings.encSecretKeyFree(appHandle.toLong(), encKey, (result) -> {

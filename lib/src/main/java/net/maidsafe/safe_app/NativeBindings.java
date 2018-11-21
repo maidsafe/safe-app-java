@@ -10,6 +10,9 @@
 package net.maidsafe.safe_app;
 
 
+/**
+ * Native functions in safe_app
+ */
 public class NativeBindings {
 
     /**
@@ -356,7 +359,7 @@ public class NativeBindings {
     public static native void mdataEntryActionsFree(long app, long actionsH, CallbackResult oCb);
 
     /**
-     * Serialize metadata.
+     * Serialise metadata.
      */
     public static native void mdataEncodeMetadata(MetadataResponse metadata, CallbackResultByteArrayLen oCb);
 
@@ -394,28 +397,28 @@ public class NativeBindings {
     public static native void mdataPermissionsFree(long app, long permissionsH, CallbackResult oCb);
 
     /**
-     * Create new mutable data and put it on the network.
+     * Create new Mutable Data and put it on the network.
      * <p>
-     * `permissions_h` is a handle to permissions to be set on the mutable data.
+     * `permissions_h` is a handle to permissions to be set on the Mutable Data.
      * If `PERMISSIONS_EMPTY`, the permissions will be empty.
      * <p>
-     * `entries_h` is a handle to entries for the mutable data.
+     * `entries_h` is a handle to entries for the Mutable Data.
      * If `ENTRIES_EMPTY`, the entries will be empty.
      */
     public static native void mdataPut(long app, MDataInfo info, long permissionsH, long entriesH, CallbackResult oCb);
 
     /**
-     * Get version of the mutable data.
+     * Get version of the Mutable Data.
      */
     public static native void mdataGetVersion(long app, MDataInfo info, CallbackResultLong oCb);
 
     /**
-     * Get size of serialised mutable data.
+     * Get size of serialised Mutable Data.
      */
     public static native void mdataSerialisedSize(long app, MDataInfo info, CallbackResultLong oCb);
 
     /**
-     * Get value at the given key from the mutable data.
+     * Get value at the given key from the Mutable Data.
      * <p>
      * Please notice that if a value is fetched from a private `MutableData`,
      * it's not automatically decrypted.
@@ -423,46 +426,46 @@ public class NativeBindings {
     public static native void mdataGetValue(long app, MDataInfo info, byte[] key, CallbackResultByteArrayLenLong oCb);
 
     /**
-     * Get a handle to the complete list of entries in the mutable data.
+     * Get a handle to the complete list of entries in the Mutable Data.
      */
     public static native void mdataEntries(long app, MDataInfo info, CallbackResultMDataEntriesHandle oCb);
 
     /**
-     * Get list of all keys in the mutable data.
+     * Get list of all keys in the Mutable Data.
      */
     public static native void mdataListKeys(long app, MDataInfo info, CallbackResultMDataKeyArrayLen oCb);
 
     /**
-     * Get list of all values in the mutable data.
+     * Get list of all values in the Mutable Data.
      */
     public static native void mdataListValues(long app, MDataInfo info, CallbackResultMDataValueArrayLen oCb);
 
     /**
-     * Mutate entries of the mutable data.
+     * Mutate entries of the Mutable Data.
      */
     public static native void mdataMutateEntries(long app, MDataInfo info, long actionsH, CallbackResult oCb);
 
     /**
-     * Get list of all permissions set on the mutable data
+     * Get list of all permissions set on the Mutable Data
      */
     public static native void mdataListPermissions(long app, MDataInfo info, CallbackResultMDataPermissionsHandle oCb);
 
     /**
-     * Get list of permissions set on the mutable data for the given user.
+     * Get list of permissions set on the Mutable Data for the given user.
      * <p>
      * User is either handle to a signing key or `USER_ANYONE`.
      */
     public static native void mdataListUserPermissions(long app, MDataInfo info, long userH, CallbackResultPermissionSet oCb);
 
     /**
-     * Set permissions set on the mutable data for the given user.
+     * Set permissions set on the Mutable Data for the given user.
      * <p>
      * User is either handle to a signing key or `USER_ANYONE`.
      */
     public static native void mdataSetUserPermissions(long app, MDataInfo info, long userH, PermissionSet permissionSet, long version, CallbackResult oCb);
 
     /**
-     * Delete permissions set on the mutable data for the given user.
+     * Delete permissions set on the Mutable Data for the given user.
      * <p>
      * User is either handle to a signing key or `USER_ANYONE`.
      */

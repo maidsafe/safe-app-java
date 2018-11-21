@@ -11,18 +11,28 @@ package net.maidsafe.api.model;
 
 import net.maidsafe.utils.IFreeFunc;
 
+/**
+ * Handle to a complex object held in the SafeApp's object cache.
+ * Complex objects are not moved across FFI boundary, instead a reference to the object is used.
+ * The handle acts as a reference to the object for performing operations
+ */
 public class NativeHandle {
+
     private final IFreeFunc freeFunc;
     protected long handle;
 
+    /**
+     * Initialises a new handle
+     * @param handle Handle to native object
+     * @param freeFunc Function that frees the native object
+     */
     public NativeHandle(final long handle, final IFreeFunc freeFunc) {
         this.handle = handle;
         this.freeFunc = freeFunc;
     }
 
     /**
-     * Returns handle as long
-     *
+     * Returns handle as long value
      * @return handle
      */
     public long toLong() {
