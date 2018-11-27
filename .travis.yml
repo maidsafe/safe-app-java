@@ -1,5 +1,4 @@
 language: java
-secure: "vpb8bouCdr1JyG2pRncbwjqh5NIAbShq9DWxS2LmdqBh0c4/BIZNpjUoifwr10zZFHb6134dTnFvcfHS8rARGODUijrvUzN4pt1zHYku2VNI/70xmI/tiqZc17RIyEFNZypfeogug8cs47Vck5u0ce32vsfYLMk/Uqn7oy3tMzAp/Rkg54hlbaersRo7YBxqrcoJrNiMi9Ri7L3qVgQd01WZQgGHT/M2ffV6bg7QgAZg2ZimQz0Ila3qjLnB07c3dv0iIDvXO5bQCcNfI7Rh3qGtjeXmrWMLSn12CanBEzE1FmgCk86/SasFx/P6nZScHvfj2ilNv8T5M0kl2UMdANIbgpdKD5Ft+1NGUR+bSxdv1o+NEhIHpKwPECMpQ5zKucTIC5MThFt2k4o7U2472eentSNPmPyN6J47eTxfqL8g1TR4ZnICL5cIzipASgsk3/HTaNSWPHJs7sRmGltMTorbp/hkcmZ6LrT+Vqy0RvWKzxeS4aaTUZ9X973DLKOorgBF78tEj6Upqm3u0q1A6ZsBuOygxVLxdqic5rDP51Ay+f+erFR1H42IOZeZKE/RCzmCDnAkaPWeXVhnJklLreSqB0ll+c3mg/47f1Hv1r0DLUhEUpeaJAILFK3R8ZBF12mrlj8QI6WBKJXWYDEsMCvyPgosp23INnWdNIUMTBw="
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -10,7 +9,9 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 env:
-  - ANDROID_HOME=$HOME/.android
+  global:
+    - ANDROID_HOME=$HOME/.android
+    - secure: vpb8bouCdr1JyG2pRncbwjqh5NIAbShq9DWxS2LmdqBh0c4/BIZNpjUoifwr10zZFHb6134dTnFvcfHS8rARGODUijrvUzN4pt1zHYku2VNI/70xmI/tiqZc17RIyEFNZypfeogug8cs47Vck5u0ce32vsfYLMk/Uqn7oy3tMzAp/Rkg54hlbaersRo7YBxqrcoJrNiMi9Ri7L3qVgQd01WZQgGHT/M2ffV6bg7QgAZg2ZimQz0Ila3qjLnB07c3dv0iIDvXO5bQCcNfI7Rh3qGtjeXmrWMLSn12CanBEzE1FmgCk86/SasFx/P6nZScHvfj2ilNv8T5M0kl2UMdANIbgpdKD5Ft+1NGUR+bSxdv1o+NEhIHpKwPECMpQ5zKucTIC5MThFt2k4o7U2472eentSNPmPyN6J47eTxfqL8g1TR4ZnICL5cIzipASgsk3/HTaNSWPHJs7sRmGltMTorbp/hkcmZ6LrT+Vqy0RvWKzxeS4aaTUZ9X973DLKOorgBF78tEj6Upqm3u0q1A6ZsBuOygxVLxdqic5rDP51Ay+f+erFR1H42IOZeZKE/RCzmCDnAkaPWeXVhnJklLreSqB0ll+c3mg/47f1Hv1r0DLUhEUpeaJAILFK3R8ZBF12mrlj8QI6WBKJXWYDEsMCvyPgosp23INnWdNIUMTBw=
 matrix:
   include:
     - os: linux
