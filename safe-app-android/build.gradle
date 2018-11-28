@@ -51,6 +51,11 @@ android.libraryVariants.all { variant ->
         outputFileName = "safe-app-android-${it.baseName}-${android.defaultConfig.versionName}.aar"
     }
 }
+tasks.withType(JavaCompile) {
+  configure(options) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked' // examples
+  }
+}
 
 task javadoc(type: Javadoc) {
   failOnError false

@@ -429,7 +429,7 @@ public class Session {
      * @return New {@link Session} instance
      */
     public CompletableFuture<Session> createTestApp(final String appId) {
-        final CompletableFuture future = new CompletableFuture();
+        final CompletableFuture<Session> future = new CompletableFuture<>();
         NativeBindings.testCreateApp(appId, (result, app) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
@@ -445,7 +445,7 @@ public class Session {
      * @return New {@link Session} instance
      */
     public CompletableFuture<Session> createTestAppWithAccess(final AuthReq authReq) {
-        final CompletableFuture future = new CompletableFuture();
+        final CompletableFuture<Session> future = new CompletableFuture<>();
         NativeBindings.testCreateAppWithAccess(authReq, (result, app) -> {
             if (result.getErrorCode() != 0) {
                 future.completeExceptionally(Helper.ffiResultToException(result));
