@@ -165,6 +165,13 @@ task('pack') {
         }
     }
 }
+test {
+  testLogging {
+    events "PASSED", "FAILED", "SKIPPED"
+    exceptionFormat "full"
+  }
+}
+
 task("downloadNativeLibs", type: Download) {
     File dir = new File(tempDownloadDir)
     if (dir.exists()) {
