@@ -108,7 +108,7 @@ public class MDataPermission {
     /**
      * Insert a new permission set for a user.
      * @param permissionHandle Permission handle as {@link NativeHandle}
-     * @param publicSignKey Public sign key for the user. To insert for all users pass Constants.ZERO_HANDLE
+     * @param publicSignKey Public sign key for the user. To insert permissions for all users pass Constants.USER_ANYONE
      * @param permissionSet Permission set to be assigned
      */
     public CompletableFuture insert(final NativeHandle permissionHandle, final NativeHandle publicSignKey,

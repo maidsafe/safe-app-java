@@ -174,8 +174,10 @@ public final class MData {
     /**
      * Commit the Mutable data on the network
      * @param mDataInfo Mutable data info as {@link MDataInfo}
-     * @param permissionHandle Permission handle as {@link NativeHandle}
-     * @param entriesHandle Entries handle as {@link NativeHandle}
+     * @param permissionHandle Permission handle as {@link NativeHandle}.
+     *                         To commit the data without permissions use Constants.MD_PERMISSION_EMPTY
+     * @param entriesHandle Entries handle as {@link NativeHandle}.
+     *                      To commit the data without entries use Constants.MD_ENTRIES_EMPTY
      */
     public CompletableFuture<Void> put(final MDataInfo mDataInfo, final NativeHandle permissionHandle,
                                        final NativeHandle entriesHandle) {

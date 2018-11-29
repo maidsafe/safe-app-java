@@ -15,8 +15,9 @@ import net.maidsafe.api.model.NativeHandle;
  * Constants available in native code
  */
 public final class Constants {
-    public static final NativeHandle ANYONE_HANDLE = new NativeHandle(0, (h) -> {
-    });
+    public static final NativeHandle USER_ANYONE = new NativeHandle(0, (h) -> { });
+    public static final NativeHandle MD_ENTRIES_EMPTY = USER_ANYONE;
+    public static final NativeHandle MD_PERMISSION_EMPTY = USER_ANYONE;
     public static final int XOR_NAME_LENGTH = 32;
     public static final int GET_NEXT_VERSION = 0;
     public static final long PUBLIC_SIGN_KEY_SIZE = 32;
