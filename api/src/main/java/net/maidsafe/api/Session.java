@@ -428,7 +428,7 @@ public class Session {
      * @param appId Application ID
      * @return New {@link Session} instance
      */
-    public CompletableFuture<Session> createTestApp(final String appId) {
+    public static CompletableFuture<Session> createTestApp(final String appId) {
         final CompletableFuture<Session> future = new CompletableFuture<>();
         NativeBindings.testCreateApp(appId, (result, app) -> {
             if (result.getErrorCode() != 0) {
@@ -444,7 +444,7 @@ public class Session {
      * @param authReq Auth request
      * @return New {@link Session} instance
      */
-    public CompletableFuture<Session> createTestAppWithAccess(final AuthReq authReq) {
+    public static CompletableFuture<Session> createTestAppWithAccess(final AuthReq authReq) {
         final CompletableFuture<Session> future = new CompletableFuture<>();
         NativeBindings.testCreateAppWithAccess(authReq, (result, app) -> {
             if (result.getErrorCode() != 0) {
