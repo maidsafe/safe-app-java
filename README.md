@@ -25,18 +25,12 @@ Two flavours of the android library are available: `safe-app-android` and `safe-
 
 ### Usage:
 
-Developers can try out the library using the available SNAPSHOT release. To include the SNAPSHOT libraries in your application, add the `oss-snapshot-repository` and the dependencies in your `build.gradle` file:
+The libraries are available on the `jcenter()` maven repository. To include the library in your android project add the following to the dependencies in the `build.gradle` file.
 
 ```
-repositories {
-    maven {
-        url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
-    }
-}
-
 dependencies {
-    implementation 'net.maidsafe:safe-app-android-dev:0.1.0-SNAPSHOT' // mock network
-    implementation 'net.maidsafe:safe-app-android:0.1.0-SNAPSHOT' // non-mock network
+    implementation 'net.maidsafe:safe-app-android-dev:0.1.0' // mock network
+    implementation 'net.maidsafe:safe-app-android:0.1.0' // non-mock network
 }
 ```
 We recommend using the [product flavours](https://developer.android.com/studio/build/build-variants#product-flavors) feature to include dependencies for the mock and non-mock variants of your application as demonstrated in the [safe-getting-started-android](https://github.com/maidsafe/safe-getting-started-android/blob/master/app/build.gradle#L22) application.
