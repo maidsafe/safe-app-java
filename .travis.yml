@@ -55,4 +55,4 @@ script:
   - ./gradlew download-nativelibs
   - ./gradlew check
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./gradlew :safe-app-android:runInstrumentationTests; fi
-
+  - ./gradlew  coveralls

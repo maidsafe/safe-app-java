@@ -1,4 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id 'com.github.kt3k.coveralls' version '2.8.2'
+}
 allprojects {
     repositories {
         google()
@@ -29,4 +32,13 @@ task delete(type: Delete) {
 
 task Download(dependsOn: ['safe-app:download-nativelibs', 'safe-app-android:download-nativelibs']) {
     // configuration
+}
+
+coveralls {
+    jacocoReportPath 'safe-app/build/reports/jacoco/test/jacocoTestReport.xml'
+    sourceDirs = ["safe-app/src/main/java", "api/src/main/java"]
+}
+
+tasks.coveralls {
+    dependsOn ':safe-app:jacocoTestReport'
 }
