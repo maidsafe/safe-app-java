@@ -41,7 +41,7 @@ android {
             }
         }
         mock {
-            java.srcDir("$rootDir/safe-authenticator/src/main/java")
+            java.srcDir("$rootDir/safe-app/src/mock/java")
         }
     }
 }
@@ -123,22 +123,6 @@ task runInstrumentationTests(dependsOn: "attachTests") {
     dependsOn('connectedMockDebugAndroidTest')
     doLast {
         delete "${projectDir}/src/androidTest/java/net/maidsafe/api"
-    }
-}
-
-task("unzipNativeLibs", type: Copy) {
-    dependsOn << ['downloadNativeLibs']
-    from zipTree("${tempLibDir}/${nativeLibsVersion}.zip")
-    into tempLibDir
-    doLast {
-        copy {
-            from tempLibDir + "/android/lib/mock/"
-            into "${projectDir}/src/mock/jniLibs"
-        }
-        copy {
-            from tempLibDir + "/android/lib/nonNock/"
-            into "${projectDir}/src/nonMock/jniLibs"
-        }
     }
 }
 

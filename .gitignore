@@ -15,3 +15,4 @@ safe-app/*.iml
 safe-app-android/*.iml
 safe-app-android/src/nonMock
 safe-app-android/src/mock
+*/out

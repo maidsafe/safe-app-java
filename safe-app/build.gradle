@@ -1,6 +1,4 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import de.undercouch.gradle.tasks.download.Download
-import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
@@ -13,6 +11,21 @@ buildscript {
 }
 plugins {
     id "com.github.spotbugs" version "1.6.5"
+    id "com.lazan.javaflavours" version "1.2"
+}
+javaFlavours {
+  flavour 'mock'
+  flavour 'nonMock'
+}
+sourceSets {
+  test {
+    java {
+      srcDir('src/mock/java')
+    }
+    resources {
+      srcDir('src/mock/resources')
+    }
+  }
 }
 
 apply plugin: 'java-library'
@@ -49,137 +62,29 @@ version '0.1.0'
 dependencies {
     implementation project(':lib')
     implementation project(':api')
-    compile project(':safe-authenticator')
     testImplementation 'junit:junit:4.12'
 }
-
+tasks.withType(Jar) {
+  from project(':api').sourceSets.main.output
+  from project(':lib').sourceSets.main.output
+}
 repositories {
     mavenCentral()
 }
 
-task copyTestResources(type: Copy) {
-    def platform = "linux"
-    def arch = "x64"
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        platform = "win"
-    } else if (Os.isFamily(Os.FAMILY_MAC)) {
-        platform = "osx"
-    }
-    from "${projectDir}/libs/${platform}/mock/${arch}"
-    into "${buildDir}/classes/java/test/native"
-}
-processTestResources.dependsOn copyTestResources
-
-task copyAuthTestResources(type: Copy) {
-    def platform = "linux"
-    def arch = "x64"
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        platform = "win"
-    } else if (Os.isFamily(Os.FAMILY_MAC)) {
-        platform = "osx"
-    }
-    from "${rootDir}/safe-authenticator/libs/${platform}/mock/${arch}"
-    into "${projectDir}/build/classes/java/test/native"
-}
-processTestResources.dependsOn copyAuthTestResources
-
-def nativeLibsVersion = "v0.9.0"
+def nativeLibsVersion = "0.9.0"
 def tempDownloadDir = "${projectDir}/.tempDownloads"
 
 static def getCombinations() {
-    def platforms = ['osx', 'linux', 'win']
-    def variants = ['mock', 'non-mock']
-    def architectures = ['x64'] // ['x86', 'x64']
-    [platforms, architectures, variants].combinations().findAll()
+  def packages = [ 'safe_app', 'safe_app_jni', 'safe_authenticator', 'safe_authenticator_jni' ]
+  def platforms = ['osx', 'linux', 'win']
+  def variants = [ 'mock', 'nonMock' ]
+  def architectures = ['x64']
+  [packages, platforms, variants, architectures].combinations().findAll { it ->
+    !(it[0].contains('safe_authenticator') && it[2] == 'nonMock')
+  }
 }
 
-static def getMockCombinations() {
-    def platforms = ['osx', 'linux', 'win']
-    def archictures = ['x64']
-    [platforms, archictures].combinations().findAll()
-}
-
-tasks.addRule('Pattern: NativeLibs-<ID>') { String taskName ->
-    if (taskName.startsWith('NativeLibs-')) {
-        task(taskName, type: Copy) {
-            dependsOn << [name.replace('NativeLibs', 'delete')]
-            def args = name.split('-')
-            String platform = args[1]
-            String arch = args[2]
-            if (args[3] == 'mock') {
-                dependsOn << [name.replace('NativeLibs', 'AuthNativeLibs')]
-            }
-            from "${projectDir}/libs/${platform}/${args[3] == 'mock' ? 'mock' : 'non-mock'}/${arch}/"
-            into "${projectDir}/src/main/resources/native"
-        }
-    }
-}
-tasks.addRule('Pattern: delete-<ID>') { String taskName ->
-    if (taskName.startsWith('delete-')) {
-        task(taskName, dependsOn: build, type: Delete) {
-            delete "${projectDir}/src/main/resources/native/"
-            delete "${projectDir}/build/resources/main/native/"
-            delete "${projectDir}/build/classes/java/test/native"
-        }
-    }
-}
-tasks.addRule('Pattern: AuthNativeLibs-<ID>') { String taskName ->
-    if (taskName.startsWith('AuthNativeLibs-')) {
-        println("this is happening:" + taskName)
-        task(taskName, type: Copy) {
-            dependsOn << [name.replace('AuthNativeLibs', 'AuthDelete')]
-            def args = name.split('-')
-            String platform = args[1]
-            String arch = args[2]
-            from "${rootDir}/safe-authenticator/libs/${platform}/${args[3] == 'mock' ? 'mock' : 'non-mock'}/${arch}/"
-            into "${rootDir}/safe-authenticator/src/main/resources/native"
-        }
-    }
-}
-tasks.addRule('Pattern: AuthDelete-<ID>') { String taskName ->
-    if (taskName.startsWith('AuthDelete-')) {
-        task(taskName, dependsOn: build, type: Delete) {
-            delete "${projectDir}/../safe-authenticator/src/main/resources/native/"
-            delete "${projectDir}/../safe-authenticator/build/resources/main/native/"
-            delete "${projectDir}/../safe-authenticator/build/classes/java/test/native"
-        }
-    }
-}
-tasks.addRule('Pattern: pack-<ID>') { String taskName ->
-    if (taskName.startsWith('pack')) {
-        task(taskName, type: ShadowJar) {
-            dependsOn << [name.replace('pack', 'NativeLibs')]
-            def args = name.split('-')
-            String platform = args[1]
-            String arch = args[2]
-            boolean isMock = args[3] == "mock"
-            from sourceSets.main.output
-            from sourceSets.main.resources
-            from project(':api').sourceSets.main.output
-            from project(':api').sourceSets.main.resources
-            from project(':lib').sourceSets.main.output
-            from project(':lib').sourceSets.main.resources
-            if (isMock) {
-                from project(':safe-authenticator').sourceSets.main.output
-                from project(':safe-authenticator').sourceSets.main.resources
-            }
-            baseName = "${project.name}${isMock ? '-mock' : ''}"
-            classifier = "${platform}-${arch}"
-            version = project.version
-        }
-    }
-}
-task('pack') {
-    def tasks = getCombinations().collect { "pack-${it[0]}-${it[1]}-${it[2]}" }
-    dependsOn << tasks
-    doLast {
-        println "Deleting default Jar..."
-        File defaultJar = new File("${project.buildDir}/libs/safe-app-${project.version}.jar")
-        if (defaultJar.exists()) {
-            defaultJar.delete()
-        }
-    }
-}
 test {
   jacoco {
     append = false
@@ -198,51 +103,23 @@ task("downloadNativeLibs", type: Download) {
         assert dir.deleteDir()
     }
     def endPoints = getCombinations().collect {
-        "https://github.com/lionel1704/safe_client_libs/releases/download/${nativeLibsVersion}/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
+        "https://github.com/lionel1704/safe_client_libs/releases/download/${nativeLibsVersion}/${it[0]}-${it[2] == 'mock' ? 'mock-' : ''}v${nativeLibsVersion}-${it[1]}-${it[3]}.zip"
     }
     src(endPoints)
     dest tempDownloadDir
 }
-task("downloadAuthNativeLibs", type: Download) {
-    File dir = new File(tempDownloadDir)
-    if (dir.exists()) {
-        assert dir.deleteDir()
-    }
-    def endPoints = getMockCombinations().collect {
-//        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/safe_app-${it[2] == 'mock' ? 'mock-' : ''}${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
-        "https://github.com/lionel1704/safe_client_libs/releases/download/${nativeLibsVersion}/safe_authenticator-mock-${nativeLibsVersion}-${it[0]}-${it[1]}.zip"
-    }
-    src(endPoints)
-    dest(tempDownloadDir)
-}
-tasks.addRule('Pattern: unzipAuth-<ID>') { String taskName ->
-    if (taskName.startsWith('unzipAuth')) {
+tasks.addRule('Pattern: unzip-<ID>') { String taskName ->
+    if (taskName.startsWith('unzip')) {
         task(taskName, type: Copy) {
             def args = name.split('-')
-            String platform = args[1]
-            String arch = args[2]
-            from zipTree("${tempDownloadDir}/safe_authenticator-mock-${nativeLibsVersion}-${platform}-${arch}.zip")
-            into "${projectDir}/../safe-authenticator/libs/${platform}/mock/${arch}"
-        }
-    }
-}
-tasks.addRule('Pattern: unzipApp-<ID>') { String taskName ->
-    if (taskName.startsWith('unzipApp')) {
-        task(taskName, type: Copy) {
-            def args = name.split('-')
-            String platform = args[1]
-            String arch = args[2]
-            boolean isMock = args[3] == "mock"
-            from zipTree("${tempDownloadDir}/safe_app-${isMock ? 'mock-' : ''}${nativeLibsVersion}-${platform}-${arch}.zip")
-            into "${projectDir}/libs/${platform}/${isMock ? 'mock' : 'non-mock'}/${arch}"
+            from zipTree("${tempDownloadDir}/${args[1]}-${args[3] == 'mock' ? 'mock-' : ''}v${nativeLibsVersion}-${args[2]}-${args[4]}.zip")
+            into "${projectDir}/src/${args[3]}/resources/native"
         }
     }
 }
 
 task("download-nativelibs") {
     dependsOn << ['downloadNativeLibs', getCombinations().collect {
-        "unzipApp-${it[0]}-${it[1]}-${it[2]}"
-    }, 'downloadAuthNativeLibs', getMockCombinations().collect {
-        "unzipAuth-${it[0]}-${it[1]}"
+        "unzip-${it[0]}-${it[1]}-${it[2]}-${it[3]}"
     }]
 }

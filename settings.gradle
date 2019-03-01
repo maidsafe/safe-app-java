@@ -1,1 +1,1 @@
-include ':safe-app', ':api', ':safe-authenticator', ':lib'
+include ':safe-app', ':api', ':lib'

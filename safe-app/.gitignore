@@ -5,3 +5,5 @@
 /build/
 /src/main/resources/libs
 /src/main/resources/native
+/src/mock/resources
+/src/nonMock/resources
