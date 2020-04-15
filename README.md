@@ -4,7 +4,7 @@ safe_app_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/s
 
 > [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) is a native library which exposes low level API for application development on SAFE Network. It exposes APIs for authorisation and to manage data on the network.
 
-**Maintainer:** Krishna Kumar (krishna.kumar@maidsafe.net)
+**Maintainer:** Lionel Faber (lionel.faber@maidsafe.net)
 
 |Android|Coverage Status|
 |:---:|:---:|
