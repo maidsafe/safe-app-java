@@ -600,7 +600,7 @@ public class NativeBindings {
     public static native void appContainerName(String appId, CallbackResultString oCb);
 
     /**
-     * Returns true if this crate was compiled against mock-routing.
+     * Returns true if this crate was compiled against mock-sn_routing.
      */
     public static native boolean appIsMock();
 

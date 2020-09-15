@@ -150,7 +150,7 @@ public class Authenticator {
     }
 
     /**
-     * Returns true if libraries were compiled against mock routing
+     * Returns true if libraries were compiled against mock sn_routing
      */
     public static boolean isMock() {
         return NativeBindings.authIsMock();

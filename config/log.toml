@@ -20,10 +20,10 @@ appenders = ["async_file"]
 [loggers."crust"]
 level = "debug"
 
-[loggers."routing"]
+[loggers."sn_routing"]
 level = "trace"
 
-[loggers."routing_stats"]
+[loggers."sn_routing_stats"]
 level = "trace"
 
 [loggers."safe_core"]

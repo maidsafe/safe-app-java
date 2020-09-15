@@ -295,7 +295,7 @@ public class Session {
     }
 
     /**
-     * Returns true if libraries were compiled for mock routing
+     * Returns true if libraries were compiled for mock sn_routing
      */
     public static boolean isMock() {
         return NativeBindings.appIsMock();
