@@ -34,7 +34,7 @@ public class Client extends Session {
         try {
             final String tempDir = System.getProperty("java.io.tmpdir");
 
-            generatedDir = new File(tempDir, "safe_app_java" + System.nanoTime());
+            generatedDir = new File(tempDir, "sn_java" + System.nanoTime());
             if (!generatedDir.mkdir()) {
                 throw new IOException("Failed to create temp directory " + generatedDir.getName());
             }

@@ -1,41 +1,48 @@
-# safe_app_java
+# sn_java
 
-safe_app_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) API.
+sn_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) API.
 
-> [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) is a native library which exposes low level API for application development on SAFE Network. It exposes APIs for authorisation and to manage data on the network.
+> [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) is a native library which exposes low level API for application development on Safe Network. It exposes APIs for authorisation and to manage data on the network.
 
 **Maintainer:** Lionel Faber (lionel.faber@maidsafe.net)
 
 |Android|Coverage Status|
 |:---:|:---:|
-|[![Build Status](https://travis-ci.com/maidsafe/safe_app_java.svg?branch=master)](https://travis-ci.com/maidsafe/safe_app_java)|[![Coverage Status](https://coveralls.io/repos/github/maidsafe/safe_app_java/badge.svg?branch=master)](https://coveralls.io/github/maidsafe/safe_app_java?branch=master)|
+|[![Build Status](https://travis-ci.com/maidsafe/sn_java.svg?branch=master)](https://travis-ci.com/maidsafe/sn_java)|[![Coverage Status](https://coveralls.io/repos/github/maidsafe/sn_java/badge.svg?branch=master)](https://coveralls.io/github/maidsafe/sn_java?branch=master)|
 
 
 ## Table of contents
 
-1. [High level overview](#high-level-overview)
-2. [Project Structure](#project-structure)
-3. [Using the package](#using-the-packages)
-    - [Android](#including-the-package-in-android-projects)
-    - [Desktop](#including-the-package-in-your-desktop-projects)
+- [sn_java](#sn_java)
+  - [Table of contents](#table-of-contents)
+  - [High level overview](#high-level-overview)
+  - [Project Structure](#project-structure)
+  - [Using the packages](#using-the-packages)
+    - [Supported Platforms](#supported-platforms)
+    - [Including the package in Android projects](#including-the-package-in-android-projects)
+    - [Including the package in desktop projects](#including-the-package-in-desktop-projects)
     - [Documentation](#documentation)
-4. [Build instructions](#build-instructions)
-5. [Development](#development)
-6. [Interfacing with the SAFE Client libraries](#interfacing-with-the-safe-client-libraries)
-7. [Contributing](#contributing)
-    - [Project board](#project-board)
-    - [Issues](#issues)
-    - [Commits and Pull Requests](#commits-and-pull-requests)
-    - [Changelog and Releases](#changelog-and-releases)
-    - [Copyrights](#copyrights)
-8. [Further help](#further-help)
-9. [License](#license)
+  - [Build Instructions](#build-instructions)
+    - [Pre-requisites](#pre-requisites)
+    - [Building for Android](#building-for-android)
+    - [Building for Desktop](#building-for-desktop)
+    - [Building the API documentation](#building-the-api-documentation)
+  - [Development](#development)
+    - [Using gradle:](#using-gradle)
+    - [Running tests:](#running-tests)
+    - [Interfacing with the Safe Client libraries](#interfacing-with-the-safe-client-libraries)
+      - [Exposing the API:](#exposing-the-api)
+      - [Native Handles and garbage collection:](#native-handles-and-garbage-collection)
+  - [Contributing](#contributing)
+  - [Copyrights](#copyrights)
+  - [Further help](#further-help)
+  - [License](#license)
 
 ## High level overview
 
-The safe_app_java packages are Java bindings for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) Rust library which is needed by any desktop / mobile application to connect and read/write data on the [SAFE Network](https://safenetwork.tech).
+The sn_java packages are Java bindings for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) Rust library which is needed by any desktop / mobile application to connect and read/write data on the [Safe Network](https://safenetwork.tech).
 
-The libraries contain API to authenticate with the [SAFE Authenticator](https://github.com/maidsafe/safe-authenticator-mobile) and then read/write data on the SAFE network.
+The libraries contain API to authenticate with the [Safe Authenticator](https://github.com/maidsafe/sn_authenticator_mobile) and then read/write data on the Safe network.
 
 ![Authenticaton flow diagram](https://raw.githubusercontent.com/maidsafe/safe_app_nodejs/master/misc/auth-flow-diagram.png)
 
@@ -79,14 +86,14 @@ For desktop projects, the JAR file can be [manually built from source](#building
 
 ### Documentation
 
-The usage of this library in an android application is demonstrated in the [safe-getting-started-android project](https://github.com/maidsafe/safe-getting-started-android). This [step-by-step tutorial](https://hub.safedev.org/platform/android) will guide you through the process of authorising your application to send and receive data on the SAFE network. The API documentation for the safe_app_java library is available at [docs.maidsafe.net/safe_app_java](https://docs.maidsafe.net/safe_app_java).
+The usage of this library in an android application is demonstrated in the [safe-getting-started-android project](https://github.com/maidsafe/safe-getting-started-android). This [step-by-step tutorial](https://hub.safedev.org/platform/android) will guide you through the process of authorising your application to send and receive data on the Safe network. The API documentation for the sn_java library is available at [docs.maidsafe.net/sn_java](https://docs.maidsafe.net/sn_java).
 
 
 ## Build Instructions
 
 ### Pre-requisites
 
-safe_app_java requires
+sn_java requires
 
  -  Gradle 4+
  -  Java 8 or above
@@ -143,14 +150,14 @@ gradlew :safe-app-android:runInstrumentationTests
 ```
 This will require a supported emulator / Android device (with [USB debugging](https://developer.android.com/studio/debug/dev-options#debugging) enabled)
 
-### Interfacing with the SAFE Client libraries
+### Interfacing with the Safe Client libraries
 
-- The safe_app_java project uses native code that is written in Rust and compiled into platform specific code. You can find more information on the client libraries in [the SAFE client libraries wiki](https://github.com/maidsafe/safe_client_libs/wiki).
+- The sn_java project uses native code that is written in Rust and compiled into platform specific code. You can find more information on the client libraries in [the Safe client libraries wiki](https://github.com/maidsafe/safe_client_libs/wiki).
 - The `download-nativelibs` gradle task is configured to download the native libraries and unzip them to the required directories.
 
 ####  Exposing the API:
 
-When compiling the SAFE client libraries with the `bindings` feature, the Java bindings will be generated in the `bindings/java/` folder. These files should be copied into the `lib` module under their respective packages. The native functions available are listed in the `NativeBindings` class. The `api` module should contain wrappers for all of these native functions.
+When compiling the Safe client libraries with the `bindings` feature, the Java bindings will be generated in the `bindings/java/` folder. These files should be copied into the `lib` module under their respective packages. The native functions available are listed in the `NativeBindings` class. The `api` module should contain wrappers for all of these native functions.
 
 #### Native Handles and garbage collection:
 
@@ -166,15 +173,15 @@ For instructions on how to contribute, see our [Guide to contributing](https://g
 
 ## Copyrights
 
-Copyrights in the SAFE Network are retained by their contributors. No copyright assignment is required to contribute to this project.
+Copyrights in the Safe Network are retained by their contributors. No copyright assignment is required to contribute to this project.
 
 ## Further help
 
-Get your developer related questions clarified on [SAFE Dev Forum](https://forum.safedev.org/). If you're looking to share any other ideas or thoughts on the SAFE Network you can reach out on [SAFE Network Forum](https://safenetforum.org/)
+Get your developer related questions clarified on [Safe Dev Forum](https://forum.safedev.org/). If you're looking to share any other ideas or thoughts on the Safe Network you can reach out on [Safe Network Forum](https://safenetforum.org/)
 
 ## License
 
-This SAFE Network library is dual-licensed under
+This Safe Network library is dual-licensed under
 
 * the Modified BSD ([LICENSE-BSD](https://opensource.org/licenses/BSD-3-Clause)) or
 * the MIT license ([LICENSE-MIT](http://opensource.org/licenses/MIT))

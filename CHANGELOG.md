@@ -1,4 +1,4 @@
-# safe_app_java Change Log
+# sn_java Change Log
 
 ## [0.1.0] - 2019-01-09
 ### Added
