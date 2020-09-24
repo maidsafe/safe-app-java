@@ -32,10 +32,10 @@ public class Client extends Session {
         }
         try {
             String path = context.getFilesDir().getPath();
-            Os.setenv("SAFE_MOCK_VAULT_PATH", path, true);
+            Os.setenv("SAFE_MOCK_NODE_PATH", path, true);
             Session.setAdditionalSearchPath(path).get();
         } catch (Exception e) {
-            throw new RuntimeException("Cannot set MockVault path");
+            throw new RuntimeException("Cannot set MockNode path");
         }
     }
 
