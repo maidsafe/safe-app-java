@@ -1,8 +1,8 @@
 # sn_java
 
-sn_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) API.
+sn_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/sn_client/tree/master/safe_app) API.
 
-> [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) is a native library which exposes low level API for application development on Safe Network. It exposes APIs for authorisation and to manage data on the network.
+> [safe_app](https://github.com/maidsafe/sn_client/tree/master/safe_app) is a native library which exposes low level API for application development on Safe Network. It exposes APIs for authorisation and to manage data on the network.
 
 **Maintainer:** Lionel Faber (lionel.faber@maidsafe.net)
 
@@ -30,7 +30,7 @@ sn_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/safe_cl
   - [Development](#development)
     - [Using gradle:](#using-gradle)
     - [Running tests:](#running-tests)
-    - [Interfacing with the Safe Client libraries](#interfacing-with-the-safe-client-libraries)
+    - [Interfacing with the Safe Network Client libraries](#interfacing-with-the-safe-network-client-libraries)
       - [Exposing the API:](#exposing-the-api)
       - [Native Handles and garbage collection:](#native-handles-and-garbage-collection)
   - [Contributing](#contributing)
@@ -40,7 +40,7 @@ sn_java is a Java wrapper for the [safe_app](https://github.com/maidsafe/safe_cl
 
 ## High level overview
 
-The sn_java packages are Java bindings for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) Rust library which is needed by any desktop / mobile application to connect and read/write data on the [Safe Network](https://safenetwork.tech).
+The sn_java packages are Java bindings for the [safe_app](https://github.com/maidsafe/sn_client/tree/master/safe_app) Rust library which is needed by any desktop / mobile application to connect and read/write data on the [Safe Network](https://safenetwork.tech).
 
 The libraries contain API to authenticate with the [Safe Authenticator](https://github.com/maidsafe/sn_authenticator_mobile) and then read/write data on the Safe network.
 
@@ -150,14 +150,14 @@ gradlew :safe-app-android:runInstrumentationTests
 ```
 This will require a supported emulator / Android device (with [USB debugging](https://developer.android.com/studio/debug/dev-options#debugging) enabled)
 
-### Interfacing with the Safe Client libraries
+### Interfacing with the Safe Network Client libraries
 
-- The sn_java project uses native code that is written in Rust and compiled into platform specific code. You can find more information on the client libraries in [the Safe client libraries wiki](https://github.com/maidsafe/safe_client_libs/wiki).
+- The sn_java project uses native code that is written in Rust and compiled into platform specific code. You can find more information on the client libraries in [the Safe Network client libraries wiki](https://github.com/maidsafe/sn_client/wiki).
 - The `download-nativelibs` gradle task is configured to download the native libraries and unzip them to the required directories.
 
 ####  Exposing the API:
 
-When compiling the Safe client libraries with the `bindings` feature, the Java bindings will be generated in the `bindings/java/` folder. These files should be copied into the `lib` module under their respective packages. The native functions available are listed in the `NativeBindings` class. The `api` module should contain wrappers for all of these native functions.
+When compiling the Safe Network client libraries with the `bindings` feature, the Java bindings will be generated in the `bindings/java/` folder. These files should be copied into the `lib` module under their respective packages. The native functions available are listed in the `NativeBindings` class. The `api` module should contain wrappers for all of these native functions.
 
 #### Native Handles and garbage collection:
 

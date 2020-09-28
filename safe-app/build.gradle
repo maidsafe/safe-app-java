@@ -103,7 +103,7 @@ task("downloadNativeLibs", type: Download) {
         assert dir.deleteDir()
     }
     def endPoints = getCombinations().collect {
-        "https://github.com/lionel1704/safe_client_libs/releases/download/${nativeLibsVersion}/${it[0]}-${it[2] == 'mock' ? 'mock-' : ''}v${nativeLibsVersion}-${it[1]}-${it[3]}.zip"
+        "https://github.com/lionel1704/sn_client/releases/download/${nativeLibsVersion}/${it[0]}-${it[2] == 'mock' ? 'mock-' : ''}v${nativeLibsVersion}-${it[1]}-${it[3]}.zip"
     }
     src(endPoints)
     dest tempDownloadDir
