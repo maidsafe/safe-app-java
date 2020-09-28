@@ -108,7 +108,7 @@ task("downloadNativeLibs", type: Download) {
         dir.mkdir()
     }
     def endPoints = getCombinations().collect {
-        "https://s3.eu-west-2.amazonaws.com/safe-client-libs/${it[0]}${it[2] == 'mock' ? '-mock' : ''}-${nativeLibsVersion}-android-${it[1]}.zip"
+        "https://s3.eu-west-2.amazonaws.com/sn-client/${it[0]}${it[2] == 'mock' ? '-mock' : ''}-${nativeLibsVersion}-android-${it[1]}.zip"
     }
     src(endPoints)
     dest tempLibDir
